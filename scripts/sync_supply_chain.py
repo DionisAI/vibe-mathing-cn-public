@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-# 做什么：按 vendor/sources.lock.json 同步或检查浅克隆、稀疏化的 Git 供应链缓存。
+# 做什么：按 vendor/sources.lock.json 同步或检查 Git 上游、本机研究归档镜像和审计快照。
 # 怎么运行：python3 scripts/sync_supply_chain.py [--check]
-# 需要什么：Python 3、Git、网络（仅同步模式）；不需要凭据的公开仓库访问。
+# 需要什么：Python 3、Git、rsync；Git 上游同步需要网络，本机镜像不需要网络。
 
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import hashlib
 import json
 import subprocess
@@ -53,6 +54,119 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def is_excluded(relative: Path, patterns: list[str]) -> bool:
+    return any(
+        pattern in relative.parts
+        or fnmatch.fnmatch(relative.name, pattern)
+        or fnmatch.fnmatch(relative.as_posix(), pattern)
+        for pattern in patterns
+    )
+
+
+def tree_inventory(path: Path, exclusions: list[str]) -> dict[str, object]:
+    if not path.is_dir():
+        raise RuntimeError(f"目录不存在：{path}")
+    root = path.resolve()
+    digest = hashlib.sha256()
+    regular_files = 0
+    directories = 0
+    symlinks = 0
+    skill_files = 0
+    total_bytes = 0
+
+    candidates = sorted(
+        (
+            candidate
+            for candidate in path.rglob("*")
+            if not is_excluded(candidate.relative_to(path), exclusions)
+        ),
+        key=lambda candidate: candidate.relative_to(path).as_posix(),
+    )
+    for candidate in candidates:
+        relative = candidate.relative_to(path)
+        relative_text = relative.as_posix()
+        if candidate.is_symlink():
+            target = candidate.readlink().as_posix()
+            try:
+                candidate.resolve(strict=True).relative_to(root)
+            except (OSError, ValueError) as exc:
+                raise RuntimeError(
+                    f"供应链镜像包含失效或越界符号链接：{candidate} -> {target}"
+                ) from exc
+            digest.update(f"L\0{relative_text}\0{target}\n".encode())
+            symlinks += 1
+        elif candidate.is_dir():
+            digest.update(f"D\0{relative_text}\n".encode())
+            directories += 1
+        elif candidate.is_file():
+            size = candidate.stat().st_size
+            file_digest = sha256(candidate)
+            digest.update(
+                f"F\0{relative_text}\0{size}\0{file_digest}\n".encode()
+            )
+            regular_files += 1
+            total_bytes += size
+            if candidate.name == "SKILL.md":
+                skill_files += 1
+
+    return {
+        "regular_files": regular_files,
+        "directories": directories,
+        "symlinks": symlinks,
+        "skill_files": skill_files,
+        "total_bytes": total_bytes,
+        "tree_sha256": digest.hexdigest(),
+    }
+
+
+def local_source_path(source: dict[str, object]) -> Path:
+    return Path(str(source["source_path"])).expanduser().resolve()
+
+
+def sync_local_mirror(source: dict[str, object]) -> None:
+    origin = local_source_path(source)
+    target = repo_path(source)
+    if not origin.is_dir():
+        raise RuntimeError(f"本机归档不存在：{origin}")
+    target.mkdir(parents=True, exist_ok=True)
+    exclusions = [str(item) for item in source.get("exclusions", [])]
+    args = ["rsync", "-a", "--delete", "--delete-excluded"]
+    for pattern in exclusions:
+        suffix = "/" if pattern in {".git", "__pycache__"} else ""
+        args.append(f"--exclude={pattern}{suffix}")
+    args.extend([f"{origin}/", f"{target}/"])
+    run(args)
+
+
+def check_local_mirror(source: dict[str, object]) -> list[str]:
+    origin = local_source_path(source)
+    target = repo_path(source)
+    if not origin.is_dir():
+        return [f"缺少本机归档：{origin}"]
+    if not target.is_dir():
+        return [f"缺少本机归档镜像：{target}"]
+
+    exclusions = [str(item) for item in source.get("exclusions", [])]
+    try:
+        origin_inventory = tree_inventory(origin, exclusions)
+        target_inventory = tree_inventory(target, exclusions)
+    except (OSError, RuntimeError) as exc:
+        return [str(exc)]
+
+    errors: list[str] = []
+    if origin_inventory != target_inventory:
+        errors.append(f"本机归档镜像与来源不一致：{target}")
+    expected = source.get("inventory")
+    if not isinstance(expected, dict):
+        errors.append(f"本机归档缺少锁定 inventory：{source['id']}")
+    elif target_inventory != expected:
+        errors.append(
+            f"本机归档 inventory 漂移：{source['id']} 实际 "
+            f"{json.dumps(target_inventory, ensure_ascii=False, sort_keys=True)}"
+        )
+    return errors
 
 
 def sync_git(source: dict[str, object]) -> None:
@@ -145,6 +259,10 @@ def main() -> int:
                 if not args.check:
                     sync_git(source)
                 errors.extend(check_git(source))
+            elif source["kind"] == "local-mirror":
+                if not args.check:
+                    sync_local_mirror(source)
+                errors.extend(check_local_mirror(source))
             else:
                 errors.extend(check_snapshot(source))
             print(f"{'CHECK' if args.check else 'SYNC'} {source_id}")

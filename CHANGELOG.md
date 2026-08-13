@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-13 - 本机 auto-research 完整镜像
+
+- 将 `~/.codex/archive/skills/auto-research` 完整工作树复制到被隔离的 `vendor/upstream/auto-research/`。
+- 保留 4,170 个 skill 入口和相关代码、文档与数据，排除嵌套 `.git` 和运行缓存；镜像不自动激活、不整体发布。
+- 扩展供应链脚本，以来源、目标、lockfile 三方 inventory 和树摘要提供幂等同步与漂移检查。
+
 ## 2026-08-13 - 问题空间到解空间基础框架
 
 - 新增 canonical Problem、Attempt、Result 三个最小机器契约与空真相源。

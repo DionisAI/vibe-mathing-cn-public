@@ -1,6 +1,6 @@
 # Scripts
 
-- `sync_supply_chain.py`：按 lockfile 幂等拉取、固定和检查 Git 上游。
+- `sync_supply_chain.py`：按 lockfile 幂等同步并检查 Git 上游、本机 auto-research 完整镜像和审计快照。
 - `validate_project.py`：校验 active skill 结构、来源映射和禁止依赖。
 - `smoke_math.py`：验证当前 SymPy/mpmath 数学计算后端。
 - `fetch_problem_library.py`：限速抓取两个公开问题目录，保存原始快照并重建 JSONL 与索引。

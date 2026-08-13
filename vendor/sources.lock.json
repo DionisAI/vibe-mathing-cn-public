@@ -82,6 +82,30 @@
       "used_by": ["math-proof"]
     },
     {
+      "id": "local-auto-research-archive",
+      "kind": "local-mirror",
+      "source_path": "~/.codex/archive/skills/auto-research",
+      "path": "vendor/upstream/auto-research",
+      "license": "mixed-per-source",
+      "activation": "isolated-not-active",
+      "exclusions": [
+        ".git",
+        "__pycache__",
+        "*.pyc",
+        "*.pyo",
+        ".DS_Store"
+      ],
+      "inventory": {
+        "directories": 8054,
+        "regular_files": 20338,
+        "skill_files": 4170,
+        "symlinks": 2,
+        "total_bytes": 472372103,
+        "tree_sha256": "958d97498931af99730340540e1835f49e884e3aff200f6f3e1e0bf70735e3bb"
+      },
+      "used_by": ["skill-supply-chain-audit"]
+    },
+    {
       "id": "local-formula-derivation",
       "kind": "local-snapshot",
       "source_path": "vendor/snapshots/local-research-skills/formula-derivation/SKILL.md",
