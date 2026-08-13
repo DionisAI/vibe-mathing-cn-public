@@ -206,6 +206,7 @@ def write_root_index(root: Path, dry_run: bool) -> Path:
         (
             "当前标准",
             [
+                ("standards/VIBE-MATHING-SPEC-v0.1.md", True),
                 ("standards/工程质量标准.md", True),
                 ("standards/劣质代码定义.md", True),
                 ("standards/非功能性需求标准.md", True),

@@ -15,3 +15,4 @@ review_cycle: P90D
 - Result 采用 `outcome × evidence`，并以偏序能力集和追加失效账本替代单一证据等级。
 - 新增 GATE-0002，阻止有限证据、自我审查和陈述失真进入完整解视图。
 - 登记 problem-library、research、result-library 模块上下文和可移植/完整两级工具链。
+- 发布项目级 `VIBE-MATHING-SPEC v0.1`，把研究闭环压缩为 R1 候选隔离、R2 验证准入、R3 证据守恒；九条候选要求收敛为操作层推论。

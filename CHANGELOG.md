@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-13 — 单机可信研究闭环 100/100
+
+- 新增受信 verifier registry、不可覆盖证据回执、现场摘要重算和 append-only 失效语义。
+- 新增 `flock + WAL + fsync + os.replace` 原子研究存储、可恢复运行状态机与统一 CLI。
+- 新增 SymPy 反例和固定 Lean/Mathlib 两条端到端闭环，以及攻击矩阵、故障恢复、成熟度审计和 CI 门禁。
+- 100/100 限定为单机、单 Agent、可信研究闭环；Git 交付、外部 reviewer 签发和分布式高可用仍是独立边界。
+
+## 2026-08-13 — VIBE-MATHING-SPEC v0.1
+
+- 发布三条项目基本法则：候选隔离、验证准入、证据守恒。
+- Result 证据能力新增 `axiom_escape_audit` 与 `prior_art_review`。
+- kernel 直接验证只有与独立公理/逃逸审计组合时才满足完整解准入。
+
 ## 2026-08-13 - 本机 auto-research 完整镜像
 
 - 将 `~/.codex/archive/skills/auto-research` 完整工作树复制到被隔离的 `vendor/upstream/auto-research/`。

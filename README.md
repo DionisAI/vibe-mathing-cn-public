@@ -1,8 +1,76 @@
-# vibe-mathing-cn：中文 AI 数学研究工作台
+# vibe-mathing-cn：可信数学研究与验证系统
 
 > **非可信候选生成器 + 受信验证链：从问题空间构造候选，经验证后派生解空间。**
 
 `vibe-mathing-cn` 把数学问题、文献、推导、计算、证明与形式化检查组织成可追溯的研究系统。生成器可以不完备、出错或不终止；只有满足明确验收谓词的候选结果，才能出现在解库派生视图中。
+
+## 项目定位
+
+本项目不是承诺对任意输入都返回答案的“通用数学问题求解器”，而是：
+
+> **面向广泛数学问题的通用、可信、可审计研究与验证系统。**
+
+“通用”表示系统采用统一的 Problem、Attempt、Result 和证据契约组织不同数学领域的研究，不表示搜索完备、必然终止或所有问题都可判定。系统保证的不是“总能求解”，而是：
+
+1. 问题定义清楚后才进入研究；
+2. 候选、失败和局部成果均可追溯；
+3. Agent 不能把自己的候选直接宣布为答案；
+4. 只有完整证明或反例通过验证后才能闭合问题；
+5. 没有充分证据时，系统必须诚实输出 `open`。
+
+## 系统输入与输出
+
+系统的逻辑接口是：
+
+\[
+F:\mathrm{ProblemContract}\rightarrow\mathrm{ResearchBundle}
+\]
+
+而不是保证存在解的 `Problem → Solution` 函数。
+
+### 输入：Problem Contract
+
+输入不是一句未经约束的自然语言，而是一个版本化、可验证的数学问题契约。它至少需要确定：
+
+```text
+ProblemContract {
+  problem_id       // 稳定标识
+  statement        // 精确陈述及版本
+  domain           // 对象、定义域和量词边界
+  definitions      // 术语、符号和等价定义
+  assumptions      // 假设、允许公理和前置结果
+  sources          // 来源、已有文献和检索时间
+  acceptance       // 什么证明或反例能够闭合问题
+  constraints      // 可用工具、时间和资源边界
+}
+```
+
+当前机器真相源使用 canonical `Problem` schema 保存稳定标识、陈述版本、MSC 分类、来源和状态；定义域、量词、定义与假设在进入自动研究前必须被规范化进陈述及其引用上下文。未来扩展字段时仍以 Problem Contract 为唯一输入语义，不另建第二套问题模型。
+
+### 输出：Research Bundle
+
+输出不是一段孤立“答案”，而是一个带证据、可恢复、可复核的研究结果包：
+
+```text
+ResearchBundle {
+  problem          // 本次实际研究的 Problem 版本
+  attempts[]       // 做过什么、使用什么方法、为何成功或失败
+  results[]        // 证明、反例、局部结论、计算证据或失败路径
+  evidence[]       // 计算记录、审查记录、证明证书和内核输出
+  disposition      // solved | refuted | open
+  solution_view[]  // 当前通过完整验证的证明或反例
+}
+```
+
+`ResearchBundle` 是从 Problem / Attempt / Result、验证产物和 Solution View 聚合出的响应或导出视图，不是第四张可写表。顶层裁决定义为：
+
+| Disposition | 严格含义 |
+|:---|:---|
+| `solved` | 存在与当前 Problem 忠实对应、证据仍有效且通过准入的 `proof + established` |
+| `refuted` | 存在与当前 Problem 忠实对应、证据仍有效且通过准入的 `counterexample + refuted` |
+| `open` | 尚无完整可信证明或反例；可以包含支持性证据、局部结果、失败路径和下一步建议 |
+
+若同一 Problem、同一语义范围同时出现通过准入的证明和反例，系统必须把它视为契约、形式化或验证链冲突并 fail-closed，不能任选一个答案。`open` 不是失败：它表示系统准确保存了“目前真正知道什么”和“还缺什么”。
 
 ## 形式模型
 
@@ -91,7 +159,10 @@ numeric-check
 symbolic-check
 human-review
 kernel-check
+counterexample-check
+axiom-escape-audit
 statement-faithfulness
+prior-art-review
 ```
 
 数值检查与符号检查可能互不包含；人工审查可以检查语义和上下文，kernel 只检查形式化陈述及证明项。Lean 官方也明确区分“定理是否有有效证明”和“定理陈述是什么意思”。因此证据按已验证能力的集合包含关系形成偏序，不能用一个数字等级替代。
@@ -107,7 +178,7 @@ statement-faithfulness
 
 进入解库还必须同时满足：
 
-1. 直接证明、反例或形式化证明证据存在；
+1. 独立的直接证明/反例审查存在，或形式化证明同时具备内核检查与公理/逃逸审计；
 2. 验证判定为 `accept`；
 3. 验证独立性满足项目策略；
 4. canonical Problem 与被验证声明之间的忠实性审计通过；
@@ -126,7 +197,7 @@ statement-faithfulness
 5. 创建可追溯 `Attempt` 和候选 `Result`；
 6. 将候选提交验证链，不自行改变解库视图。
 
-`/vibe-mathing` 仍在建设；现阶段由 `vibe-mathing-router` 和五个数学 owner skills 承担分阶段研究能力。
+仓库已提供单机可恢复 CLI；开放式研究仍由 `vibe-mathing-router` 和五个数学 owner skills 分阶段产生候选，CLI 负责确定性 adapter 的受控写入、恢复、取消与验证。
 
 ## 与 Lean / AlphaProof 的关系
 
@@ -174,10 +245,10 @@ vibe-mathing-cn/
 | 数值检查 | 可用 | NumPy、SciPy、mpmath |
 | 自然语言证明 | 可用 | 证明义务、依赖图与反例审计契约 |
 | LaTeX 构建 | 可用 | latexmk、pdfLaTeX、XeLaTeX、LuaLaTeX、BibTeX、Biber |
-| `/vibe-mathing` 总控入口 | 设计中 | 现阶段使用路由 skill 分阶段执行 |
-| 研究空间与成果空间 | 基础可用 | Problem/Attempt/Result JSON Schema + 引用与晋升校验 |
-| 解库视图 | 基础可用 | 从 `outcome × evidence` 满足准入谓词的 Result 派生；当前为空 |
-| Lean 形式化验证 | 待启用 | 本机尚未安装 Lean/elan/lake；当前 fail-closed |
+| `/vibe-mathing` 单机入口 | 可用 | `run/resume/verify/status/cancel` + checkpoint + 有界状态机 |
+| 研究空间与成果空间 | 可用 | Problem/Attempt/Result schema + `flock/WAL/os.replace` 唯一 writer |
+| 解库视图 | 可用 | 真实 artifact/receipt/registry 校验后派生；当前业务记录为空 |
+| Lean 形式化验证 | 固定 fixture | Lean/Mathlib v4.33.0；kernel + escape/axiom + faithfulness 三证据 |
 
 ## Active Skills
 
@@ -240,6 +311,21 @@ CI 与本地共用同一个可移植入口：
 make check
 ```
 
+确定性反例问题的单机闭环入口：
+
+```bash
+python3 scripts/vibe_mathing_cli.py register-problem \
+  --file fixtures/sympy-counterexample/problem.json
+python3 scripts/vibe_mathing_cli.py run \
+  --problem-id problem:sympy-counterexample-fixture
+python3 scripts/vibe_mathing_cli.py status --run-id run:<stable-id>
+python3 scripts/vibe_mathing_cli.py resume --run-id run:<stable-id>
+python3 scripts/vibe_mathing_cli.py verify --run-id run:<stable-id>
+python3 scripts/vibe_mathing_cli.py cancel --run-id run:<stable-id>
+```
+
+CLI 只接受已注册 adapter 和 canonical Problem，不提供任意命令执行。真实开放问题仍先由 owner skills 生成候选；未经注册 verifier 的证据不会晋升。
+
 它不依赖被 Git 忽略的上游缓存、原始网页或电子书二进制。拥有完整本地材料时运行加强门禁：
 
 ```bash
@@ -267,6 +353,7 @@ vibe-mathing-cn/
 ├── .github/workflows/         # GitHub Actions 可移植质量门
 ├── .codex/skills/             # 当前项目 active skills
 ├── scripts/                   # 供应链、结构、问题库、文献库和数学验证脚本
+├── fixtures/                  # 固定 Lean/Mathlib 等无业务数据验证样例
 └── vendor/
     ├── sources.lock.json      # 上游来源、固定 commit、许可和导入映射
     ├── snapshots/             # 本机或无远端来源的精简审计快照
@@ -295,12 +382,12 @@ vibe-mathing-cn/
 
 ## 下一阶段
 
-当前最重要的工作不是继续扩大来源记录数量，而是跑通一个可信闭环：
+基础生产闭环完成后，下一阶段不再扩建第二套 runtime，而是校准研究质量：
 
-1. 实现 `/vibe-mathing` 总控入口；
-2. 选择三个垂直样例验证系统：一个可证明命题、一个可反驳命题、一个只能得到有限证据的开放问题；
-3. 用真实样例校准 canonical Problem 归一化规则；
-4. 安装 Lean 4 与 Mathlib，完成一个无 `sorry` 的最小形式化切片，并单独审计形式化陈述是否忠实于原问题。
+1. 用一个公开、非开放的自然语言定理校准 Problem Contract → Lean statement 的人工忠实性审查；
+2. 为外部领域专家或平台 reviewer 接入不可由实现者自签的 attestation；
+3. 在真实开放问题上只运行有限证据路径，验证系统持续保持 `supported/undetermined` 而不误关问题；
+4. 当 JSONL 写入达到可测瓶颈时，再依据 benchmark 迁移 SQLite/PostgreSQL。
 
 验收标准很简单：
 
@@ -311,8 +398,9 @@ vibe-mathing-cn/
 - 本项目不是自动解决世界上全部未解数学问题的承诺。
 - 问题库的“完整”只表示抓取批次覆盖来源目录，不表示覆盖全部数学问题。
 - UnsolvedMath 未发现公开许可声明；这里只保存公开目录事实字段和短摘要，不镜像详情正文。
-- Lean 工具链尚未安装，任何 `kernel-checked` 声明当前都必须 fail-closed。
+- 只有固定 fixture 和真实成功 receipt 能声明 `kernel_check`；自然语言到 Lean 的语义仍需独立 faithfulness 审查。
 - 当前解库索引为空；只有 `Result` 满足证明/反例、直接证据、独立验证与陈述忠实性条件后才允许进入。
+- 100% 就绪度仅指本仓库定义的单机、单 Agent、可恢复、可审计生产闭环；不包含分布式高可用、外部 reviewer 实际签发或保证解决任意开放问题。
 
 ---
 

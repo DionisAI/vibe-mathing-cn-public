@@ -14,6 +14,12 @@ from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker
 
+from vibe_mathing.evidence import (
+    EvidenceError,
+    load_verifier_registry,
+    verify_evidence_receipt,
+)
+from vibe_mathing.store import ResearchStore
 
 ROOT = Path(__file__).resolve().parents[1]
 PROBLEMS_PATH = ROOT / "problem-library" / "records" / "canonical-problems.jsonl"
@@ -24,6 +30,9 @@ ATTEMPT_SCHEMA_PATH = ROOT / "research" / "schema" / "attempt.schema.json"
 RESULTS_PATH = ROOT / "result-library" / "records" / "results.jsonl"
 RESULT_SCHEMA_PATH = ROOT / "result-library" / "schema" / "result.schema.json"
 SOLUTIONS_PATH = ROOT / "result-library" / "indexes" / "solutions.json"
+VERIFIER_REGISTRY_PATH = ROOT / "research" / "verifiers.json"
+VERIFIER_SCHEMA_PATH = ROOT / "research" / "schema" / "verifier-registry.schema.json"
+RECEIPT_SCHEMA_PATH = ROOT / "research" / "schema" / "evidence-receipt.schema.json"
 
 SOLUTION_KINDS = {"proof", "counterexample"}
 NON_CLOSING_KINDS = {
@@ -34,10 +43,6 @@ NON_CLOSING_KINDS = {
     "failed_approach",
 }
 EXPECTED_SOLUTION_OUTCOME = {"proof": "established", "counterexample": "refuted"}
-SOLUTION_CAPABILITIES = {
-    "proof": {"human_review", "kernel_check"},
-    "counterexample": {"counterexample_check", "human_review", "kernel_check"},
-}
 ALLOWED_OUTCOMES = {
     "proof": {"undetermined", "supported", "established", "inconclusive", "withdrawn"},
     "counterexample": {"undetermined", "supported", "refuted", "inconclusive", "withdrawn"},
@@ -92,41 +97,79 @@ def validate_records(
     return records, ids
 
 
-def load_source_record_ids() -> set[str]:
-    if not SOURCE_RECORDS_PATH.is_file():
+def load_source_record_ids(project_root: Path = ROOT) -> set[str]:
+    source_records_path = (
+        project_root / "problem-library" / "records" / "problems.jsonl"
+    )
+    if not source_records_path.is_file():
         return set()
     return {
         record["id"]
-        for record in load_jsonl(SOURCE_RECORDS_PATH)
+        for record in load_jsonl(source_records_path)
         if isinstance(record.get("id"), str)
     }
 
 
-def effective_evidence(result: dict[str, Any]) -> list[dict[str, Any]]:
-    evidence = result.get("evidence", [])
-    invalidated_ids = {
-        evidence_id
-        for item in evidence
-        for evidence_id in item.get("invalidates", [])
-    }
-    return [item for item in evidence if item.get("evidence_id") not in invalidated_ids]
-
-
 def accepted_independent_capabilities(
-    result: dict[str, Any], generator: str
+    result: dict[str, Any],
+    generator: str,
+    *,
+    project_root: Path = ROOT,
+    errors: list[str] | None = None,
 ) -> set[str]:
+    validated: list[tuple[dict[str, Any], str]] = []
+    for item in result.get("evidence", []):
+        try:
+            capability = verify_evidence_receipt(
+                project_root=project_root,
+                result=result,
+                evidence=item,
+                generator=generator,
+            )
+        except EvidenceError as exc:
+            if errors is not None:
+                errors.append(
+                    f"{result.get('result_id')}: 证据 {item.get('evidence_id')} 无效：{exc}"
+                )
+            continue
+        validated.append((item, capability))
+    validated_by_id = {item.get("evidence_id"): (item, capability) for item, capability in validated}
+    invalidated_ids: set[str] = set()
+    for item, capability in validated:
+        if item.get("verdict") != "reject" or item.get("independent") is not True:
+            continue
+        for evidence_id in item.get("invalidates", []):
+            target = validated_by_id.get(evidence_id)
+            if target is not None and target[1] == capability:
+                invalidated_ids.add(evidence_id)
     return {
-        item["capability"]
-        for item in effective_evidence(result)
+        capability
+        for item, capability in validated
         if item.get("verdict") == "accept"
         and item.get("independent") is True
-        and isinstance(item.get("sha256"), str)
-        and item.get("verifier") != generator
+        and item.get("evidence_id") not in invalidated_ids
     }
+
+
+def has_direct_solution_evidence(kind: str, capabilities: set[str]) -> bool:
+    if kind == "proof":
+        return "human_review" in capabilities or {
+            "kernel_check",
+            "axiom_escape_audit",
+        }.issubset(capabilities)
+    if kind == "counterexample":
+        return bool(
+            capabilities.intersection({"counterexample_check", "human_review"})
+        ) or {"kernel_check", "axiom_escape_audit"}.issubset(capabilities)
+    return False
 
 
 def qualifies_as_solution(
-    result: dict[str, Any], attempts_by_id: dict[str, dict[str, Any]]
+    result: dict[str, Any],
+    attempts_by_id: dict[str, dict[str, Any]],
+    *,
+    project_root: Path = ROOT,
+    errors: list[str] | None = None,
 ) -> bool:
     kind = result.get("kind")
     if kind not in SOLUTION_KINDS:
@@ -137,40 +180,53 @@ def qualifies_as_solution(
     generator = attempt.get("generator")
     if not isinstance(generator, str) or not generator:
         return False
-    capabilities = accepted_independent_capabilities(result, generator)
+    capabilities = accepted_independent_capabilities(
+        result, generator, project_root=project_root, errors=errors
+    )
     return (
-        bool(capabilities.intersection(SOLUTION_CAPABILITIES[kind]))
+        has_direct_solution_evidence(kind, capabilities)
         and "statement_faithfulness" in capabilities
     )
 
 
 def derive_solution_ids(
-    results: list[dict[str, Any]], attempts_by_id: dict[str, dict[str, Any]]
+    results: list[dict[str, Any]],
+    attempts_by_id: dict[str, dict[str, Any]],
+    *,
+    project_root: Path = ROOT,
 ) -> list[str]:
     return sorted(
         result["result_id"]
         for result in results
-        if qualifies_as_solution(result, attempts_by_id)
+        if qualifies_as_solution(result, attempts_by_id, project_root=project_root)
         and result.get("outcome") == EXPECTED_SOLUTION_OUTCOME[result["kind"]]
     )
 
 
 def validate_evidence_ledger(result: dict[str, Any], errors: list[str]) -> None:
     result_id = result.get("result_id")
-    seen: set[str] = set()
+    seen: dict[str, dict[str, Any]] = {}
     for item in result.get("evidence", []):
         evidence_id = item.get("evidence_id")
         if evidence_id in seen:
             errors.append(f"{result_id}: 重复 evidence_id {evidence_id}")
         for invalidated_id in item.get("invalidates", []):
+            if item.get("verdict") != "reject":
+                errors.append(
+                    f"{result_id}: 只有 verdict=reject 的受信证据可以执行失效：{evidence_id}"
+                )
             if invalidated_id == evidence_id:
                 errors.append(f"{result_id}: 证据不能使自身失效：{evidence_id}")
             elif invalidated_id not in seen:
                 errors.append(
                     f"{result_id}: 只能使账本中更早的证据失效：{invalidated_id}"
                 )
+            elif seen[invalidated_id].get("capability") != item.get("capability"):
+                errors.append(
+                    f"{result_id}: 失效记录只能撤销同 capability 证据：{invalidated_id}"
+                )
         if isinstance(evidence_id, str):
-            seen.add(evidence_id)
+            seen[evidence_id] = item
 
 
 def validate_cross_references(
@@ -180,8 +236,10 @@ def validate_cross_references(
     attempt_ids: set[str],
     results: list[dict[str, Any]],
     errors: list[str],
+    *,
+    project_root: Path = ROOT,
 ) -> None:
-    source_record_ids = load_source_record_ids()
+    source_record_ids = load_source_record_ids(project_root)
     for problem in problems:
         for source in problem.get("sources", []):
             source_record_id = source.get("source_record_id")
@@ -223,7 +281,7 @@ def validate_cross_references(
                     f"{result_id}: Result 与 Attempt 必须引用同一个 Problem"
                 )
             generator = attempt.get("generator")
-            for item in effective_evidence(result):
+            for item in result.get("evidence", []):
                 if (
                     item.get("verdict") == "accept"
                     and item.get("independent") is True
@@ -236,7 +294,12 @@ def validate_cross_references(
             errors.append(f"{result_id}: {kind} 不允许 outcome={outcome}")
 
         validate_evidence_ledger(result, errors)
-        qualified = qualifies_as_solution(result, attempts_by_id)
+        qualified = qualifies_as_solution(
+            result,
+            attempts_by_id,
+            project_root=project_root,
+            errors=errors,
+        )
         expected_outcome = EXPECTED_SOLUTION_OUTCOME.get(kind)
         if qualified and outcome != expected_outcome:
             errors.append(
@@ -244,22 +307,16 @@ def validate_cross_references(
             )
         if outcome in {"established", "refuted"} and not qualified:
             errors.append(
-                f"{result_id}: outcome={outcome} 缺少独立直接验证或 statement faithfulness 证据"
+                f"{result_id}: outcome={outcome} 缺少独立直接验证、适用的 axiom/escape audit 或 statement faithfulness 证据"
             )
         if kind in NON_CLOSING_KINDS and outcome in {"established", "refuted"}:
             errors.append(f"{result_id}: {kind} 不能成为原问题的完整结论")
 
 
 def write_solution_index(solution_ids: list[str]) -> None:
-    payload = {
-        "schema_version": "2.0.0",
-        "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "result_ids": solution_ids,
-    }
-    SOLUTIONS_PATH.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    rebuilt = ResearchStore(ROOT).rebuild_solution_view()
+    if rebuilt != solution_ids:
+        raise ValueError("唯一 writer 重算结果与 validator 预期不一致")
 
 
 def main() -> int:
@@ -279,6 +336,9 @@ def main() -> int:
         RESULTS_PATH,
         RESULT_SCHEMA_PATH,
         SOLUTIONS_PATH,
+        VERIFIER_REGISTRY_PATH,
+        VERIFIER_SCHEMA_PATH,
+        RECEIPT_SCHEMA_PATH,
     ]
     missing = [path.relative_to(ROOT) for path in required_paths if not path.is_file()]
     if missing:
@@ -288,6 +348,8 @@ def main() -> int:
 
     errors: list[str] = []
     try:
+        load_verifier_registry(ROOT)
+        Draft202012Validator.check_schema(load_json(RECEIPT_SCHEMA_PATH))
         problems, problem_ids = validate_records(
             PROBLEMS_PATH, PROBLEM_SCHEMA_PATH, "problem_id", errors
         )

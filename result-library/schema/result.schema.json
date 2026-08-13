@@ -68,7 +68,9 @@
               "human_review",
               "kernel_check",
               "counterexample_check",
-              "statement_faithfulness"
+              "axiom_escape_audit",
+              "statement_faithfulness",
+              "prior_art_review"
             ]
           },
           "verdict": {"enum": ["accept", "reject", "undetermined"]},

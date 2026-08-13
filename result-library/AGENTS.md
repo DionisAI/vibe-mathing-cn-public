@@ -18,7 +18,8 @@ result-library/
 - 上游：每个结果必须引用一个 canonical `Problem` 和一个 `Attempt`。
 - 下游：完整解查询只消费 `indexes/solutions.json`，但详情必须回到 `records/results.jsonl`。
 - 数值证据、符号证据、局部结果和失败路径不能使用 `established` 或 `refuted` 闭合原问题。
-- `proof` 的完整解验证只接受独立人工审查或 proof assistant 内核检查；反例接受独立反例检查、人工审查或内核检查；两者都要求陈述忠实性证据。
+- `proof` 的完整解验证接受独立人工审查，或同时具备 proof assistant 内核检查与公理/逃逸审计；反例接受独立反例检查、人工审查，或内核检查与公理/逃逸审计；两者都要求陈述忠实性证据。
+- `prior_art_review` 记录归因和新颖性，不替代数学正确性的直接验证。
 - 证据账本只追加；失效记录只能引用更早的 `evidence_id`，当前结论由未失效证据派生。
 - Result 与 Attempt 必须引用同一个 Problem；独立证据的 verifier 必须不同于 Attempt.generator，并绑定可复查摘要。
 - 不手工制造不在 `results.jsonl` 中的解库条目。

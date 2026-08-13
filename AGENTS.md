@@ -19,6 +19,7 @@ vibe-mathing-cn/
 │   ├── AGENTS.md              # 项目级 Codex 资源边界
 │   └── skills/                # 当前项目 active skills
 ├── scripts/                   # 供应链、结构和数学能力校验
+├── fixtures/                  # 固定工具链的无业务数据验证样例
 └── vendor/
     ├── AGENTS.md              # 供应链边界与更新规则
     ├── sources.lock.json      # 上游 URL、commit、许可和导入映射真相源

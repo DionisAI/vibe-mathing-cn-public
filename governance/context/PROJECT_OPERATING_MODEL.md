@@ -25,11 +25,11 @@ review_cycle: P90D
 
 ## 技术模型
 
-- 主要运行形态：Git 管理的 Markdown、JSON/JSONL、JSON Schema、Python 校验器和项目级 Codex skills。
+- 主要运行形态：Git 管理的 Markdown、JSON/JSONL、JSON Schema、Python 单机 runtime/校验器、固定 Lean/Mathlib fixture 和项目级 Codex skills。
 - 数据事实源：来源记录在 `problem-library/records/problems.jsonl`；规范化问题在 `canonical-problems.jsonl`；研究与成果分别在 `research/records/` 和 `result-library/records/`。
 - 派生视图：`result-library/indexes/solutions.json`，禁止绕过 Result 真相源直接录入。
-- 外部依赖：公开问题来源、文献数据库、Python 数学/校验库；上游 skill 版本由 `vendor/sources.lock.json` 固定。
-- 主要验证入口：`make check`；本机完整材料加强验证为 `make check-full`。
+- 外部依赖：公开问题来源、文献数据库、Python 数学/校验库、Lean/Mathlib；上游 skill 版本由 `vendor/sources.lock.json` 固定，形式工具链由 fixture 固定。
+- 主要验证入口：`make check`；完整单机生产闭环为 `make check-production`；本机 ignored 材料加强验证为 `make check-full`。
 
 ## 工具链模型
 
@@ -44,13 +44,17 @@ review_cycle: P90D
 | 来源问题观察 | `problem-library/records/problems.jsonl` | 不等于 canonical Problem |
 | 规范化问题 | `problem-library/records/canonical-problems.jsonl` | 版本化陈述、稳定来源 URL 与可选本地来源记录 ID |
 | 研究尝试 | `research/records/attempts.jsonl` | Attempt lifecycle 不表达数学结论 |
+| 运行 checkpoint | `research/runs/` | Git ignored；schema 化状态、预算、恢复与取消 |
+| verifier 信任策略 | `research/verifiers.json` | role、trust domain、capability、output policy |
+| 验证产物与回执 | `research/artifacts/` | 可信根、现场 SHA-256、禁止 symlink/覆盖 |
 | 研究成果 | `result-library/records/results.jsonl` | `outcome × evidence` 二维状态与追加证据账本 |
 | 完整解视图 | `result-library/indexes/solutions.json` | 从 Result 派生 |
 | 文献书目 | `literature/catalog/*.jsonl` | 电子书二进制保持本地忽略 |
 | 研究方法 | `.codex/skills/` | 只保存 active owner skills |
+| Vibe-Mathing 核心规范 | `governance/standards/VIBE-MATHING-SPEC-v0.1.md` | 三条基本法则及操作层要求 |
 | 供应链版本 | `vendor/sources.lock.json` | URL、commit、许可和导入映射 |
 | 项目治理 | `governance/` | 标准、ADR、Gate 和任务证据 |
-| CI 入口 | `.github/workflows/ci.yml` | 只运行可移植质量门 |
+| CI 入口 | `.github/workflows/ci.yml` | portable 与固定 Lean production-loop 双门 |
 
 ## 不可违反的边界
 
@@ -60,9 +64,11 @@ review_cycle: P90D
 4. 完整解必须是 `proof + established` 或 `counterexample + refuted`，并具备当前有效的独立直接验证和 statement faithfulness `accept`。
 5. proof assistant 成功只证明形式化陈述，仍需审计其是否忠实表达原问题。
 6. 证据能力按集合偏序表达；不得把 outcome 与 numeric/human/kernel 压成单一等级。
-7. Result 与 Attempt 必须引用同一个 Problem；独立 verifier 不得等于 Attempt.generator，准入证据必须有可复查摘要。
+7. Result 与 Attempt 必须引用同一个 Problem；独立性由 registry trust domain 派生，准入证据必须位于可信根、现场摘要匹配且满足 verifier output policy。
 8. CI 不访问外部来源、不上传本地文献、不修改研究真相源。
 9. UnsolvedMath 未明确许可的目录内容只作为本地可重建数据，不进入公开 Git。
+
+上述研究闭环的规范真相源是 `standards/VIBE-MATHING-SPEC-v0.1.md`；本文件只维护项目级摘要和导航，不复制第二套规范。
 
 ## 变更入口
 
@@ -75,6 +81,7 @@ review_cycle: P90D
 
 ```bash
 make check
+make check-production
 make check-full
 python3 governance/tools/governance_context_bundle.py --project-root . --task-type docs
 ```
@@ -82,5 +89,5 @@ python3 governance/tools/governance_context_bundle.py --project-root . --task-ty
 ## 最近一次 review
 
 - 日期：2026-08-13
-- 结论：最小研究空间、成果空间、晋升门和可移植 CI 已建立；数学内容仍为空。
-- 后续动作：用三个真实垂直样例校准 Problem 归一化与成果晋升，然后实现 `/vibe-mathing` 总控入口。
+- 结论：单机 runtime、唯一 writer、可信回执、SymPy E2E 与固定 Lean fixture 已建立；数学业务记录仍为空。
+- 后续动作：接入真实外部 reviewer attestation，并用公开非开放定理校准自然语言到 Lean 的人工 statement faithfulness。

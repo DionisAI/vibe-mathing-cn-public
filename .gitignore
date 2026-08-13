@@ -16,6 +16,11 @@ vendor/snapshots/local-research-skills/
 # 数学计算与文档构建产物不得进入项目真相源。
 __pycache__/
 *.py[cod]
+.lake/
+research/.store.lock
+research/.store-transaction.json
+research/.store-transaction.json.tmp
+research/runs/
 .venv/
 .ipynb_checkpoints/
 build/

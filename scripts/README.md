@@ -11,7 +11,14 @@
 - `validate_portable_problem_library.py`：校验进入 Git 的问题记录、schema、manifest 与索引，不要求原始网页。
 - `validate_portable_literature.py`：校验进入 Git 的文献目录、schema 与引用，不要求本地电子书。
 - `validate_research_spaces.py`：校验 Problem/Attempt/Result 引用、二维状态和完整解派生索引。
-- `test_research_spaces.py`：用负例证明有限证据、自我审查和失真形式化不能进入解库。
+- `test_research_spaces.py`：用真实回执正例和攻击性反例校验解库晋升。
+- `test_trusted_evidence.py` / `test_evidence_attacks.py`：证明伪 locator/hash、路径逃逸、symlink、自验证与越权能力全部 fail-closed。
+- `test_research_store.py`：验证 JSONL 唯一 writer、并发幂等与 WAL 崩溃恢复。
+- `vibe_mathing_cli.py`：统一 `register-problem/run/resume/verify/status/cancel` 单机入口。
+- `test_vibe_mathing_runtime.py`：验证状态转换、重试、超时和输出预算。
+- `test_vibe_mathing_pipeline.py`：运行可恢复、可失效的确定性 SymPy CLI 垂直链。
+- `test_lean_pipeline.py`：运行固定 Lean/Mathlib kernel、逃逸、公理和陈述忠实性链。
+- `pipeline_maturity_audit.py`：现场执行 required capabilities，严格模式只在全部通过时输出 100/100。
 - `check.sh`：CI 与本地共用的可移植质量门；任一子检查失败即非零退出。
 
 所有脚本只写本项目范围；失败必须非零退出并打印明确原因。

@@ -10,6 +10,11 @@ python3 scripts/smoke_math.py
 python3 scripts/validate_portable_problem_library.py
 python3 scripts/validate_portable_literature.py
 python3 scripts/validate_research_spaces.py
+python3 scripts/test_trusted_evidence.py
+python3 scripts/test_evidence_attacks.py
 python3 scripts/test_research_spaces.py
+python3 scripts/test_research_store.py
+python3 scripts/test_vibe_mathing_runtime.py
+python3 scripts/test_vibe_mathing_pipeline.py
 python3 governance/tools/validate_governance_package.py --project-root . --strict
 python3 governance/tools/governance_health_report.py --project-root . --strict

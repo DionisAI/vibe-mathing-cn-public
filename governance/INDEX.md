@@ -3,7 +3,7 @@ id: GOV-INDEX
 type: index
 status: current
 owner: engineering
-last_reviewed: 2026-08-13
+last_reviewed: 2026-08-14
 ---
 
 # 治理包索引
@@ -17,6 +17,7 @@ last_reviewed: 2026-08-13
 
 ## 当前标准
 
+- [OK] `standards/VIBE-MATHING-SPEC-v0.1.md`
 - [OK] `standards/工程质量标准.md`
 - [OK] `standards/劣质代码定义.md`
 - [OK] `standards/非功能性需求标准.md`
