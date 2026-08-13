@@ -137,3 +137,10 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 ## Rollback
 
 回滚本次初始提交即可；业务真相源为空，不涉及数据迁移。`solutions.json` 可由 Result 重新派生。
+
+## Remote Evidence
+
+- Repository: `https://github.com/tradecatlabs/vibe-mathing-cn`
+- Implementation commit: `33dd5de27c174893c36a0dcd11647822463168e8`
+- GitHub Actions: `https://github.com/tradecatlabs/vibe-mathing-cn/actions/runs/31703110676`
+- Result: `validate` job PASS on GitHub-hosted Python 3.12.

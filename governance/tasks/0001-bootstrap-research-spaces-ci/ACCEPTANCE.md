@@ -6,8 +6,8 @@
 - [x] research/result-library/governance/CI 目录均有职责文档。
 - [x] `make check` 和 `make check-full` 本地通过。
 - [x] 干净公开克隆等价副本安装依赖并运行 `make check`。
-- [ ] 初始提交已推送到 `tradecatlabs/vibe-mathing-cn`。
-- [ ] 最终 GitHub Actions 绑定远端 HEAD 并 PASS。
+- [x] 初始提交 `33dd5de` 已推送到 `tradecatlabs/vibe-mathing-cn`。
+- [x] GitHub Actions run `31703110676` 绑定实现提交并 PASS。
 
 # Validation Plan
 
@@ -26,7 +26,7 @@ correctness、contract、security/repo-hygiene、architecture、build-release、
 
 - [x] 负例对晋升规则具有反事实敏感性。
 - [x] governance 首次 RED 已按根因修复并同源 GREEN。
-- [ ] GitHub-hosted Python 3.12 环境完成最终验证。
+- [x] GitHub-hosted Python 3.12 环境完成实现提交验证。
 
 # Ship Readiness
 

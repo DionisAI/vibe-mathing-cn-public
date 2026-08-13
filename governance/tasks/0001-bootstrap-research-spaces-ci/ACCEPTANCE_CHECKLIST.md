@@ -7,7 +7,7 @@
 - [x] 没有上传 PDF、raw、upstream pack、凭据或许可未知 snapshot。
 - [x] 所有架构目录已同步 README/AGENTS 与 governance context。
 - [x] 本地 portable/full 检查通过。
-- [ ] 远端提交和 Actions 通过。
+- [x] 远端实现提交和 Actions 通过。
 
 # Task Package Checklists
 
@@ -31,7 +31,7 @@
 
 ## TP-04
 
-- [ ] 初始化 Git 并确认 staged 清单。
-- [ ] 提交、推送并绑定远端 SHA。
-- [ ] 最终 GitHub Actions PASS。
+- [x] 初始化 Git 并确认 staged 清单。
+- [x] 提交、推送并绑定远端实现 SHA `33dd5de`。
+- [x] GitHub Actions run `31703110676` PASS。
 - Verify：Git/GitHub/Actions 事实输出。
