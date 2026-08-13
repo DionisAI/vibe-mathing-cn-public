@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-13",
+  "sources": [
+    {
+      "id": "rw-research-skill",
+      "kind": "git",
+      "url": "https://github.com/rolandwonglonam/rw-research-skill.git",
+      "branch": "main",
+      "commit": "38c57fd4c766df61026c552e939a30f13f0644b1",
+      "license": "Apache-2.0",
+      "license_path": "LICENSE",
+      "license_sha256": "e700582f749f5069428ccc7ed60989ff4469169f86b68b75a213d2abc955780e",
+      "path": "vendor/upstream/rw-research-skill",
+      "sparse_paths": [
+        "skills/rw-research-question",
+        "skills/rw-literature-discovery",
+        "skills/rw-paper-extractor",
+        "skills/rw-evidence-map",
+        "skills/rw-research-novelty",
+        "skills/rw-search-strategy",
+        "skills/rw-citation-audit",
+        "skills/rw-claim-audit"
+      ],
+      "used_by": ["math-discovery"]
+    },
+    {
+      "id": "wentor-research-plugins",
+      "kind": "git",
+      "url": "https://github.com/wentorai/research-plugins.git",
+      "branch": "main",
+      "commit": "bf44b3cd617fa94c8a1b254c5d1987142ca3d631",
+      "license": "MIT",
+      "license_path": "LICENSE",
+      "license_sha256": "e2bd618434a583076e20182db9557ce94df9f72975549e5d233d4d4c0ad079a7",
+      "path": "vendor/upstream/research-plugins",
+      "sparse_paths": [
+        "skills/domains/math",
+        "skills/literature/discovery",
+        "skills/literature/search",
+        "skills/literature/fulltext",
+        "skills/literature/metadata"
+      ],
+      "used_by": ["math-discovery", "math-computation", "math-formalization"]
+    },
+    {
+      "id": "kdense-scientific-skills",
+      "kind": "git",
+      "url": "https://github.com/K-Dense-AI/claude-scientific-skills.git",
+      "branch": "main",
+      "commit": "5ad4aae76bc40257b914367afacc6fd686a282d5",
+      "license": "MIT",
+      "license_path": "LICENSE.md",
+      "license_sha256": "09b02a3c9df3053c55531d503357a9c7cde275970e6c3ceaa1ddf5f0e90b40c1",
+      "path": "vendor/upstream/claude-scientific-skills",
+      "sparse_paths": [
+        "skills/sympy",
+        "skills/literature-review",
+        "skills/paper-lookup",
+        "skills/citation-management",
+        "skills/scientific-critical-thinking",
+        "skills/hypothesis-generation"
+      ],
+      "used_by": ["math-discovery", "math-computation", "math-proof"]
+    },
+    {
+      "id": "annals-of-mathematics-skills",
+      "kind": "local-snapshot",
+      "declared_url": "https://github.com/brycewang-stanford/annals-of-mathematics-skills.git",
+      "source_path": "vendor/snapshots/annals-of-mathematics-skills",
+      "origin_path": "local archive: auto-research/Awesome-Journal-Skills/Annals-of-Mathematics-Skills",
+      "source_repository_commit": "5be64e8dcca8d3c65a1328b7d754e6aae408f1b3",
+      "tree_sha256": "7a35d1bff040b1d1ca39eece80d1feb06ccb00b6df064e4f8cc25312c2a2a54c",
+      "license": "MIT",
+      "remote_status": "not-found-on-2026-08-13",
+      "files": {
+        "LICENSE": "bad075617318f23249188e9f4561c8f5fa1a3e992d1e6c95a8740750aba98540",
+        "skills/anmath-methods/SKILL.md": "f0aaa73ea09a9943532ae46d43fa3b5735f1b52c9b1da044ca5761378298278a",
+        "skills/anmath-referee-strategy/SKILL.md": "bd26215e286a45e0085a308ec456779ecb11f4a698d8c47aff885954627013a8",
+        "skills/anmath-writing-style/SKILL.md": "a1e128b903981276284009d6ef9a2a33da67fa5e398306c64f8302b5100e5039"
+      },
+      "used_by": ["math-proof"]
+    },
+    {
+      "id": "local-formula-derivation",
+      "kind": "local-snapshot",
+      "source_path": "vendor/snapshots/local-research-skills/formula-derivation/SKILL.md",
+      "origin_path": "local project skill: research/formula-derivation/SKILL.md",
+      "sha256": "3f1ce5b87c4b2d561efa2f3262471a7ad158fe8d2fd02e57cdf77aa27e0764d2",
+      "license": "unknown-local",
+      "used_by": ["math-derivation"]
+    },
+    {
+      "id": "local-proof-writer",
+      "kind": "local-snapshot",
+      "source_path": "vendor/snapshots/local-research-skills/proof-writer/SKILL.md",
+      "origin_path": "local project skill: research/proof-writer/SKILL.md",
+      "sha256": "6d7b3094711f609814680ded62e19b8dd61801511a7d98b96c033894c939babe",
+      "license": "unknown-local",
+      "used_by": ["math-proof"]
+    }
+  ]
+}
