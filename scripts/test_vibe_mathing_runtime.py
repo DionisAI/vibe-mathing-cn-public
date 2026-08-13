@@ -59,6 +59,19 @@ def main() -> int:
             ),
             "输出预算必须 fail-closed",
         )
+        business_output = root / "business-output.bin"
+        completed = execute_bounded(
+            [
+                sys.executable,
+                "-c",
+                "from pathlib import Path; Path('business-output.bin').write_bytes(b'x' * 4096)",
+            ],
+            cwd=root,
+            timeout_seconds=2,
+            max_output_bytes=100,
+        )
+        assert completed["exit_code"] == 0
+        assert business_output.stat().st_size == 4096
     print("运行时测试通过：状态、转换、超时和输出预算均 fail-closed。")
     return 0
 

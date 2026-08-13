@@ -42,6 +42,14 @@
 - fix: 终态 `accepted` 快速返回前强制重算 Solution View；Result 已失效时非零失败并指明失效结果，历史 run state 保持不可篡改。
 - verification: `python3 scripts/test_vibe_mathing_pipeline.py` 覆盖失效、二次失效幂等及失效后重复 run fail-closed。
 
+### 已修复：日志预算通过 RLIMIT_FSIZE 误伤业务构建产物
+
+- severity: BLOCK → FIXED
+- evidence: GitHub Actions `31721149936` 与 `31721732429` 均在冷缓存 Lean 构建中被 `SIGXFSZ` 终止；本地热缓存无法复现大型 `.olean/.a` 重写。
+- impact: 2 MiB 日志安全预算错误限制了子进程写入的全部文件，使真实 Lean 冷构建稳定失败。
+- fix: `execute_bounded` 改为通过 pipe 在宿主侧流式计数 stdout/stderr，超限或超时终止整个进程组，但不限制业务文件；Lake 保留官方 quiet 模式减少噪声。
+- verification: runtime 反事实在 100-byte 日志预算下成功写入 4096-byte 业务文件，同时超量 stdout 仍 fail-closed；Lean E2E 与成熟度审计本地 100/100。
+
 ## Security / Reliability
 
 - locator 限定 `research/artifacts/`，拒绝绝对路径、`..`、symlink、缺失文件和现场 SHA-256 漂移。

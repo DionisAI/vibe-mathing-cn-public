@@ -133,6 +133,8 @@
 - Observation：GitHub Actions `31721149936` 的可移植 job 通过，生产 job 在 `lean-e2e` 以 85/100 失败；首个无效节点为 `lake build`，错误是输出超过 2 MiB 预算。
 - Hypotheses：H7（ROOT）为冷缓存构建进度日志超过证据预算；H8 为 Lean 编译失败；H9 为 CI 超时。
 - Experiment：CI 在 51 秒内因输出预算终止而非超时；Lake 5.0.0 帮助明确提供 `--quiet`，本地 `lake build -q` 成功且 stdout/stderr 均为 0 字节，支持 H7 并反对 H8/H9。
-- Root Cause：adapter 把冷缓存的高容量进度日志写进受限证据通道；本地热缓存没有暴露该规模差异。
-- Fix：使用 Lake 官方 `--quiet` 模式消除非证据信息，不放大 2 MiB 安全预算；回执测试锁定 `--quiet build` 命令。
-- Reverification Required：无 elan PATH 的 Lean E2E、成熟度审计 100/100、新 GitHub Actions production-loop。
+- First experiment：使用 Lake 官方 `--quiet` 模式消除非证据信息并锁定回执命令；本地通过，但 GitHub Actions `31721732429` 仍以相同 `SIGXFSZ` 指纹失败，因此否决“日志量是唯一根因”。
+- Root Cause：`execute_bounded` 使用进程级 `RLIMIT_FSIZE` 限制日志临时文件，但该限制继承给子进程并同时限制 Lean 写入 `.olean/.a` 等业务构建产物；本地热缓存不重写大型产物，两个 CI 冷构建稳定复现。
+- Fix：删除 `RLIMIT_FSIZE`，改用 stdout/stderr pipe 流式计数；任一通道超过预算或超时就终止整个进程组，但不限制业务文件。保留 Lake `--quiet` 以减少非证据信息。
+- Counterfactual：runtime 回归让子进程在 100-byte 日志预算下写入 4096-byte 业务文件；旧实现会因文件限制失败，新实现必须成功，同时原有 1000-byte stdout/100-byte budget 负例仍失败。
+- Reverification Required：runtime 回归、无 elan PATH 的 Lean E2E、成熟度审计 100/100、新 GitHub Actions production-loop。

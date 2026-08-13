@@ -5,10 +5,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import resource
+import selectors
 import signal
 import subprocess
-import tempfile
+import time
 import fcntl
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -160,33 +160,61 @@ def execute_bounded(
 ) -> dict[str, Any]:
     if not argv or any(not isinstance(item, str) or not item for item in argv):
         raise RuntimeErrorBase("子进程 argv 无效")
-    def limit_output() -> None:
-        resource.setrlimit(resource.RLIMIT_FSIZE, (max_output_bytes + 1, max_output_bytes + 1))
+    if timeout_seconds <= 0 or max_output_bytes <= 0:
+        raise RuntimeErrorBase("子进程 timeout 与输出预算必须为正数")
 
-    with tempfile.TemporaryFile() as stdout_file, tempfile.TemporaryFile() as stderr_file:
-        process = subprocess.Popen(
-            argv,
-            cwd=cwd,
-            stdout=stdout_file,
-            stderr=stderr_file,
-            start_new_session=True,
-            preexec_fn=limit_output,
-        )
+    process = subprocess.Popen(
+        argv,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        start_new_session=True,
+    )
+    if process.stdout is None or process.stderr is None:
+        raise RuntimeErrorBase("无法建立子进程输出通道")
+
+    def terminate_group() -> None:
         try:
-            return_code = process.wait(timeout=timeout_seconds)
-        except subprocess.TimeoutExpired as exc:
-            try:
-                os.killpg(process.pid, signal.SIGKILL)
-            except ProcessLookupError:
-                pass
-            process.wait()
-            raise RuntimeErrorBase(f"子进程超时：{timeout_seconds}s") from exc
-        stdout_file.seek(0)
-        stderr_file.seek(0)
-        stdout = stdout_file.read(max_output_bytes + 1)
-        stderr = stderr_file.read(max_output_bytes + 1)
-    if len(stdout) > max_output_bytes or len(stderr) > max_output_bytes or return_code < 0:
-        raise RuntimeErrorBase("子进程输出超过预算或被资源限制终止")
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait()
+
+    streams = {
+        process.stdout: bytearray(),
+        process.stderr: bytearray(),
+    }
+    selector = selectors.DefaultSelector()
+    for stream in streams:
+        selector.register(stream, selectors.EVENT_READ)
+    deadline = time.monotonic() + timeout_seconds
+    try:
+        while selector.get_map():
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                terminate_group()
+                raise RuntimeErrorBase(f"子进程超时：{timeout_seconds}s")
+            for key, _ in selector.select(timeout=min(remaining, 0.1)):
+                stream = key.fileobj
+                chunk = os.read(stream.fileno(), 65_536)
+                if not chunk:
+                    selector.unregister(stream)
+                    continue
+                buffer = streams[stream]
+                buffer.extend(chunk)
+                if len(buffer) > max_output_bytes:
+                    terminate_group()
+                    raise RuntimeErrorBase("子进程 stdout/stderr 超过输出预算")
+        return_code = process.wait()
+    finally:
+        selector.close()
+        process.stdout.close()
+        process.stderr.close()
+
+    if return_code < 0:
+        raise RuntimeErrorBase(f"子进程被信号终止：{-return_code}")
+    stdout = bytes(streams[process.stdout])
+    stderr = bytes(streams[process.stderr])
     return {
         "argv": argv,
         "exit_code": return_code,

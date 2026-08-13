@@ -8,6 +8,7 @@
 - 100/100 限定为单机、单 Agent、可信研究闭环；Git 交付、外部 reviewer 签发和分布式高可用仍是独立边界。
 - Lean adapter 兼容 elan 官方默认目录，即使非交互 shell 未配置 `~/.elan/bin` 也能确定性发现工具链。
 - Lean 冷缓存构建使用 Lake 官方 quiet 模式，保留 2 MiB 输出预算而不让进度日志误触发资源门禁。
+- 子进程输出预算改为只流式约束 stdout/stderr，不再错误限制 Lean 等工具写入业务构建产物。
 
 ## 2026-08-13 — VIBE-MATHING-SPEC v0.1
 
