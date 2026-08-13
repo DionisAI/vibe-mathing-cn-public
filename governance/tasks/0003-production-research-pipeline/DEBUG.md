@@ -118,3 +118,12 @@
 - trusted evidence attack matrix
 - Solution View rebuild
 -
+
+## Follow-up: 非交互 shell 找不到 Lean
+
+- Observation：提交后直接运行 `python3 scripts/test_lean_pipeline.py` 报 `FileNotFoundError: lean`；`~/.elan/bin/lean` 与 `lake` 均真实存在，但当前非交互 shell 的 `PATH` 不包含 `~/.elan/bin`。
+- Hypotheses：H4（ROOT）为 adapter 错把 shell PATH 当成安装事实；H5 为 Lean 未安装；H6 为固定 toolchain 损坏。
+- Experiment：只在命令环境加入 `~/.elan/bin`，原命令立即通过，排除 H5/H6，确认 H4。
+- Root Cause：工具发现边界只使用裸命令名，没有兼容 elan 官方默认安装目录。
+- Fix：adapter 先用 `shutil.which`，再检查可执行的 `~/.elan/bin/lake`，所有 Lean 命令通过 `lake env lean` 绑定 fixture toolchain，仍缺失时输出明确错误；测试主动移除该 PATH 项后运行真实 Lean 链。
+- Regression Evidence：`python3 scripts/test_lean_pipeline.py` 在当前不含 elan PATH 的 shell 中通过；随后重跑完整成熟度审计。

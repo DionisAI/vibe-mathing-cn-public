@@ -6,6 +6,7 @@
 - 新增 `flock + WAL + fsync + os.replace` 原子研究存储、可恢复运行状态机与统一 CLI。
 - 新增 SymPy 反例和固定 Lean/Mathlib 两条端到端闭环，以及攻击矩阵、故障恢复、成熟度审计和 CI 门禁。
 - 100/100 限定为单机、单 Agent、可信研究闭环；Git 交付、外部 reviewer 签发和分布式高可用仍是独立边界。
+- Lean adapter 兼容 elan 官方默认目录，即使非交互 shell 未配置 `~/.elan/bin` 也能确定性发现工具链。
 
 ## 2026-08-13 — VIBE-MATHING-SPEC v0.1
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -14,8 +15,22 @@ from .runtime import execute_bounded, now
 
 ESCAPE_PATTERN = re.compile(r"\b(?:sorry|admit|unsafe)\b")
 EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.33.0"
+EXPECTED_VERSION_FRAGMENT = "version 4.33.0"
 EXPECTED_MATHLIB_REV = "db584cd6d46c92f209a44c0f1c829460d327499d"
 EXPECTED_DECLARATION = "theorem two_add_two : (2 : ℕ) + 2 = 4"
+
+
+def _resolve_tool(name: str) -> str:
+    """从 PATH 或 elan 官方默认目录解析 Lean 工具，不修改进程环境。"""
+    resolved = shutil.which(name)
+    if resolved:
+        return resolved
+    elan_tool = Path.home() / ".elan" / "bin" / name
+    if elan_tool.is_file() and os.access(elan_tool, os.X_OK):
+        return str(elan_tool)
+    raise RuntimeError(
+        f"找不到 {name}；请安装 elan/Lean，或将 ~/.elan/bin 加入 PATH"
+    )
 
 
 def _write_output(project_root: Path, run_key: str, name: str, payload: dict[str, Any]) -> str:
@@ -60,16 +75,23 @@ def verify_lean_fixture(
     escapes = ESCAPE_PATTERN.findall(source_text)
     declaration_match = EXPECTED_DECLARATION in source_text
     budgets = {"timeout_seconds": 600, "max_output_bytes": 2_000_000}
+    lake = _resolve_tool("lake")
     version = execute_bounded(
-        ["lean", "--version"], cwd=fixture_root, **budgets
+        [lake, "env", "lean", "--version"], cwd=fixture_root, **budgets
     )
-    build = execute_bounded(["lake", "build"], cwd=fixture_root, **budgets)
+    build = execute_bounded([lake, "build"], cwd=fixture_root, **budgets)
     axioms = execute_bounded(
-        ["lake", "env", "lean", "VibeMathingFixture.lean"],
+        [lake, "env", "lean", "VibeMathingFixture.lean"],
         cwd=fixture_root,
         **budgets,
     )
-    if version["exit_code"] != 0 or build["exit_code"] != 0 or axioms["exit_code"] != 0:
+    version_text = version["stdout"] + version["stderr"]
+    if (
+        version["exit_code"] != 0
+        or EXPECTED_VERSION_FRAGMENT not in version_text
+        or build["exit_code"] != 0
+        or axioms["exit_code"] != 0
+    ):
         raise RuntimeError("Lean 工具链或 fixture 构建失败")
     axiom_text = axioms["stdout"] + axioms["stderr"]
     axiom_clean = "does not depend on any axioms" in axiom_text
@@ -104,7 +126,7 @@ def verify_lean_fixture(
             verifier="lean-kernel",
             checked_at=checked_at,
             output_locator=kernel_locator,
-            command=["lake", "build"],
+            command=[lake, "build"],
             notes="固定 Lean/Mathlib 的真实 kernel build",
         ),
         create_evidence_receipt(
@@ -117,7 +139,7 @@ def verify_lean_fixture(
             verifier="lean-axiom-auditor",
             checked_at=checked_at,
             output_locator=audit_locator,
-            command=["lake", "env", "lean", "VibeMathingFixture.lean"],
+            command=[lake, "env", "lean", "VibeMathingFixture.lean"],
             notes="源码逃逸扫描与 #print axioms",
         ),
         create_evidence_receipt(

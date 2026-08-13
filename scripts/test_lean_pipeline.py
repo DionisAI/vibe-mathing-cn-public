@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -20,6 +21,11 @@ NOW = "2026-08-13T00:00:00Z"
 
 
 def main() -> int:
+    original_path = os.environ.get("PATH", "")
+    elan_bin = str(Path.home() / ".elan" / "bin")
+    os.environ["PATH"] = os.pathsep.join(
+        entry for entry in original_path.split(os.pathsep) if entry != elan_bin
+    )
     with tempfile.TemporaryDirectory(prefix="vibe-mathing-lean-") as temporary:
         project_root = Path(temporary)
         registry = project_root / "research/verifiers.json"
