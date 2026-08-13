@@ -72,6 +72,13 @@ def main() -> int:
         audit = next(
             item for item in result["evidence"] if item["capability"] == "axiom_escape_audit"
         )
+        kernel = next(
+            item for item in result["evidence"] if item["capability"] == "kernel_check"
+        )
+        kernel_receipt = json.loads(
+            (project_root / kernel["locator"]).read_text(encoding="utf-8")
+        )
+        assert kernel_receipt["command"]["argv"][-2:] == ["--quiet", "build"]
         assert audit["verdict"] == "accept"
         print(json.dumps({"result_id": result["result_id"], "capabilities": [item["capability"] for item in result["evidence"]]}, ensure_ascii=False))
     return 0

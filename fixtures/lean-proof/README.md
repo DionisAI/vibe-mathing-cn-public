@@ -7,6 +7,6 @@
 ```bash
 lake update
 lake exe cache get
-lake build
+lake --quiet build
 lake env lean VibeMathingFixture.lean
 ```

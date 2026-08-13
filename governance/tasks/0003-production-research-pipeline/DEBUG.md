@@ -127,3 +127,12 @@
 - Root Cause：工具发现边界只使用裸命令名，没有兼容 elan 官方默认安装目录。
 - Fix：adapter 先用 `shutil.which`，再检查可执行的 `~/.elan/bin/lake`，所有 Lean 命令通过 `lake env lean` 绑定 fixture toolchain，仍缺失时输出明确错误；测试主动移除该 PATH 项后运行真实 Lean 链。
 - Regression Evidence：`python3 scripts/test_lean_pipeline.py` 在当前不含 elan PATH 的 shell 中通过；随后重跑完整成熟度审计。
+
+## Follow-up: CI 冷缓存构建日志超过预算
+
+- Observation：GitHub Actions `31721149936` 的可移植 job 通过，生产 job 在 `lean-e2e` 以 85/100 失败；首个无效节点为 `lake build`，错误是输出超过 2 MiB 预算。
+- Hypotheses：H7（ROOT）为冷缓存构建进度日志超过证据预算；H8 为 Lean 编译失败；H9 为 CI 超时。
+- Experiment：CI 在 51 秒内因输出预算终止而非超时；Lake 5.0.0 帮助明确提供 `--quiet`，本地 `lake build -q` 成功且 stdout/stderr 均为 0 字节，支持 H7 并反对 H8/H9。
+- Root Cause：adapter 把冷缓存的高容量进度日志写进受限证据通道；本地热缓存没有暴露该规模差异。
+- Fix：使用 Lake 官方 `--quiet` 模式消除非证据信息，不放大 2 MiB 安全预算；回执测试锁定 `--quiet build` 命令。
+- Reverification Required：无 elan PATH 的 Lean E2E、成熟度审计 100/100、新 GitHub Actions production-loop。

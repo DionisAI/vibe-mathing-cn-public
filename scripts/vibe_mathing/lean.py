@@ -79,7 +79,7 @@ def verify_lean_fixture(
     version = execute_bounded(
         [lake, "env", "lean", "--version"], cwd=fixture_root, **budgets
     )
-    build = execute_bounded([lake, "build"], cwd=fixture_root, **budgets)
+    build = execute_bounded([lake, "--quiet", "build"], cwd=fixture_root, **budgets)
     axioms = execute_bounded(
         [lake, "env", "lean", "VibeMathingFixture.lean"],
         cwd=fixture_root,
@@ -126,7 +126,7 @@ def verify_lean_fixture(
             verifier="lean-kernel",
             checked_at=checked_at,
             output_locator=kernel_locator,
-            command=[lake, "build"],
+            command=[lake, "--quiet", "build"],
             notes="固定 Lean/Mathlib 的真实 kernel build",
         ),
         create_evidence_receipt(
