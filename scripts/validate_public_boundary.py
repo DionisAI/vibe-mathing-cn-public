@@ -45,6 +45,10 @@ WSL_UNC_PATH = re.compile(rb"\\\\wsl(?:\.localhost|\$)\\", re.IGNORECASE)
 PRIVATE_IPV4 = re.compile(
     rb"(?<![A-Za-z0-9.-])(?:10\.(?:\d{1,3}\.){2}\d{1,3}|192\.168\.(?:\d{1,3}\.)\d{1,3}|172\.(?:1[6-9]|2\d|3[01])\.(?:\d{1,3}\.)\d{1,3})(?![A-Za-z0-9.-])"
 )
+SESSION_IDENTIFIER = re.compile(
+    rb"\b(?:" + b"01" + rb"[a-f0-9]{6,}|" + b"019" + rb"[a-f0-9]{6,})-[a-f0-9-]{20,}\b",
+    re.IGNORECASE,
+)
 CREDENTIAL_PATTERNS = {
     "private_key": re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----"),
     "bearer_token": re.compile(rb"(?i)\bBearer\s+[A-Za-z0-9._~+/=-]{16,}"),
@@ -78,6 +82,8 @@ def content_findings(data: bytes) -> list[str]:
         findings.append("wsl_unc_path")
     if PRIVATE_IPV4.search(data):
         findings.append("private_ipv4")
+    if SESSION_IDENTIFIER.search(data):
+        findings.append("session_identifier")
     for name, pattern in CREDENTIAL_PATTERNS.items():
         if pattern.search(data):
             findings.append(name)

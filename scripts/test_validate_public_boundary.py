@@ -38,8 +38,10 @@ class PublicBoundaryTests(unittest.TestCase):
     def test_sensitive_content_patterns(self) -> None:
         private_name = b"vibe-mathing-cn-" + b"internal"
         absolute_path = b"/" + b"home" + b"/alice/.projects/vibe-mathing-cn/task"
+        session_identifier = b"01" + b"a0123456-1234-5678-9abc-def012345678"
         self.assertIn("private_repository_name", MODULE.content_findings(private_name))
         self.assertIn("absolute_user_project_path", MODULE.content_findings(absolute_path))
+        self.assertIn("session_identifier", MODULE.content_findings(session_identifier))
         self.assertEqual(MODULE.content_findings(b"portable public fixture"), [])
 
     def test_non_repository_fails_closed(self) -> None:
