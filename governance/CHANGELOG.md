@@ -4,12 +4,13 @@ type: changelog
 status: current
 owner: engineering
 created: 2026-08-13
-last_reviewed: 2026-08-13
+last_reviewed: 2026-08-29
 review_cycle: P90D
 ---
 
 # 治理包变更记录
 
+- 新增公开仓库发布边界和自包含机器门禁，拒绝私密研究路径、恢复快照、生成物、绝对用户路径、私有网络标识与凭据模式进入公开 Git 树。
 - 初始化治理包。
 - 记录 Problem → Attempt → Result → 派生解空间的项目操作模型与 ADR-0000。
 - Result 采用 `outcome × evidence`，并以偏序能力集和追加失效账本替代单一证据等级。

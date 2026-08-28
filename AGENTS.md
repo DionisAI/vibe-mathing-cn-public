@@ -30,6 +30,7 @@ vibe-mathing-cn/
 ## 核心边界
 
 - `vendor/upstream/` 只保存上游源码缓存，不参与 active skill 自动发现。
+- 本仓库只接收经筛选的公开工程核心；私密研究、原始计算、运行状态、恢复快照和内部基础设施记录不得进入。发布与合并必须遵守 `governance/processes/PUBLIC_REPOSITORY_BOUNDARY.md` 并通过 `scripts/validate_public_boundary.py`。
 - `.codex/skills/` 只保存经过本项目适配、依赖审计和验证的 owner skills。
 - `problem-library/records/problems.jsonl` 是来源观察；只有 `canonical-problems.jsonl` 中的记录才是研究问题身份。
 - `research/records/attempts.jsonl` 保存尝试；`lifecycle=completed` 只表示本次活动结束。

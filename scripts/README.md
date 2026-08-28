@@ -1,5 +1,7 @@
 # Scripts
 
+- `validate_public_boundary.py`：验证公开 origin、禁止路径、符号链接、敏感内容模式和不可发布文件类型，拒绝私密研究或运行资产进入公开 Git 树。
+- `test_validate_public_boundary.py`：攻击公开路径和敏感内容门禁，并验证未知输入 fail-closed。
 - `sync_supply_chain.py`：按 lockfile 幂等同步并检查 Git 上游、本机 auto-research 完整镜像和审计快照。
 - `validate_project.py`：校验 active skill 结构、来源映射和禁止依赖。
 - `smoke_math.py`：验证当前 SymPy/mpmath 数学计算后端。
