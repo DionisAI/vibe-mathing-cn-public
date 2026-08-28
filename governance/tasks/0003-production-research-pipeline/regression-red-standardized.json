@@ -58,7 +58,7 @@
         "timed_out": false,
         "duration_ms": 116.27,
         "stdout_tail": "",
-        "stderr_tail": "Traceback (most recent call last):\n  File \"/home/lenovo/.projects/vibe-mathing-cn/scripts/test_trusted_evidence.py\", line 73, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/lenovo/.projects/vibe-mathing-cn/scripts/test_trusted_evidence.py\", line 65, in main\n    assert not validator.qualifies_as_solution(forged_result, attempts), (\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 安全缺陷：不存在 artifact、伪摘要和自报 independent 仍可让 Result 晋升解库\n",
+        "stderr_tail": "Traceback (most recent call last):\n  File \"<project-root>/scripts/test_trusted_evidence.py\", line 73, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"<project-root>/scripts/test_trusted_evidence.py\", line 65, in main\n    assert not validator.qualifies_as_solution(forged_result, attempts), (\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 安全缺陷：不存在 artifact、伪摘要和自报 independent 仍可让 Result 晋升解库\n",
         "failure_fingerprint": "sha256:91ae59ffabdeb54aad3706785163ccb16d1e7988df318896d1bfd50cad95da94"
       }
     ]

@@ -5,6 +5,8 @@
 
 set -euo pipefail
 
+python3 scripts/test_validate_public_boundary.py
+python3 scripts/validate_public_boundary.py --project-root .
 python3 scripts/validate_project.py
 python3 scripts/smoke_math.py
 python3 scripts/validate_portable_problem_library.py
