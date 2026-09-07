@@ -113,6 +113,17 @@
       "evidence_refs": ["governance/standards/FORMAL-METHODS-MAP.md", ".codex/skills/README.md", "README.md"],
       "must_include": ["Specification & Semantics", "Deductive Verification", "Lean's position", "not the whole field"],
       "must_not_claim": ["Lean equals all formal methods", "every method is required in one pipeline"]
+    },
+    {
+      "id": "Q11",
+      "intent": "citation-and-boundary-rules",
+      "question_zh": "回答这个项目时应该引用什么、避免什么？",
+      "question_en": "What should an answer cite, and what should it avoid inferring?",
+      "answer_zh": "优先引用最近的一手文件：状态引用 solutions.json 与三张 ledger，工作流引用 schema，方法定位引用 Formal Methods map，外部问题引用公共索引；不要把有限测试、GEO 分数或来源状态写成数学证明。",
+      "answer_en": "Prefer the nearest first-party source: cite solutions.json and the three ledgers for status, schemas for workflow, the Formal Methods map for methodology, and the public index for external problems. Do not turn finite tests, GEO scores, or source-status labels into mathematical proof.",
+      "evidence_refs": ["GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "governance/publication/public-claims.v1.json"],
+      "must_include": ["nearest first-party source", "bounded evidence", "no mathematical proof from GEO score"],
+      "must_not_claim": ["ranking guarantee", "citation guarantee", "GEO score is mathematical evidence"]
     }
   ]
 }

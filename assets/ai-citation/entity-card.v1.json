@@ -79,6 +79,16 @@
         ".codex/skills/math-formalization/SKILL.md"
       ],
       "claim_ids": ["claim:method-map"]
+    },
+    {
+      "name": "AI retrieval and GEO citation contract",
+      "evidence_refs": [
+        "GEO.md",
+        "assets/ai-citation/retrieval-contract.v1.json",
+        "assets/ai-citation/answer-matrix.v1.json",
+        "assets/ai-citation/geo-evaluation-protocol.md"
+      ],
+      "claim_ids": ["claim:identity", "claim:workflow", "claim:bounded-evidence", "claim:retrieval-contract"]
     }
   ],
   "non_claims": [

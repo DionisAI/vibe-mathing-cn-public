@@ -24,6 +24,7 @@ REQUIRED = (
     "geo-evaluation-protocol.md",
     "geo-evaluation-report.template.json",
     "geo-readiness-checklist.md",
+    "retrieval-contract.v1.json",
     "llms-full.txt",
 )
 FORBIDDEN = (
@@ -192,8 +193,8 @@ def check_answer_matrix(root: Path, claim_ids: set[str], verified_at: str) -> No
                 not isinstance(value, str) or not value.strip() for value in values
             ):
                 raise AssetError(f"answer matrix {case_id} is missing {field}")
-    if not {"Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10"} <= seen:
-        raise AssetError("answer matrix is missing one of Q01-Q10")
+    if not {"Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10", "Q11"} <= seen:
+        raise AssetError("answer matrix is missing one of Q01-Q11")
 
 
 def check_geo_report(root: Path, answer_case_ids: set[str]) -> None:
@@ -257,6 +258,78 @@ def check_geo_report(root: Path, answer_case_ids: set[str]) -> None:
         raise AssetError("GEO report template summary is invalid")
 
 
+def check_retrieval_contract(root: Path, verified_at: str) -> None:
+    relative = (ASSET_ROOT / "retrieval-contract.v1.json").as_posix()
+    contract = read_json(root, relative)
+    if (
+        contract.get("document_type") != "ai-retrieval-contract"
+        or contract.get("schema_version") != "retrieval-contract.v1"
+        or contract.get("repository_url") != PUBLIC_URL
+        or contract.get("canonical_name") != "vibe-mathing-cn"
+        or contract.get("last_verified") != verified_at
+    ):
+        raise AssetError("AI retrieval contract identity or evidence boundary is invalid")
+    maintenance = contract.get("maintenance")
+    if not isinstance(maintenance, dict) or maintenance.get("not_mathematical_evidence") is not True:
+        raise AssetError("AI retrieval contract evidence boundary is invalid")
+    identity = contract.get("identity")
+    if (
+        not isinstance(identity, dict)
+        or identity.get("display_name_zh") != "可信 AI 数学研究与验证工作台"
+        or identity.get("display_name_en") != "trusted AI mathematics research and verification workbench"
+        or not isinstance(identity.get("aliases"), list)
+        or not identity["aliases"]
+    ):
+        raise AssetError("AI retrieval contract identity block is invalid")
+    facts = contract.get("canonical_facts")
+    required_facts = {"workflow", "method_layer", "lean_position", "public_status", "open_problem_boundary"}
+    if (
+        not isinstance(facts, dict)
+        or not required_facts <= set(facts)
+        or any(not isinstance(facts[key], str) or not facts[key].strip() for key in required_facts)
+    ):
+        raise AssetError("AI retrieval contract canonical facts are incomplete")
+    intents = contract.get("intents")
+    required_intents = {
+        "identity",
+        "current-status",
+        "workflow",
+        "method-layer-map",
+        "external-problem-catalog",
+        "evidence-boundary",
+    }
+    if not isinstance(intents, list) or {item.get("id") for item in intents if isinstance(item, dict)} != required_intents:
+        raise AssetError("AI retrieval contract must define the six fixed intents")
+    for intent in intents:
+        if not isinstance(intent, dict):
+            raise AssetError("AI retrieval contract intent must be an object")
+        for field in ("query_aliases_zh", "query_aliases_en", "citation_targets", "must_preserve", "must_not_infer"):
+            values = intent.get(field)
+            if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value.strip() for value in values):
+                raise AssetError(f"AI retrieval contract {intent.get('id', '<unknown>')} has invalid {field}")
+        for field in ("answer_zh", "answer_en"):
+            if not isinstance(intent.get(field), str) or not intent[field].strip():
+                raise AssetError(f"AI retrieval contract {intent.get('id', '<unknown>')} is missing {field}")
+        for reference in intent["citation_targets"]:
+            resolve_reference(root, reference)
+    policy = contract.get("citation_policy")
+    if (
+        not isinstance(policy, dict)
+        or policy.get("prefer_nearest_first_party_source") is not True
+        or not isinstance(policy.get("never_promote_to_result"), list)
+        or not policy["never_promote_to_result"]
+    ):
+        raise AssetError("AI retrieval contract citation policy is invalid")
+    if (
+        not isinstance(maintenance, dict)
+        or not isinstance(maintenance.get("update_together"), list)
+        or relative not in maintenance["update_together"]
+        or "GEO.md" not in maintenance["update_together"]
+        or not isinstance(maintenance.get("verification_commands"), list)
+    ):
+        raise AssetError("AI retrieval contract maintenance block is invalid")
+
+
 def check_content(root: Path) -> None:
     short = (root / ASSET_ROOT / "summary-short.md").read_text(encoding="utf-8")
     faq = (root / ASSET_ROOT / "faq.md").read_text(encoding="utf-8")
@@ -272,7 +345,7 @@ def check_content(root: Path) -> None:
         if term.lower() not in terminology.lower():
             raise AssetError(f"terminology contract is missing {term!r}")
     protocol = (root / ASSET_ROOT / "geo-evaluation-protocol.md").read_text(encoding="utf-8")
-    for term in ("Q01", "Q10", "Scoring", "not mathematical evidence"):
+    for term in ("Q01", "Q11", "Scoring", "not mathematical evidence"):
         if term.lower() not in protocol.lower():
             raise AssetError(f"GEO evaluation protocol is missing {term!r}")
 
@@ -303,6 +376,7 @@ def main() -> int:
             for case in read_json(root, (ASSET_ROOT / "answer-matrix.v1.json").as_posix())["cases"]
         }
         check_geo_report(root, answer_case_ids)
+        check_retrieval_contract(root, verified_at)
         check_content(root)
     except AssetError as exc:
         print(f"AI-citation asset check: BLOCK - {exc}")

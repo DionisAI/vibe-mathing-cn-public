@@ -5,6 +5,7 @@
 [![Lean fixture](https://img.shields.io/badge/Lean-fixture-4B69FF)](fixtures/lean-proof/README.md)
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
 [![Solution index](https://img.shields.io/badge/solutions-empty-orange)](result-library/indexes/solutions.json)
+[![GEO](https://img.shields.io/badge/GEO-fact--bounded-7C3AED)](GEO.md)
 
 > **非可信候选生成器 + 受信验证链：从问题空间构造候选，经验证后派生解空间。**
 
@@ -35,12 +36,14 @@
 - [项目定位](#项目定位)
 - [系统输入与输出](#系统输入与输出)
 - [信任边界](#信任边界)
+- [方法层主线：形式化方法地图](#方法层主线形式化方法地图)
 - [状态模型：结果 × 证据](#状态模型结果-证据)
 - [解库准入](#解库准入)
 - [当前能力](#当前能力)
 - [快速开始](#快速开始)
 - [FAQ](#faq)
 - [机器可读入口与引用](#机器可读入口与引用)
+- [GEO 事实与引用指南](#geo-事实与引用指南)
 - [Vibe Mathing 公共问题索引](#公共具体问题索引)
 
 **最小入口：** 全新公共 checkout 安装 `requirements.txt` 后运行 `make check`；问题契约从 [`canonical-problem.schema.json`](problem-library/schema/canonical-problem.schema.json) 开始，完整命令见[快速开始](#快速开始)。
@@ -443,6 +446,7 @@ vibe-mathing-cn-public/
 ├── README.md                  # 中文项目思想、能力、入口与路线图
 ├── README.en.md               # English discovery entrypoint
 ├── llms.txt                   # 短机器可读项目入口
+├── GEO.md                     # 面向人和生成式引擎的事实与引用入口
 ├── CITATION.cff               # 引用元数据
 ├── codemeta.json              # 研究软件元数据
 ├── AGENTS.md                  # Agent 操作规则与数学真实性边界
@@ -542,6 +546,8 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 ## 机器可读入口与引用
 
 - [`llms.txt`](llms.txt)：稳定、短版的 AI/检索入口；
+- [`GEO.md`](GEO.md)：面向人和生成式引擎的事实、引用与边界入口；
+- [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json)：意图、引用目标和不可推断边界的机器契约；
 - [`assets/ai-citation/`](assets/ai-citation/)：摘要、FAQ、术语表、双语回答矩阵、GEO 评估协议和机器报告模板；
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)：外部具体问题总库、单问题仓库和网页版研究模板入口；
@@ -550,6 +556,10 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) 与 [`SECURITY.md`](SECURITY.md)：贡献和安全报告边界。
 
 这里的 GEO（Generative Engine Optimization，生成式引擎优化）只表示让生成式引擎更准确地识别实体、状态、证据和边界。检查衡量“项目是否被准确理解和引用”，不承诺搜索排名、模型推荐或未来引用。动态状态以公共文件和当前质量门为准。
+
+## GEO 事实与引用指南
+
+如果只保留一页给检索系统或回答助手，请先读 [`GEO.md`](GEO.md)，再按最近的一手文件引用：当前状态看 `solutions.json` 与三张 ledger，工作流看 Problem/Attempt/Result schema，方法层看 [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)，外部具体问题看 [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)。回答时必须保留“当前 ledger 为空”“Lean 只是演绎验证分支”和“外部问题 pointer-only”这三个边界。
 
 ---
 

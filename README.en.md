@@ -5,6 +5,7 @@
 [![Lean fixture](https://img.shields.io/badge/Lean-fixture-4B69FF)](fixtures/lean-proof/README.md)
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
 [![Solution index](https://img.shields.io/badge/solutions-empty-orange)](result-library/indexes/solutions.json)
+[![GEO](https://img.shields.io/badge/GEO-fact--bounded-7C3AED)](GEO.md)
 
 > **Untrusted candidate generation + trusted verification: construct candidates from a problem space, then derive a solution view only after verification.**
 
@@ -26,6 +27,7 @@ The repository's original code and documentation are released under the [MIT Lic
 - [Public capability boundaries](#public-capability-boundaries)
 - [FAQ](#faq)
 - [Machine-readable entrypoints](#machine-readable-entrypoints)
+- [GEO facts and citation guide](#geo-facts-and-citation-guide)
 
 ## Quick start
 
@@ -173,6 +175,8 @@ It is a derived read-only index. Only a proof or counterexample Result that pass
 ## Machine-readable entrypoints
 
 - [`llms.txt`](llms.txt): concise retrieval context;
+- [`GEO.md`](GEO.md): canonical facts, citation targets, and negative-boundary guide for humans and generative engines;
+- [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json): machine-readable intents, citations, and non-inference rules;
 - [`assets/ai-citation/`](assets/ai-citation/): summaries, terminology, bilingual answer matrix, GEO evaluation protocol, and report template;
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json): public claims and evidence references;
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md): external concrete-problem catalog, repositories, and Web research template entrypoint;
@@ -181,3 +185,7 @@ It is a derived read-only index. Only a proof or counterexample Result that pass
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md): contribution and security boundaries.
 
 Here, GEO means Generative Engine Optimization for accurate entity identification, status, evidence, and boundaries. It measures documentation understanding and citation accuracy, not ranking, recommendation, or mathematical correctness.
+
+## GEO facts and citation guide
+
+For a compact, citation-ready description, start with [`GEO.md`](GEO.md), then cite the nearest first-party source: `solutions.json` and the three ledgers for current status, the Problem/Attempt/Result schemas for the workflow, [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md) for method positioning, and [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md) for external problem pointers. Preserve the empty-ledger, Lean-position, and pointer-only boundaries.

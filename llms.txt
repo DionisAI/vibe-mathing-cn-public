@@ -2,6 +2,7 @@
 
 Canonical name: `vibe-mathing-cn`
 Canonical public repository: https://github.com/tradecatlabs/vibe-mathing-cn-public
+GEO guide: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/GEO.md
 Category: trusted AI mathematics research and verification workbench
 Primary language: Chinese-first documentation with Python and Lean fixtures
 Audience: AI mathematics researchers, formalization developers, agent/harness engineers, research-software maintainers, and readers checking whether an open problem is actually solved
@@ -53,6 +54,8 @@ Preferred sources:
 - Vibe Mathing source registry: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/problem-library/registry/vibemathing-public-source.v1.json
 - Local ProblemContract draft template: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/problem-library/templates/problem-contract.template.json
 - Formal-methods and Lean map: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/governance/standards/FORMAL-METHODS-MAP.md
+- AI retrieval contract: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/assets/ai-citation/retrieval-contract.v1.json
+- GEO guide: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/GEO.md
 - ResearchBundle schema: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/research/schema/research-bundle.schema.json
 - Result schema: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/result-library/schema/result.schema.json
 - Solution index: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/result-library/indexes/solutions.json
@@ -61,6 +64,7 @@ Preferred sources:
 - Bilingual answer matrix: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/assets/ai-citation/answer-matrix.v1.json
 - GEO protocol: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/assets/ai-citation/geo-evaluation-protocol.md
 - GEO report template: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/assets/ai-citation/geo-evaluation-report.template.json
+- Extended AI context: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/assets/ai-citation/llms-full.txt
 - Citation metadata: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/CITATION.cff
 - Contribution guide: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/CONTRIBUTING.md
 - Security policy: https://github.com/tradecatlabs/vibe-mathing-cn-public/blob/main/SECURITY.md

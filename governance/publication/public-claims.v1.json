@@ -76,6 +76,15 @@
       "last_verified": "2026-09-07",
       "evidence_refs": ["README.md", "README.en.md", "llms.txt", "governance/standards/FORMAL-METHODS-MAP.md", ".codex/skills/README.md", ".codex/skills/math-formalization/SKILL.md"],
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    },
+    {
+      "claim_id": "claim:retrieval-contract",
+      "text": "The public GEO guide and retrieval contract provide intent-specific answers, nearest-first citation targets, and explicit non-inference rules without becoming mathematical evidence.",
+      "scope": "publication",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/geo-evaluation-protocol.md"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo"]
     }
   ]
 }

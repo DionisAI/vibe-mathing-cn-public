@@ -10,6 +10,7 @@ vibe-mathing-cn-public/
 ├── README.md                  # 中文项目入口、能力状态与运行方式
 ├── README.en.md               # English discovery entrypoint
 ├── llms.txt                   # 短机器可读项目入口
+├── GEO.md                     # 面向人和生成式引擎的事实与引用入口
 ├── CITATION.cff               # 引用元数据
 ├── codemeta.json              # 研究软件元数据
 ├── CONTRIBUTING.md            # 公共贡献边界与检查清单
@@ -39,7 +40,7 @@ vibe-mathing-cn-public/
 ## 核心边界
 
 - `vendor/upstream/` 只保存上游源码缓存，不参与 active skill 自动发现。
-- `assets/ai-citation/`、`llms.txt`、`governance/publication/` 和 `problem-library/VIBEMATHING_PUBLIC_INDEX.md` 只保存可由公共文件、Schema、Fixture、测试或固定元数据支持的发现声明；外部问题 catalog 采用 pointer-only，不自动准入。
+- `assets/ai-citation/`、`llms.txt`、`GEO.md`、`governance/publication/` 和 `problem-library/VIBEMATHING_PUBLIC_INDEX.md` 只保存可由公共文件、Schema、Fixture、测试或固定元数据支持的发现声明；外部问题 catalog 采用 pointer-only，不自动准入。
 - 本仓库只接收经筛选的公开工程核心；私密研究、原始计算、运行状态、恢复快照和内部基础设施记录不得进入。发布与合并必须遵守 `governance/processes/PUBLIC_REPOSITORY_BOUNDARY.md` 并通过 `scripts/validate_public_boundary.py`。
 - `.codex/skills/` 只保存经过本项目适配、依赖审计和验证的 owner skills。
 - `problem-library/records/problems.jsonl` 是已准入来源观察；`derived/candidate-observations/` 是研究不可准入的候选快照；只有 `canonical-problems.jsonl` 中的记录才是研究问题身份。

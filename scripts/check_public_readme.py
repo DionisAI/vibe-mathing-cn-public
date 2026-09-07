@@ -12,6 +12,7 @@ PUBLIC_URL = "https://github.com/tradecatlabs/vibe-mathing-cn-public"
 REQUIRED_FILES = (
     "README.md",
     "README.en.md",
+    "GEO.md",
     "llms.txt",
     "CITATION.cff",
     "codemeta.json",
@@ -46,6 +47,7 @@ REQUIRED_FILES = (
 SURFACE_FILES = (
     "README.md",
     "README.en.md",
+    "GEO.md",
     "llms.txt",
     "assets/README.md",
     "assets/ai-citation/README.md",
@@ -74,6 +76,7 @@ REQUIRED_README_TERMS = (
     "FORMAL-METHODS-MAP.md",
     "规格与语义",
     "Lean",
+    "GEO.md",
 )
 REQUIRED_EN_TERMS = (
     "ProblemContract",
@@ -89,6 +92,7 @@ REQUIRED_EN_TERMS = (
     "FORMAL-METHODS-MAP.md",
     "Specification & Semantics",
     "Lean",
+    "GEO.md",
 )
 FORBIDDEN_PUBLIC_IDENTIFIERS = (
     "vibe-mathing-cn-" + "internal",
@@ -184,6 +188,8 @@ def check_surfaces(root: Path) -> None:
         "Start method:",
         "Method-layer mainline:",
         "Lean position:",
+        "GEO guide:",
+        "AI retrieval contract:",
     ):
         if term not in llms:
             raise CheckError(f"llms.txt is missing {term!r}")
@@ -334,7 +340,7 @@ def check_claims(root: Path) -> None:
     if not isinstance(claims, list) or not claims:
         raise CheckError("public claims must contain a non-empty claims list")
     seen: set[str] = set()
-    allowed_surfaces = {"readme", "readme-en", "llms", "ai-citation", "metadata"}
+    allowed_surfaces = {"readme", "readme-en", "llms", "ai-citation", "metadata", "geo"}
     for item in claims:
         if not isinstance(item, dict):
             raise CheckError("each public claim must be an object")
@@ -376,6 +382,7 @@ def check_claims(root: Path) -> None:
         "claim:tool-maturity",
         "claim:problem-catalog",
         "claim:method-map",
+        "claim:retrieval-contract",
     }
     if not required_claims <= seen:
         raise CheckError("public claims are missing a required claim category")

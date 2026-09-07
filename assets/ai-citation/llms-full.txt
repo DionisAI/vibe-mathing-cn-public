@@ -13,6 +13,7 @@ Method-layer map: Specification & Semantics -> Deductive Verification/Theorem Pr
 Public capabilities: ProblemContract/Attempt/Result/ResearchBundle schemas; candidate-source registry and isolated rebuild tools; JSONL stores; six owner skills; bounded SymPy, SMT, and Lean fixtures; local CLI; tool-maturity and canary contracts; public-boundary validation; CI. The public integration index points to the external vibemathing ProblemContract catalog, concrete problem repositories, and fixed Web research template without automatically admitting them.
 
 Primary paths:
+- GEO.md
 - README.md
 - README.en.md
 - problem-library/schema/canonical-problem.schema.json
@@ -25,6 +26,7 @@ Primary paths:
 - assets/ai-citation/answer-matrix.v1.json
 - assets/ai-citation/geo-evaluation-protocol.md
 - assets/ai-citation/geo-evaluation-report.template.json
+- assets/ai-citation/retrieval-contract.v1.json
 - problem-library/VIBEMATHING_PUBLIC_INDEX.md
 - problem-library/registry/vibemathing-public-source.v1.json
 - problem-library/templates/problem-contract.template.json
