@@ -14,6 +14,30 @@
 
 Canonical public repository: <https://github.com/vibemathing/vibe-mathing-cn-public>
 
+### Public entrypoint index
+
+| Entrypoint | Purpose |
+| --- | --- |
+| [Problem repository fleet · GitHub Project #1](https://github.com/users/vibemathing/projects/1) | Browse public single-problem repositories; Project fields and cards are operational indexes, not mathematical evidence |
+| [Public ProblemContract library](https://github.com/vibemathing/vibe-mathing-problem-library-public) | Discover public problem contracts, the catalog, and repository locators |
+| [Single-problem research template](https://github.com/vibemathing/vibe-mathing-problem-public-template) | Inspect the fixed Web research Harness, candidate-write boundary, and bootstrap files |
+| [All public `vibemathing` repositories](https://github.com/vibemathing?tab=repositories) | Find concrete `problem-*` repositories and other public engineering repositories |
+| [Detailed public problem index in this repository](problem-library/VIBEMATHING_PUBLIC_INDEX.md) | Read the catalog, template, query commands, and admission boundary |
+
+### Key problem repositories
+
+> These are ProblemContract/candidate-research entrypoints only. A repository, Issue, PR, CI run, or checkpoint does not mean that a problem has been solved and does not automatically create Evidence, a Result, or a Solution. The secp256k1 entry is not a Millennium Prize Problem.
+
+| Problem | Public single-problem repository |
+| --- | --- |
+| Riemann hypothesis | [`problem-millennium-riemann-hypothesis`](https://github.com/vibemathing/problem-millennium-riemann-hypothesis) |
+| P versus NP | [`problem-millennium-p-vs-np`](https://github.com/vibemathing/problem-millennium-p-vs-np) |
+| Navier–Stokes existence and smoothness | [`problem-millennium-navier-stokes`](https://github.com/vibemathing/problem-millennium-navier-stokes) |
+| Yang–Mills existence and mass gap | [`problem-millennium-yang-mills-mass-gap`](https://github.com/vibemathing/problem-millennium-yang-mills-mass-gap) |
+| Hodge conjecture | [`problem-millennium-hodge-conjecture`](https://github.com/vibemathing/problem-millennium-hodge-conjecture) |
+| Birch and Swinnerton-Dyer conjecture | [`problem-millennium-birch-swinnerton-dyer`](https://github.com/vibemathing/problem-millennium-birch-swinnerton-dyer) |
+| Classical polynomial-time audit of secp256k1 discrete-log inversion | [`problem-secp256k1-ecdlog-polytime`](https://github.com/vibemathing/problem-secp256k1-ecdlog-polytime) |
+
 `vibe-mathing-cn` organizes mathematical problems, literature, derivations, computations, proofs, and formal checks into a traceable workflow. It is not a promise to solve arbitrary open problems: an honest `open` disposition is a valid outcome.
 
 The repository's original code and documentation are released under the [MIT License](LICENSE); third-party material under `vendor/` remains subject to its own license and source lock.

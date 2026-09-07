@@ -7,6 +7,16 @@
     "api_url": "https://api.github.com/users/vibemathing/repos?per_page=100&sort=updated",
     "kind": "public GitHub namespace"
   },
+  "project_index": {
+    "owner": "vibemathing",
+    "number": 1,
+    "title": "Vibe Mathing · Problem Repository Fleet",
+    "url": "https://github.com/users/vibemathing/projects/1",
+    "visibility": "public",
+    "source_role": "cross-repository operational navigation",
+    "mathematical_status": "Project fields, views, and cards are not Evidence, Result, or Solution",
+    "observed_on": "2026-09-07"
+  },
   "repositories": [
     {
       "role": "problem-library",
@@ -29,6 +39,59 @@
       "observed_on": "2026-09-07"
     }
   ],
+  "key_problem_repositories": [
+    {
+      "group": "open-millennium-problem",
+      "label": "Riemann hypothesis",
+      "full_name": "vibemathing/problem-millennium-riemann-hypothesis",
+      "url": "https://github.com/vibemathing/problem-millennium-riemann-hypothesis"
+    },
+    {
+      "group": "open-millennium-problem",
+      "label": "P versus NP",
+      "full_name": "vibemathing/problem-millennium-p-vs-np",
+      "url": "https://github.com/vibemathing/problem-millennium-p-vs-np"
+    },
+    {
+      "group": "open-millennium-problem",
+      "label": "Navier-Stokes existence and smoothness",
+      "full_name": "vibemathing/problem-millennium-navier-stokes",
+      "url": "https://github.com/vibemathing/problem-millennium-navier-stokes"
+    },
+    {
+      "group": "open-millennium-problem",
+      "label": "Yang-Mills existence and mass gap",
+      "full_name": "vibemathing/problem-millennium-yang-mills-mass-gap",
+      "url": "https://github.com/vibemathing/problem-millennium-yang-mills-mass-gap"
+    },
+    {
+      "group": "open-millennium-problem",
+      "label": "Hodge conjecture",
+      "full_name": "vibemathing/problem-millennium-hodge-conjecture",
+      "url": "https://github.com/vibemathing/problem-millennium-hodge-conjecture"
+    },
+    {
+      "group": "open-millennium-problem",
+      "label": "Birch and Swinnerton-Dyer conjecture",
+      "full_name": "vibemathing/problem-millennium-birch-swinnerton-dyer",
+      "url": "https://github.com/vibemathing/problem-millennium-birch-swinnerton-dyer"
+    },
+    {
+      "group": "independent-key-problem",
+      "label": "Classical polynomial-time audit of secp256k1 discrete-log inversion",
+      "full_name": "vibemathing/problem-secp256k1-ecdlog-polytime",
+      "url": "https://github.com/vibemathing/problem-secp256k1-ecdlog-polytime"
+    }
+  ],
+  "key_problem_repository_policy": {
+    "pointer_only": true,
+    "auto_import_problem_contracts": false,
+    "auto_clone_repositories": false,
+    "repository_activity_is_mathematical_evidence": false,
+    "repository_presence_is_solved_claim": false,
+    "secp256k1_is_millennium_problem": false,
+    "revalidation": "Re-read repository identity, visibility, default branch, ProblemContract, and current evidence state before use."
+  },
   "canonical_catalog_snapshot": {
     "source_repository": "vibemathing/vibe-mathing-problem-library-public",
     "index_path": "catalog/canonical-index.json",
