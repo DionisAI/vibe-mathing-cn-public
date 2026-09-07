@@ -1,6 +1,6 @@
 # Public discovery assets guide
 
-`assets/` contains public documentation and AI-discovery material only.
+`assets/` contains public documentation and AI-discovery material only. `architecture.svg` is a static visual aid with no executable or external content.
 
 - Every capability statement must point to a public schema, fixture, test, or fixed metadata entry.
 - `ai-citation/retrieval-contract.v1.json` is the machine-readable intent/citation/non-inference contract; keep it synchronized with `GEO.md`, `llms.txt`, the answer matrix, and the public claims ledger.

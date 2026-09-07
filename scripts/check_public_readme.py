@@ -19,6 +19,7 @@ REQUIRED_FILES = (
     "CONTRIBUTING.md",
     "SECURITY.md",
     "assets/README.md",
+    "assets/architecture.svg",
     "assets/AGENTS.md",
     "assets/ai-citation/README.md",
     "assets/ai-citation/AGENTS.md",
@@ -162,6 +163,35 @@ def check_metadata(root: Path) -> None:
         raise CheckError("codemeta.issueTracker must identify the public repository")
     if codemeta.get("license") != "https://spdx.org/licenses/MIT.html":
         raise CheckError("codemeta.license must identify MIT")
+
+
+def check_architecture_asset(root: Path) -> None:
+    path = root / "assets/architecture.svg"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise CheckError(f"cannot read assets/architecture.svg: {exc}") from exc
+    required_markers = (
+        "<svg",
+        'xmlns="http://www.w3.org/2000/svg"',
+        'role="img"',
+        "<title",
+        "<desc",
+        "Project",
+        "Workflow",
+        "Task",
+        "Step",
+        "Job",
+        "ProblemContract",
+        "Attempt",
+        "Result",
+        "mathematical proof",
+    )
+    missing = [marker for marker in required_markers if marker not in text]
+    if missing:
+        raise CheckError("architecture SVG is missing required markers: " + ", ".join(missing))
+    if re.search(r"<(?:script|foreignObject|image|use)\b|(?:javascript:|on[a-z]+\s*=|(?:xlink:)?href\s*=)", text, re.IGNORECASE):
+        raise CheckError("architecture SVG contains executable or external content")
 
 
 def check_surfaces(root: Path) -> None:
@@ -413,6 +443,7 @@ def main() -> int:
     root = Path(args.project_root).resolve()
     try:
         check_required_files(root)
+        check_architecture_asset(root)
         check_metadata(root)
         check_surfaces(root)
         check_links(root)

@@ -77,18 +77,9 @@ Select a canonical catalog contract first, re-check its identity, lifecycle, sta
 
 ## Architecture at a glance
 
-```mermaid
-flowchart LR
-  subgraph execution["Execution / orchestration language"]
-    P["Project"] --> W["Workflow"] --> T["Task"] --> S["Step"] --> J["Job<br/>bounded execution"]
-  end
-  subgraph facts["Mathematical fact chain"]
-    PC["ProblemContract"] --> A["Attempt"] --> CE["candidate / evidence"] --> R["Result"] --> G{"evidence gate"} --> V["derived views"]
-  end
-  J -. "bounded artifact / receipt" .-> CE
-```
+![vibe-mathing-cn two-layer architecture overview](assets/architecture.svg)
 
-This is a reading and routing model: the execution chain organizes work, while the fact chain adjudicates mathematical claims. They meet through bounded artifacts and evidence gates but cannot replace one another. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md) for the implementation boundary.
+This static diagram is also a reading and routing model: the execution chain organizes work, while the fact chain adjudicates mathematical claims. They meet through bounded artifacts and evidence gates but cannot replace one another. Plain-text clients can read the lifecycle and fact-chain sections below. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md) for the implementation boundary.
 
 ## Core contract
 

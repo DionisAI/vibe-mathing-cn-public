@@ -35,18 +35,9 @@
 
 ## 架构总览
 
-```mermaid
-flowchart LR
-  subgraph execution["执行 / 编排语言"]
-    P["Project"] --> W["Workflow"] --> T["Task"] --> S["Step"] --> J["Job<br/>有界执行"]
-  end
-  subgraph facts["数学事实链"]
-    PC["ProblemContract"] --> A["Attempt"] --> CE["candidate / evidence"] --> R["Result"] --> G{"证据准入"} --> V["derived views"]
-  end
-  J -. "受限产物 / 回执" .-> CE
-```
+![vibe-mathing-cn 双层架构总览](assets/architecture.svg)
 
-上图是阅读和路由模型：执行链组织工作，事实链裁决数学主张；两条链通过有界产物和证据门连接，但不能互相替代。实现边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+上图是静态视觉总览，也是阅读和路由模型：执行链组织工作，事实链裁决数学主张；两条链通过有界产物和证据门连接，但不能互相替代。纯文本客户端可直接阅读下方的生命周期与事实链章节；实现边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
 
 ## 快速导航
 

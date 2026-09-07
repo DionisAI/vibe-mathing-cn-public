@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">vibe-mathing-cn architecture</title>
+  <desc id="desc">Two orthogonal layers: Project to Workflow to Task to Step to Job for execution, and ProblemContract to Attempt to candidate and evidence to Result to derived views for mathematical facts.</desc>
+  <style>
+    .bg { fill: #f8fafc; }
+    .title { fill: #0f172a; font: 700 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .subtitle { fill: #475569; font: 400 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .lane-title { font: 700 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .box-text { fill: #0f172a; font: 700 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; }
+    .box-subtext { fill: #475569; font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; }
+    .arrow-label { fill: #64748b; font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; }
+    .note { fill: #7c2d12; font: 700 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-anchor: middle; }
+  </style>
+  <defs>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#7c3aed"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1200" height="520" rx="20"/>
+  <text class="title" x="48" y="54">vibe-mathing-cn</text>
+  <text class="subtitle" x="48" y="81">Execution orchestration and mathematical fact admission stay separate</text>
+
+  <rect x="48" y="112" width="1104" height="142" rx="16" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text class="lane-title" x="76" y="143" fill="#6d28d9">EXECUTION / ORCHESTRATION LANGUAGE</text>
+  <line x1="230" y1="194" x2="300" y2="194" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <line x1="430" y1="194" x2="500" y2="194" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <line x1="630" y1="194" x2="700" y2="194" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <line x1="830" y1="194" x2="900" y2="194" stroke="#7c3aed" stroke-width="3" marker-end="url(#arrow-purple)"/>
+  <g>
+    <rect x="80" y="166" width="150" height="58" rx="10" fill="#fff" stroke="#a78bfa"/>
+    <text class="box-text" x="155" y="191">Project</text><text class="box-subtext" x="155" y="210">goal + boundary</text>
+    <rect x="300" y="166" width="130" height="58" rx="10" fill="#fff" stroke="#a78bfa"/>
+    <text class="box-text" x="365" y="191">Workflow</text><text class="box-subtext" x="365" y="210">task network</text>
+    <rect x="500" y="166" width="130" height="58" rx="10" fill="#fff" stroke="#a78bfa"/>
+    <text class="box-text" x="565" y="191">Task</text><text class="box-subtext" x="565" y="210">work unit</text>
+    <rect x="700" y="166" width="130" height="58" rx="10" fill="#fff" stroke="#a78bfa"/>
+    <text class="box-text" x="765" y="191">Step</text><text class="box-subtext" x="765" y="210">operation</text>
+    <rect x="900" y="166" width="150" height="58" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text class="box-text" x="975" y="191">Job</text><text class="box-subtext" x="975" y="210">bounded execution</text>
+  </g>
+
+  <rect x="48" y="278" width="1104" height="142" rx="16" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text class="lane-title" x="76" y="309" fill="#0f766e">MATHEMATICAL FACT CHAIN</text>
+  <line x1="230" y1="360" x2="300" y2="360" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <line x1="430" y1="360" x2="500" y2="360" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <line x1="630" y1="360" x2="700" y2="360" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <line x1="830" y1="360" x2="900" y2="360" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-teal)"/>
+  <g>
+    <rect x="80" y="332" width="150" height="58" rx="10" fill="#fff" stroke="#5eead4"/>
+    <text class="box-text" x="155" y="357">ProblemContract</text><text class="box-subtext" x="155" y="376">frozen semantics</text>
+    <rect x="300" y="332" width="130" height="58" rx="10" fill="#fff" stroke="#5eead4"/>
+    <text class="box-text" x="365" y="357">Attempt</text><text class="box-subtext" x="365" y="376">research activity</text>
+    <rect x="500" y="332" width="130" height="58" rx="10" fill="#fff" stroke="#5eead4"/>
+    <text class="box-text" x="565" y="357">Candidate</text><text class="box-subtext" x="565" y="376">/ evidence</text>
+    <rect x="700" y="332" width="130" height="58" rx="10" fill="#fff" stroke="#5eead4"/>
+    <text class="box-text" x="765" y="357">Result</text><text class="box-subtext" x="765" y="376">scoped claim</text>
+    <rect x="900" y="332" width="150" height="58" rx="10" fill="#ccfbf1" stroke="#0f766e" stroke-width="2"/>
+    <text class="box-text" x="975" y="357">Derived views</text><text class="box-subtext" x="975" y="376">evidence gate</text>
+  </g>
+
+  <line x1="975" y1="224" x2="565" y2="332" stroke="#64748b" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow-slate)"/>
+  <text class="arrow-label" x="788" y="271" transform="rotate(-15 788 271)">bounded artifact / receipt</text>
+  <rect x="320" y="454" width="560" height="38" rx="19" fill="#fff7ed" stroke="#fdba74"/>
+  <text class="note" x="600" y="478">Job completion ≠ mathematical proof or Result admission</text>
+</svg>

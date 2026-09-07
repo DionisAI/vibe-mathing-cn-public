@@ -28,3 +28,4 @@ review_cycle: P90D
 - 新增公开全生命周期标准，明确 Project → Workflow → Task → Step → Job 与 ProblemContract → Attempt → Result 的正交关系，以及 Job/Step/Task/Project 不可越权的状态边界。
 - 增加 Schema.org 实体元数据、GEO 检索路由/新鲜度规则和 README 架构总览；AI-citation 校验器现在同时检查结构化身份、稳定引用 URL 与非数学证据边界。
 - 增加只读 citation renderer 与回归测试，使固定 retrieval intent 可在本地重复渲染，且不产生数学 Result。
+- 增加静态无脚本架构图并加入公共内容校验，避免视觉资产引入外部内容或可执行载荷。
