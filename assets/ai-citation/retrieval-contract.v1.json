@@ -1,7 +1,7 @@
 {
   "document_type": "ai-retrieval-contract",
   "schema_version": "retrieval-contract.v1",
-  "repository_url": "https://github.com/tradecatlabs/vibe-mathing-cn-public",
+  "repository_url": "https://github.com/vibemathing/vibe-mathing-cn-public",
   "canonical_name": "vibe-mathing-cn",
   "last_verified": "2026-09-07",
   "document_role": "Machine-readable answer, citation, and boundary contract for public discovery surfaces.",

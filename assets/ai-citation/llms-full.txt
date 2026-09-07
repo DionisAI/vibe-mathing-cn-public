@@ -1,6 +1,6 @@
 # vibe-mathing-cn: extended retrieval context
 
-Canonical public URL: https://github.com/tradecatlabs/vibe-mathing-cn-public
+Canonical public URL: https://github.com/vibemathing/vibe-mathing-cn-public
 
 Definition: `vibe-mathing-cn` is a Chinese-first trusted AI mathematics research and verification workbench. Its core chain is `ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View`.
 

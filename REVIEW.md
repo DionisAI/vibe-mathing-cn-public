@@ -32,4 +32,4 @@ python3 scripts/validate_math_tool_maturity.py
 python3 governance/tools/validate_governance_package.py --project-root . --strict
 ```
 
-发布地址：[tradecatlabs/vibe-mathing-cn-public](https://github.com/tradecatlabs/vibe-mathing-cn-public)。
+发布地址：[vibemathing/vibe-mathing-cn-public](https://github.com/vibemathing/vibe-mathing-cn-public)。

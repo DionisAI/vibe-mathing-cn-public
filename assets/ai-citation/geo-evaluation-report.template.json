@@ -2,7 +2,7 @@
   "document_type": "geo-evaluation-report",
   "schema_version": "geo-evaluation-report.v1",
   "template": true,
-  "repository_url": "https://github.com/tradecatlabs/vibe-mathing-cn-public",
+  "repository_url": "https://github.com/vibemathing/vibe-mathing-cn-public",
   "protocol": "assets/ai-citation/geo-evaluation-protocol.md",
   "not_mathematical_evidence": true,
   "run": {

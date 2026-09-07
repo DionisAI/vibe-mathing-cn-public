@@ -11,7 +11,7 @@
 - research/result-library 一级空间、解库派生索引和晋升负例。
 - 最小 governance、ADR、数学成果晋升 Gate 和模块上下文。
 - `make check`、`make check-full`、GitHub Actions 与公开仓库卫生。
-- 初始化 Git，安全推送空远端 `tradecatlabs/vibe-mathing-cn` 并核验 CI。
+- 初始化 Git，安全推送空远端 `vibemathing/vibe-mathing-cn` 并核验 CI。
 
 ## Out of Scope
 

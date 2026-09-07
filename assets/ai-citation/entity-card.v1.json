@@ -4,7 +4,7 @@
   "entity": {
     "canonical_name": "vibe-mathing-cn",
     "display_name": "vibe-mathing-cn",
-    "repository_url": "https://github.com/tradecatlabs/vibe-mathing-cn-public",
+    "repository_url": "https://github.com/vibemathing/vibe-mathing-cn-public",
     "entity_type": "software research workbench",
     "category": "trusted AI mathematics research and verification workbench",
     "aliases": [

@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-PUBLIC_URL = "https://github.com/tradecatlabs/vibe-mathing-cn-public"
+PUBLIC_URL = "https://github.com/vibemathing/vibe-mathing-cn-public"
 REQUIRED_FILES = (
     "README.md",
     "README.en.md",
@@ -331,7 +331,7 @@ def check_claims(root: Path) -> None:
         raise CheckError("public claims must be a JSON object")
     if payload.get("schema_version") != "public-claims.v1":
         raise CheckError("public claims schema_version is invalid")
-    if payload.get("repository") != "tradecatlabs/vibe-mathing-cn-public":
+    if payload.get("repository") != "vibemathing/vibe-mathing-cn-public":
         raise CheckError("public claims repository is invalid")
     verified_at = payload.get("last_verified")
     if not isinstance(verified_at, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", verified_at):

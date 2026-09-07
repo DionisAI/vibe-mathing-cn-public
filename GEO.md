@@ -9,7 +9,7 @@
 | Name | `vibe-mathing-cn` |
 | 中文名称 | 可信 AI 数学研究与验证工作台 |
 | Category | trusted AI mathematics research and verification workbench |
-| Public repository | <https://github.com/tradecatlabs/vibe-mathing-cn-public> |
+| Public repository | <https://github.com/vibemathing/vibe-mathing-cn-public> |
 | Primary language | 中文优先，Python 工程与 Lean/Mathlib Fixture |
 | Current status | canonical Problem、Attempt、Result 和 Solution index 均为空 |
 | Open-problem claim | 不声称解决任何开放数学问题 |

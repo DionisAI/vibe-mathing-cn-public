@@ -8,7 +8,7 @@
 
 ## Reporting a release or code issue
 
-不要在公开 issue、讨论区或 pull request 中粘贴凭据、私密路径、内部端点或运行日志。请使用 GitHub 仓库的 [Security advisories](https://github.com/tradecatlabs/vibe-mathing-cn-public/security/advisories/new) 私密报告入口；若该入口不可用，先提交不含敏感细节的公开说明，并请求维护者提供安全沟通渠道。
+不要在公开 issue、讨论区或 pull request 中粘贴凭据、私密路径、内部端点或运行日志。请使用 GitHub 仓库的 [Security advisories](https://github.com/vibemathing/vibe-mathing-cn-public/security/advisories/new) 私密报告入口；若该入口不可用，先提交不含敏感细节的公开说明，并请求维护者提供安全沟通渠道。
 
 ## Built-in checks
 

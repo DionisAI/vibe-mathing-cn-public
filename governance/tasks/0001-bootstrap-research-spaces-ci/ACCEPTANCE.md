@@ -6,7 +6,7 @@
 - [x] research/result-library/governance/CI 目录均有职责文档。
 - [x] `make check` 和 `make check-full` 本地通过。
 - [x] 干净公开克隆等价副本安装依赖并运行 `make check`。
-- [x] 初始提交 `33dd5de` 已推送到 `tradecatlabs/vibe-mathing-cn`。
+- [x] 初始提交 `33dd5de` 已推送到 `vibemathing/vibe-mathing-cn`。
 - [x] GitHub Actions run `31703110676` 绑定实现提交并 PASS。
 
 # Validation Plan

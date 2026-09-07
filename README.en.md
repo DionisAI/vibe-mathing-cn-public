@@ -1,6 +1,6 @@
 # vibe-mathing-cn: Trusted AI Mathematics Research and Verification Workbench
 
-[![CI](https://github.com/tradecatlabs/vibe-mathing-cn-public/actions/workflows/ci.yml/badge.svg)](https://github.com/tradecatlabs/vibe-mathing-cn-public/actions/workflows/ci.yml)
+[![CI](https://github.com/vibemathing/vibe-mathing-cn-public/actions/workflows/ci.yml/badge.svg)](https://github.com/vibemathing/vibe-mathing-cn-public/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB)](requirements.txt)
 [![Lean fixture](https://img.shields.io/badge/Lean-fixture-4B69FF)](fixtures/lean-proof/README.md)
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
@@ -11,7 +11,7 @@
 
 > **Current public status:** the canonical Problem, Attempt, and Result ledgers are empty; `result-library/indexes/solutions.json` has no result IDs; this repository does not claim to solve any open mathematics problem.
 
-Canonical public repository: <https://github.com/tradecatlabs/vibe-mathing-cn-public>
+Canonical public repository: <https://github.com/vibemathing/vibe-mathing-cn-public>
 
 `vibe-mathing-cn` organizes mathematical problems, literature, derivations, computations, proofs, and formal checks into a traceable workflow. It is not a promise to solve arbitrary open problems: an honest `open` disposition is a valid outcome.
 
@@ -34,7 +34,7 @@ The repository's original code and documentation are released under the [MIT Lic
 From a clean public checkout:
 
 ```bash
-git clone https://github.com/tradecatlabs/vibe-mathing-cn-public.git
+git clone https://github.com/vibemathing/vibe-mathing-cn-public.git
 cd vibe-mathing-cn-public
 python3 -m venv .venv
 . .venv/bin/activate

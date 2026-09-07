@@ -19,8 +19,8 @@ BOUNDARY_COMMAND_TIMEOUT_SECONDS = 30
 MAX_COMMAND_OUTPUT_BYTES = 8_000_000
 MAX_TRACKED_FILE_BYTES = 128_000_000
 PUBLIC_ORIGINS = {
-    "https://github.com/tradecatlabs/vibe-mathing-cn-public.git",
-    "git@github.com:tradecatlabs/vibe-mathing-cn-public.git",
+    "https://github.com/vibemathing/vibe-mathing-cn-public.git",
+    "git@github.com:vibemathing/vibe-mathing-cn-public.git",
 }
 
 FORBIDDEN_PATH_PATTERNS = (

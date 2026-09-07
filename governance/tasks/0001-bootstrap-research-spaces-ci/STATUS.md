@@ -20,4 +20,4 @@ python3 scripts/validate_public_boundary.py --project-root .
 python3 governance/tools/validate_governance_package.py --project-root . --strict
 ```
 
-公开仓库：[tradecatlabs/vibe-mathing-cn-public](https://github.com/tradecatlabs/vibe-mathing-cn-public)。
+公开仓库：[vibemathing/vibe-mathing-cn-public](https://github.com/vibemathing/vibe-mathing-cn-public)。

@@ -4,7 +4,7 @@ title: "vibe-mathing-cn: Trusted AI Mathematics Research and Verification Workbe
 type: software
 authors:
   - name: "TradeCat Labs"
-repository-code: "https://github.com/tradecatlabs/vibe-mathing-cn-public"
+repository-code: "https://github.com/vibemathing/vibe-mathing-cn-public"
 license: MIT
 abstract: "A Chinese-first, Git-based workbench for AI-assisted mathematics research that separates untrusted candidate generation from trusted verification over ProblemContract, Attempt, Result, evidence ledgers, and derived Solution View."
 keywords:

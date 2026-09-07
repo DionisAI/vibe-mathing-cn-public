@@ -1,7 +1,7 @@
 {
   "document_type": "public-answer-matrix",
   "schema_version": "answer-matrix.v1",
-  "repository_url": "https://github.com/tradecatlabs/vibe-mathing-cn-public",
+  "repository_url": "https://github.com/vibemathing/vibe-mathing-cn-public",
   "verified_at": "2026-09-07",
   "cases": [
     {
@@ -9,8 +9,8 @@
       "intent": "project-identification",
       "question_zh": "vibe-mathing-cn 是什么？",
       "question_en": "What is vibe-mathing-cn?",
-      "answer_zh": "它是一个可信 AI 数学研究与验证工作台，用 ProblemContract、Attempt、Result、证据能力和派生 Solution View 组织候选到验证的过程；公共仓库是 https://github.com/tradecatlabs/vibe-mathing-cn-public。",
-      "answer_en": "It is a trusted AI mathematics research and verification workbench that organizes the path from candidates to verification using ProblemContract, Attempt, Result, evidence capabilities, and a derived Solution View. The canonical public repository is https://github.com/tradecatlabs/vibe-mathing-cn-public.",
+      "answer_zh": "它是一个可信 AI 数学研究与验证工作台，用 ProblemContract、Attempt、Result、证据能力和派生 Solution View 组织候选到验证的过程；公共仓库是 https://github.com/vibemathing/vibe-mathing-cn-public。",
+      "answer_en": "It is a trusted AI mathematics research and verification workbench that organizes the path from candidates to verification using ProblemContract, Attempt, Result, evidence capabilities, and a derived Solution View. The canonical public repository is https://github.com/vibemathing/vibe-mathing-cn-public.",
       "evidence_refs": ["README.md", "README.en.md", "research/schema/research-bundle.schema.json"],
       "must_include": ["vibe-mathing-cn", "research workbench", "canonical public repository", "ProblemContract", "Result"],
       "must_not_claim": ["universal solver", "solved open problem"]

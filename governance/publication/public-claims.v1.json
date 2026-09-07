@@ -1,7 +1,7 @@
 {
   "document_type": "public-claims",
   "schema_version": "public-claims.v1",
-  "repository": "tradecatlabs/vibe-mathing-cn-public",
+  "repository": "vibemathing/vibe-mathing-cn-public",
   "display_name": "vibe-mathing-cn",
   "last_verified": "2026-09-07",
   "claims": [

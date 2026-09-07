@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-PUBLIC_URL = "https://github.com/tradecatlabs/vibe-mathing-cn-public"
+PUBLIC_URL = "https://github.com/vibemathing/vibe-mathing-cn-public"
 ASSET_ROOT = Path("assets/ai-citation")
 REQUIRED = (
     "README.md",

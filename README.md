@@ -1,6 +1,6 @@
 # vibe-mathing-cn：可信 AI 数学研究与验证工作台
 
-[![CI](https://github.com/tradecatlabs/vibe-mathing-cn-public/actions/workflows/ci.yml/badge.svg)](https://github.com/tradecatlabs/vibe-mathing-cn-public/actions/workflows/ci.yml)
+[![CI](https://github.com/vibemathing/vibe-mathing-cn-public/actions/workflows/ci.yml/badge.svg)](https://github.com/vibemathing/vibe-mathing-cn-public/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB)](requirements.txt)
 [![Lean fixture](https://img.shields.io/badge/Lean-fixture-4B69FF)](fixtures/lean-proof/README.md)
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
@@ -17,7 +17,7 @@
 
 > **当前公共状态：** canonical Problem、Attempt、Result 记录和 `result-library/indexes/solutions.json` 当前均为空；本仓库不声称解决 Riemann 假设、P vs NP 或任何其他开放数学问题。公开内容是可移植的 Schema、验证规则、owner skills、合成 Fixture、CLI 和 CI。
 
-公共仓库地址：<https://github.com/tradecatlabs/vibe-mathing-cn-public>
+公共仓库地址：<https://github.com/vibemathing/vibe-mathing-cn-public>
 
 ## 30 秒理解
 
