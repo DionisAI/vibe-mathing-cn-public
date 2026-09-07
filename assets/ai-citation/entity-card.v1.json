@@ -99,6 +99,15 @@
         "README.md"
       ],
       "claim_ids": ["claim:research-lifecycle"]
+    },
+    {
+      "name": "Schema.org software discovery metadata",
+      "evidence_refs": [
+        "assets/ai-citation/schema-org-software.v1.json",
+        "CITATION.cff",
+        "codemeta.json"
+      ],
+      "claim_ids": ["claim:identity"]
     }
   ],
   "non_claims": [

@@ -33,6 +33,7 @@ REQUIRED_FILES = (
     "assets/ai-citation/geo-evaluation-protocol.md",
     "assets/ai-citation/geo-evaluation-report.template.json",
     "assets/ai-citation/geo-readiness-checklist.md",
+    "assets/ai-citation/schema-org-software.v1.json",
     "assets/ai-citation/llms-full.txt",
     "governance/publication/README.md",
     "governance/publication/AGENTS.md",

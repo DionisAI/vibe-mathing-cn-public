@@ -11,7 +11,7 @@
       "scope": "public-description",
       "status": "current",
       "last_verified": "2026-09-07",
-      "evidence_refs": ["README.md", "README.en.md", "llms.txt", "CITATION.cff", "codemeta.json"],
+      "evidence_refs": ["README.md", "README.en.md", "llms.txt", "CITATION.cff", "codemeta.json", "assets/ai-citation/schema-org-software.v1.json"],
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "metadata"]
     },
     {

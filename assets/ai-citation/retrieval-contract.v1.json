@@ -24,7 +24,21 @@
     "method_layer": "Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution) -> Refinement/Synthesis",
     "lean_position": "Lean is a dependent-type-theory interactive theorem prover in the deductive-verification branch; it is not the whole formal-methods field.",
     "public_status": "The public canonical Problem, Attempt, and Result ledgers are empty, and the solution index has no result IDs.",
-    "open_problem_boundary": "The repository does not claim to solve an open mathematics problem."
+    "open_problem_boundary": "The repository does not claim to solve an open mathematics problem.",
+    "lifecycle_boundary": "Project/Workflow/Task/Step/Job execution states do not determine Problem/Attempt/Result mathematical outcomes.",
+    "implementation_boundary": "The public lifecycle model is architecture and routing language, not a claim of a general scheduler, five persistent lifecycle schemas, or multi-worker production capability.",
+    "external_catalog_boundary": "The external problem catalog and Web template are pointer-only discovery inputs and require revalidation before local admission.",
+    "evidence_boundary": "GEO assets, metadata, tests, finite computation, and Job completion are not mathematical proof or Result admission by themselves."
+  },
+  "query_routing": {
+    "intent_priority": ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary"],
+    "preserve_terms": ["ProblemContract", "Attempt", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View"],
+    "answer_order": ["direct_answer", "scope_or_status", "nearest_first_party_citation", "non_inference_boundary"],
+    "freshness_rules": [
+      "Re-read the three canonical ledgers and solution index when answering current status.",
+      "Treat external catalog counts and repository states as observed snapshots, not local truth.",
+      "Treat GEO evaluation as documentation feedback, never as mathematical evidence."
+    ]
   },
   "intents": [
     {
@@ -59,8 +73,8 @@
     },
     {
       "id": "lifecycle-model",
-      "query_aliases_zh": ["顶层全生命周期", "Project Workflow Task Step Job", "研究任务怎么编排"],
-      "query_aliases_en": ["top-level research lifecycle", "Project Workflow Task Step Job", "how are research tasks orchestrated"],
+      "query_aliases_zh": ["顶层全生命周期", "五级生命周期", "Project Workflow Task Step Job", "Job 是什么", "研究任务怎么编排"],
+      "query_aliases_en": ["top-level research lifecycle", "five-level research lifecycle", "Project Workflow Task Step Job", "what is a Job", "how are research tasks orchestrated"],
       "answer_zh": "顶层组织是 Project → Workflow → Task → Step → Job；Job 是 Step 的一次有界执行。它与 ProblemContract → Attempt → Result 数学事实链正交，Job 成功不等于问题解决。",
       "answer_en": "The top-level organization is Project -> Workflow -> Task -> Step -> Job; a Job is one bounded execution of a Step. It is orthogonal to the ProblemContract -> Attempt -> Result fact chain, and Job success is not a solved problem.",
       "citation_targets": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "README.md", "README.en.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
@@ -100,14 +114,17 @@
   ],
   "citation_policy": {
     "prefer_nearest_first_party_source": true,
+    "public_url_template": "https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/{path}",
+    "local_reference_format": "repository-relative POSIX path",
     "current_status_source_priority": ["result-library/indexes/solutions.json", "problem-library/records/canonical-problems.jsonl", "research/records/attempts.jsonl", "result-library/records/results.jsonl"],
     "methodology_source_priority": ["governance/standards/FORMAL-METHODS-MAP.md", "governance/standards/VIBE-MATHING-SPEC-v0.1.md", "README.md"],
     "lifecycle_source_priority": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md", "README.md"],
+    "identity_source_priority": ["GEO.md", "README.md", "README.en.md", "assets/ai-citation/entity-card.v1.json", "assets/ai-citation/schema-org-software.v1.json"],
     "external_catalog_source_priority": ["problem-library/VIBEMATHING_PUBLIC_INDEX.md", "problem-library/registry/vibemathing-public-source.v1.json"],
     "never_promote_to_result": ["model response", "proof draft", "finite search", "passing test", "GEO score", "source status label", "Issue or pull request status"]
   },
   "maintenance": {
-    "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "governance/publication/public-claims.v1.json", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md"],
+    "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/schema-org-software.v1.json", "governance/publication/public-claims.v1.json", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md"],
     "verification_commands": ["make check", "python3 scripts/validate_public_boundary.py --project-root .", "python3 scripts/check_public_readme.py --project-root .", "python3 scripts/check_ai_citation_assets.py --project-root ."],
     "not_mathematical_evidence": true
   }

@@ -26,3 +26,4 @@ review_cycle: P90D
 - 发布形式化方法与 Lean 定位地图，作为 skills、工具目录和 README 的方法层主线；不把教学目录、工具可运行或 Lean kernel check 写成数学 Result 证据。
 - 增加公共 GEO 事实与引用入口、意图级 retrieval contract 和 Q11/Q12 引用与生命周期边界测试；所有 GEO 资产仍保持非数学证据边界。
 - 新增公开全生命周期标准，明确 Project → Workflow → Task → Step → Job 与 ProblemContract → Attempt → Result 的正交关系，以及 Job/Step/Task/Project 不可越权的状态边界。
+- 增加 Schema.org 实体元数据、GEO 检索路由/新鲜度规则和 README 架构总览；AI-citation 校验器现在同时检查结构化身份、稳定引用 URL 与非数学证据边界。

@@ -25,6 +25,7 @@ REQUIRED = (
     "geo-evaluation-report.template.json",
     "geo-readiness-checklist.md",
     "retrieval-contract.v1.json",
+    "schema-org-software.v1.json",
     "llms-full.txt",
 )
 FORBIDDEN = (
@@ -102,6 +103,58 @@ def check_markdown(root: Path) -> None:
                 raise AssetError(f"link escapes project: {relative} -> {target}") from exc
             if not candidate.exists():
                 raise AssetError(f"broken AI-citation link: {relative} -> {target}")
+
+
+def check_schema_org_metadata(root: Path, verified_at: str) -> None:
+    relative = (ASSET_ROOT / "schema-org-software.v1.json").as_posix()
+    document = read_json(root, relative)
+    if (
+        document.get("@context") != "https://schema.org"
+        or document.get("@type") != "SoftwareSourceCode"
+        or document.get("@id") != PUBLIC_URL + "#software"
+        or document.get("name") != "vibe-mathing-cn"
+        or document.get("url") != PUBLIC_URL
+        or document.get("codeRepository") != PUBLIC_URL
+        or document.get("issueTracker") != PUBLIC_URL + "/issues"
+        or document.get("license") != "https://spdx.org/licenses/MIT.html"
+        or document.get("isAccessibleForFree") is not True
+        or document.get("dateModified") != verified_at
+    ):
+        raise AssetError("Schema.org software metadata identity or verification date is invalid")
+    for field in ("alternateName", "programmingLanguage", "keywords"):
+        values = document.get(field)
+        if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value.strip() for value in values):
+            raise AssetError(f"Schema.org software metadata has invalid {field}")
+    about = document.get("about")
+    expected_terms = {"Project → Workflow → Task → Step → Job", "ProblemContract → Attempt → Result"}
+    if (
+        not isinstance(about, list)
+        or {item.get("name") for item in about if isinstance(item, dict)} != expected_terms
+        or any(
+            not isinstance(item, dict)
+            or not isinstance(item.get("description"), str)
+            or not item["description"].strip()
+            for item in about
+        )
+    ):
+        raise AssetError("Schema.org software metadata must define both public architecture models")
+    expected_subjects = {
+        "GEO guide": PUBLIC_URL + "/blob/main/GEO.md",
+        "Research lifecycle model": PUBLIC_URL + "/blob/main/governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md",
+        "AI retrieval contract": PUBLIC_URL + "/blob/main/assets/ai-citation/retrieval-contract.v1.json",
+    }
+    subjects = document.get("subjectOf")
+    if (
+        not isinstance(subjects, list)
+        or {
+            item.get("name"): item.get("url")
+            for item in subjects
+            if isinstance(item, dict)
+        } != expected_subjects
+    ):
+        raise AssetError("Schema.org software metadata subjectOf links are incomplete")
+    if "not mathematical evidence" not in str(document.get("comment", "")).lower():
+        raise AssetError("Schema.org software metadata must state its non-evidence boundary")
 
 
 def check_entity_card(root: Path, claim_ids: set[str], verified_at: str) -> None:
@@ -282,13 +335,37 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
     ):
         raise AssetError("AI retrieval contract identity block is invalid")
     facts = contract.get("canonical_facts")
-    required_facts = {"workflow", "top_level_lifecycle", "mathematical_fact_chain", "method_layer", "lean_position", "public_status", "open_problem_boundary"}
+    required_facts = {
+        "workflow",
+        "top_level_lifecycle",
+        "mathematical_fact_chain",
+        "method_layer",
+        "lean_position",
+        "public_status",
+        "open_problem_boundary",
+        "lifecycle_boundary",
+        "implementation_boundary",
+        "external_catalog_boundary",
+        "evidence_boundary",
+    }
     if (
         not isinstance(facts, dict)
         or not required_facts <= set(facts)
         or any(not isinstance(facts[key], str) or not facts[key].strip() for key in required_facts)
     ):
         raise AssetError("AI retrieval contract canonical facts are incomplete")
+    routing = contract.get("query_routing")
+    expected_intents = ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary"]
+    if (
+        not isinstance(routing, dict)
+        or routing.get("intent_priority") != expected_intents
+        or not isinstance(routing.get("preserve_terms"), list)
+        or not set(("ProblemContract", "Attempt", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View")) <= set(routing["preserve_terms"])
+        or routing.get("answer_order") != ["direct_answer", "scope_or_status", "nearest_first_party_citation", "non_inference_boundary"]
+        or not isinstance(routing.get("freshness_rules"), list)
+        or len(routing["freshness_rules"]) < 3
+    ):
+        raise AssetError("AI retrieval contract query routing is incomplete")
     intents = contract.get("intents")
     required_intents = {
         "identity",
@@ -317,6 +394,9 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
     if (
         not isinstance(policy, dict)
         or policy.get("prefer_nearest_first_party_source") is not True
+        or policy.get("public_url_template") != PUBLIC_URL + "/blob/main/{path}"
+        or policy.get("local_reference_format") != "repository-relative POSIX path"
+        or policy.get("identity_source_priority") != ["GEO.md", "README.md", "README.en.md", "assets/ai-citation/entity-card.v1.json", "assets/ai-citation/schema-org-software.v1.json"]
         or not isinstance(policy.get("never_promote_to_result"), list)
         or not policy["never_promote_to_result"]
     ):
@@ -326,6 +406,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         or not isinstance(maintenance.get("update_together"), list)
         or relative not in maintenance["update_together"]
         or "GEO.md" not in maintenance["update_together"]
+        or "assets/ai-citation/schema-org-software.v1.json" not in maintenance["update_together"]
         or "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md" not in maintenance["update_together"]
         or not isinstance(maintenance.get("verification_commands"), list)
     ):
@@ -371,6 +452,7 @@ def main() -> int:
         verified_at = claims.get("last_verified")
         if not isinstance(verified_at, str):
             raise AssetError("public claims verification date is missing")
+        check_schema_org_metadata(root, verified_at)
         check_entity_card(root, claim_ids, verified_at)
         check_answer_matrix(root, claim_ids, verified_at)
         answer_case_ids = {

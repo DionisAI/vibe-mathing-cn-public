@@ -16,6 +16,7 @@ These files give humans and retrieval systems a compact, evidence-bounded descri
 | [`geo-evaluation-report.template.json`](geo-evaluation-report.template.json) | Machine-readable, not-yet-run report template |
 | [`geo-readiness-checklist.md`](geo-readiness-checklist.md) | Ongoing maintenance checklist |
 | [`retrieval-contract.v1.json`](retrieval-contract.v1.json) | Intent-specific answers, citation targets, aliases, and non-inference rules |
+| [`schema-org-software.v1.json`](schema-org-software.v1.json) | Schema.org entity metadata for software discovery and citation |
 | [`llms-full.txt`](llms-full.txt) | Extended plain-text retrieval context |
 
 The method-layer source of truth is [`../../governance/standards/FORMAL-METHODS-MAP.md`](../../governance/standards/FORMAL-METHODS-MAP.md): Specification & Semantics through verification methods, with Lean positioned in dependent-type-theory deductive verification. The top-level lifecycle source of truth is [`../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md). The bilingual answer matrix covers methodology, citation boundaries, and the lifecycle model as Q10–Q12.

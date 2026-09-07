@@ -6,6 +6,7 @@
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
 [![Solution index](https://img.shields.io/badge/solutions-empty-orange)](result-library/indexes/solutions.json)
 [![GEO](https://img.shields.io/badge/GEO-fact--bounded-7C3AED)](GEO.md)
+[![Lifecycle](https://img.shields.io/badge/lifecycle-5--level%20architecture-0B7A75)](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)
 
 > **非可信候选生成器 + 受信验证链：从问题空间构造候选，经验证后派生解空间。**
 
@@ -32,8 +33,24 @@
 | 顶层生命周期怎么组织？ | `Project → Workflow → Task → Step → Job`；Job 是 Step 的一次有界执行，不等于问题已解决 |
 | 具体开放问题在哪里？ | 见 [Vibe Mathing 公共问题索引](problem-library/VIBEMATHING_PUBLIC_INDEX.md)；远端 catalog 与单问题仓库不会自动成为本地 Result |
 
+## 架构总览
+
+```mermaid
+flowchart LR
+  subgraph execution["执行 / 编排语言"]
+    P["Project"] --> W["Workflow"] --> T["Task"] --> S["Step"] --> J["Job<br/>有界执行"]
+  end
+  subgraph facts["数学事实链"]
+    PC["ProblemContract"] --> A["Attempt"] --> CE["candidate / evidence"] --> R["Result"] --> G{"证据准入"} --> V["derived views"]
+  end
+  J -. "受限产物 / 回执" .-> CE
+```
+
+上图是阅读和路由模型：执行链组织工作，事实链裁决数学主张；两条链通过有界产物和证据门连接，但不能互相替代。实现边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+
 ## 快速导航
 
+- [架构总览](#架构总览)
 - [项目定位](#项目定位)
 - [系统输入与输出](#系统输入与输出)
 - [信任边界](#信任边界)
@@ -475,6 +492,7 @@ vibe-mathing-cn-public/
 ├── research/                  # 一次次研究运行及其机器契约
 ├── result-library/            # 候选/验证成果与派生解库索引
 ├── governance/                # 项目操作模型、标准、ADR、Gate 与任务证据
+│   ├── standards/             # 研究闭环、形式化方法与生命周期标准
 │   └── publication/           # 公共声明和 AI 发布面元数据
 ├── .github/workflows/         # GitHub Actions 可移植质量门
 ├── .codex/skills/             # 当前项目 active skills
@@ -564,6 +582,7 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 - [`llms.txt`](llms.txt)：稳定、短版的 AI/检索入口；
 - [`GEO.md`](GEO.md)：面向人和生成式引擎的事实、引用与边界入口；
 - [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json)：意图、引用目标和不可推断边界的机器契约；
+- [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json)：Schema.org 软件实体元数据；仅用于公开实体发现与引用，不是数学证据；
 - [`assets/ai-citation/`](assets/ai-citation/)：摘要、FAQ、术语表、双语回答矩阵、GEO 评估协议和机器报告模板；
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)：外部具体问题总库、单问题仓库和网页版研究模板入口；
