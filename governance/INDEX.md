@@ -3,7 +3,7 @@ id: GOV-INDEX
 type: index
 status: current
 owner: engineering
-last_reviewed: 2026-08-29
+last_reviewed: 2026-09-07
 ---
 
 # 治理包索引
@@ -18,6 +18,7 @@ last_reviewed: 2026-08-29
 ## 当前标准
 
 - [OK] `standards/VIBE-MATHING-SPEC-v0.1.md`
+- [OK] `standards/FORMAL-METHODS-MAP.md`
 - [OK] `standards/工程质量标准.md`
 - [OK] `standards/劣质代码定义.md`
 - [OK] `standards/非功能性需求标准.md`
@@ -33,7 +34,6 @@ last_reviewed: 2026-08-29
 - [OK] `processes/RPI研究计划实施流程.md`
 - [OK] `processes/QA计划标准.md`
 - [OK] `processes/本地工具与验证入口.md`
-- [OK] `processes/PUBLIC_REPOSITORY_BOUNDARY.md`
 - [optional] `processes/代码评审标准.md`
 - [optional] `processes/工程变更安全审查流程.md`
 - [optional] `processes/文档治理规则.md`
@@ -43,6 +43,11 @@ last_reviewed: 2026-08-29
 - [OK] `architecture-gates/门禁与护栏.md`
 - [OK] `architecture-gates/GATE-INDEX.md`
 - [OK] `architecture-gates/rules/INDEX.md`
+
+## 公共发布与 AI 发现
+
+- [OK] `publication/README.md`
+- [OK] `publication/public-claims.v1.json`
 
 ## 记录与证据
 

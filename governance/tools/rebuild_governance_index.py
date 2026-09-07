@@ -207,6 +207,7 @@ def write_root_index(root: Path, dry_run: bool) -> Path:
             "当前标准",
             [
                 ("standards/VIBE-MATHING-SPEC-v0.1.md", True),
+                ("standards/FORMAL-METHODS-MAP.md", True),
                 ("standards/工程质量标准.md", True),
                 ("standards/劣质代码定义.md", True),
                 ("standards/非功能性需求标准.md", True),
@@ -235,6 +236,13 @@ def write_root_index(root: Path, dry_run: bool) -> Path:
                 ("architecture-gates/门禁与护栏.md", True),
                 ("architecture-gates/GATE-INDEX.md", True),
                 ("architecture-gates/rules/INDEX.md", True),
+            ],
+        ),
+        (
+            "公共发布与 AI 发现",
+            [
+                ("publication/README.md", True),
+                ("publication/public-claims.v1.json", True),
             ],
         ),
         (

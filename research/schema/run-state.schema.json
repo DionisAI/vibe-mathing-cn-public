@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://vibe-mathing.local/schema/run-state.schema.json",
+  "$id": "https://tradecatlabs.com/vibe-mathing/schema/run-state.schema.json",
   "title": "Vibe Mathing Runtime State",
   "type": "object",
   "additionalProperties": false,
@@ -42,12 +42,21 @@
     "budgets": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["max_transitions", "max_retries", "timeout_seconds", "max_output_bytes"],
+      "required": [
+        "max_transitions",
+        "max_retries",
+        "timeout_seconds",
+        "max_output_bytes",
+        "memory_budget_mb",
+        "threads_max"
+      ],
       "properties": {
-        "max_transitions": {"type": "integer", "minimum": 1},
-        "max_retries": {"type": "integer", "minimum": 1},
-        "timeout_seconds": {"type": "integer", "minimum": 1},
-        "max_output_bytes": {"type": "integer", "minimum": 1}
+        "max_transitions": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "max_retries": {"type": "integer", "minimum": 1, "maximum": 1000},
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 86400},
+        "max_output_bytes": {"type": "integer", "minimum": 1, "maximum": 128000000},
+        "memory_budget_mb": {"type": "integer", "minimum": 1, "maximum": 131072},
+        "threads_max": {"type": "integer", "minimum": 1, "maximum": 1024}
       }
     },
     "checkpoints": {

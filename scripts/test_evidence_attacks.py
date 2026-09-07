@@ -11,7 +11,12 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from vibe_mathing.evidence import EvidenceError, create_evidence_receipt, verify_evidence_receipt
+from vibe_mathing.evidence import (
+    EvidenceError,
+    create_evidence_receipt,
+    sha256_file,
+    verify_evidence_receipt,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,12 +63,33 @@ def main() -> int:
             checked_at=NOW,
             output_locator="research/artifacts/outputs/test/check.txt",
             command=["sympy", "verify"],
+            timeout_seconds=30,
+            resource_budget={"memory_budget_mb": 256, "threads_max": 1, "max_output_bytes": 1_048_576},
+            stop_condition="攻击 fixture 的精确检查完成",
+            termination_status="completed",
+            termination_reason="attack fixture verifier returned",
             executor="in_process",
             notes="attack fixture",
         )
         assert verify_evidence_receipt(
             project_root=root, result=result, evidence=receipt, generator="sympy-generator"
         ) == "counterexample_check"
+        receipt_path = root / receipt["locator"]
+        original_receipt = receipt_path.read_bytes()
+        mutated_receipt = json.loads(original_receipt.decode("utf-8"))
+        mutated_receipt["verdict"] = "reject"
+        receipt_path.write_text(
+            json.dumps(mutated_receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        mismatch = {**receipt, "sha256": sha256_file(receipt_path)}
+        expect_rejection(
+            lambda: verify_evidence_receipt(
+                project_root=root, result=result, evidence=mismatch, generator="sympy-generator"
+            ),
+            "回执 verdict 篡改",
+        )
+        receipt_path.write_bytes(original_receipt)
         changed_output = root / "research/artifacts/outputs/test/changed.txt"
         changed_output.write_text(
             json.dumps({"x": "1/2", "x_squared": "1/4", "x_squared_lt_x": True}),
@@ -81,6 +107,11 @@ def main() -> int:
                 checked_at=NOW,
                 output_locator="research/artifacts/outputs/test/changed.txt",
                 command=["sympy", "verify"],
+                timeout_seconds=30,
+                resource_budget={"memory_budget_mb": 256, "threads_max": 1, "max_output_bytes": 1_048_576},
+                stop_condition="覆盖攻击检查完成",
+                termination_status="completed",
+                termination_reason="attack fixture verifier returned",
                 executor="in_process",
                 notes="禁止覆盖既有回执",
             ),

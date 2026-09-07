@@ -79,7 +79,7 @@
 - `MATURITY_AUDIT.json`: 100/100，所有 required commands 退出码 0，使用单调时钟。
 - `REGRESSION_EVIDENCE.json`: owner validator 证明 RED / GREEN / counterfactual。
 - `make check`: PASS。
-- Lean：`lake build` 8707 jobs PASS；`two_add_two` does not depend on any axioms。
+- Lean：固定 Mathlib fixture 的 bounded kernel build PASS；`two_add_two` does not depend on any axioms。
 - governance strict / health：PASS；task decompose validator：PASS；`git diff --check`：PASS。
 
 ## Remaining Boundaries

@@ -1,6 +1,6 @@
 # Annals of Mathematics Skills 精简快照
 
-来源：本机归档 `auto-research/Awesome-Journal-Skills/Annals-of-Mathematics-Skills`。
+来源：公开上游来源的最小审计快照。
 
 只保留 `anmath-methods`、`anmath-referee-strategy`、`anmath-writing-style` 三个被 `math-proof` 吸收的来源文件以及 MIT 许可。完整本机来源树 digest 记录在 `vendor/sources.lock.json`。
 

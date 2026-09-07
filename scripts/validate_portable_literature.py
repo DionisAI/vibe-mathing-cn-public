@@ -6,16 +6,24 @@
 from __future__ import annotations
 
 import json
+import os
+import stat
 import sys
 from pathlib import Path
 from typing import Any
 
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator, SchemaError
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "literature" / "catalog"
 SCHEMA_PATH = ROOT / "literature" / "schema" / "literature-records.schema.json"
+MAX_CATALOG_BYTES = 128_000_000
+MAX_RECORDS = 100_000
+MAX_LINE_BYTES = 30_000_000
+MAX_PATH_CHARS = 4_096
+
+
 FILES = {
     "work": CATALOG / "works.jsonl",
     "edition": CATALOG / "editions.jsonl",
@@ -24,17 +32,78 @@ FILES = {
 }
 
 
+def _nofollow_flag() -> int:
+    value = getattr(os, "O_NOFOLLOW", None)
+    if value is None:
+        raise RuntimeError("当前平台缺少 O_NOFOLLOW，拒绝读取文献目录")
+    return value
+
+
+def _safe_path(path: Path) -> Path:
+    path = Path(path)
+    if (
+        len(str(path)) > MAX_PATH_CHARS
+        or any(part in {".", ".."} for part in path.parts)
+        or "\x00" in str(path)
+        or "\\" in str(path)
+    ):
+        raise ValueError(f"文献路径包含非法组件：{path}")
+    candidate = Path(os.path.abspath(path if path.is_absolute() else ROOT / path))
+    try:
+        relative = candidate.relative_to(ROOT)
+    except ValueError as exc:
+        raise ValueError(f"文献路径越界：{candidate}") from exc
+    current = ROOT
+    for part in relative.parts:
+        current /= part
+        if current.is_symlink():
+            raise ValueError(f"文献路径不能包含 symlink：{candidate}")
+    return candidate
+
+
+def _read_bounded(path: Path) -> bytes:
+    candidate = _safe_path(path)
+    descriptor = os.open(candidate, os.O_RDONLY | _nofollow_flag())
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode) or file_stat.st_size > MAX_CATALOG_BYTES:
+            raise ValueError(f"文献目录文件超过大小预算：{candidate}")
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(descriptor, min(64 * 1024, MAX_CATALOG_BYTES - total + 1))
+            if not chunk:
+                return b"".join(chunks)
+            total += len(chunk)
+            if total > MAX_CATALOG_BYTES:
+                raise ValueError(f"文献目录文件超过大小预算：{candidate}")
+            chunks.append(chunk)
+    finally:
+        os.close(descriptor)
+
+
+def _reject_json_constant(value: str) -> Any:
+    raise ValueError(f"JSON 常量非法：{value}")
+
+
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     records: list[dict[str, Any]] = []
-    with path.open(encoding="utf-8") as handle:
-        for line_number, line in enumerate(handle, 1):
-            if not line.strip():
-                continue
-            value = json.loads(line)
-            if not isinstance(value, dict):
-                raise ValueError(f"{path.relative_to(ROOT)}:{line_number}: 记录不是对象")
-            records.append(value)
+    for line_number, raw_line in enumerate(_read_bounded(path).splitlines(), 1):
+        if len(raw_line) > MAX_LINE_BYTES:
+            raise ValueError(f"{path.relative_to(ROOT)}:{line_number}: 行超过大小上限")
+        if not raw_line.strip():
+            continue
+        value = json.loads(raw_line.decode("utf-8"), parse_constant=_reject_json_constant)
+        if not isinstance(value, dict):
+            raise ValueError(f"{path.relative_to(ROOT)}:{line_number}: 记录不是对象")
+        records.append(value)
+        if len(records) > MAX_RECORDS:
+            raise ValueError(f"{path.relative_to(ROOT)}: 记录数超过上限 {MAX_RECORDS}")
     return records
+
+
+def load_json(path: Path) -> Any:
+    return json.loads(_read_bounded(path).decode("utf-8"), parse_constant=_reject_json_constant)
 
 
 def isbn13_valid(value: str) -> bool:
@@ -56,7 +125,9 @@ def main() -> int:
         return 1
 
     try:
-        schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+        schema = load_json(SCHEMA_PATH)
+        if not isinstance(schema, dict) or not isinstance(schema.get("$defs"), dict):
+            raise ValueError("文献 schema 顶层或 $defs 无效")
         Draft202012Validator.check_schema(schema)
         records = {kind: load_jsonl(path) for kind, path in FILES.items()}
         all_ids: set[str] = set()
@@ -67,7 +138,7 @@ def main() -> int:
                 for error in sorted(validator.iter_errors(record), key=lambda item: list(item.path)):
                     errors.append(f"{kind} 第 {position} 条 schema 错误：{error.message}")
                 record_id = record.get(id_fields[kind])
-                if record_id in all_ids:
+                if isinstance(record_id, str) and record_id in all_ids:
                     errors.append(f"重复 ID：{record_id}")
                 if isinstance(record_id, str):
                     all_ids.add(record_id)
@@ -82,15 +153,24 @@ def main() -> int:
         for item in records["file"]:
             if item["edition_id"] not in edition_ids:
                 errors.append(f"File 引用不存在的 Edition：{item['edition_id']}")
-            if not item["path"].startswith("literature/files/"):
-                errors.append(f"File 路径越出 literature/files：{item['path']}")
+            file_path = item["path"]
+            if (
+                not isinstance(file_path, str)
+                or len(file_path) > MAX_PATH_CHARS
+                or "\x00" in file_path
+                or "\\" in file_path
+                or Path(file_path).is_absolute()
+                or any(part in {".", ".."} for part in Path(file_path).parts)
+                or not file_path.startswith("literature/files/")
+            ):
+                errors.append(f"File 路径越出 literature/files：{file_path}")
         entity_ids = work_ids | edition_ids | file_ids
         for relation in records["relation"]:
             if relation["subject_id"] not in entity_ids:
                 errors.append(f"Relation subject 不存在：{relation['subject_id']}")
             if relation["predicate"] in {"has_edition", "has_file"} and relation["object_id"] not in entity_ids:
                 errors.append(f"Relation object 不存在：{relation['object_id']}")
-    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, SchemaError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 

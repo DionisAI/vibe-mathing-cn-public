@@ -1,0 +1,92 @@
+{
+  "schema_version": "vibemathing-public-source.v1",
+  "source_kind": "public-github-namespace-index",
+  "namespace": {
+    "name": "vibemathing",
+    "url": "https://github.com/vibemathing",
+    "api_url": "https://api.github.com/users/vibemathing/repos?per_page=100&sort=updated",
+    "kind": "public GitHub namespace"
+  },
+  "repositories": [
+    {
+      "role": "problem-library",
+      "full_name": "vibemathing/vibe-mathing-problem-library-public",
+      "url": "https://github.com/vibemathing/vibe-mathing-problem-library-public",
+      "readme_url": "https://github.com/vibemathing/vibe-mathing-problem-library-public/blob/main/README.md",
+      "canonical_index_url": "https://github.com/vibemathing/vibe-mathing-problem-library-public/blob/main/catalog/canonical-index.json",
+      "snapshot_url": "https://github.com/vibemathing/vibe-mathing-problem-library-public/blob/main/LIBRARY_SNAPSHOT.json",
+      "source_role": "problem discovery and ProblemContract catalog",
+      "observed_on": "2026-09-07"
+    },
+    {
+      "role": "web-research-template",
+      "full_name": "vibemathing/vibe-mathing-problem-public-template",
+      "url": "https://github.com/vibemathing/vibe-mathing-problem-public-template",
+      "readme_url": "https://github.com/vibemathing/vibe-mathing-problem-public-template/blob/main/README.md",
+      "bootstrap_url": "https://github.com/vibemathing/vibe-mathing-problem-public-template/blob/main/WEB_BOOTSTRAP.md",
+      "output_contract_url": "https://github.com/vibemathing/vibe-mathing-problem-public-template/blob/main/WEB_OUTPUT_CONTRACT.json",
+      "source_role": "fixed Web research Harness template for one concrete problem",
+      "observed_on": "2026-09-07"
+    }
+  ],
+  "canonical_catalog_snapshot": {
+    "source_repository": "vibemathing/vibe-mathing-problem-library-public",
+    "index_path": "catalog/canonical-index.json",
+    "index_url": "https://github.com/vibemathing/vibe-mathing-problem-library-public/blob/main/catalog/canonical-index.json",
+    "source_snapshot_path": "LIBRARY_SNAPSHOT.json",
+    "source_snapshot_url": "https://github.com/vibemathing/vibe-mathing-problem-library-public/blob/main/LIBRARY_SNAPSHOT.json",
+    "source_built_at": "2026-09-06T11:46:42+08:00",
+    "observed_on": "2026-09-07",
+    "counts": {
+      "canonical_problem_contracts": 10,
+      "draft_problem_contracts": 0,
+      "repository_locators": 10,
+      "source_observations": 0,
+      "source_shards": 0
+    },
+    "status": "source-reported snapshot; revalidate the remote index before starting research"
+  },
+  "concrete_problem_repositories": {
+    "listing_url": "https://github.com/vibemathing?tab=repositories",
+    "canonical_name_patterns": ["problem-opg-*", "problem-erdos-*"],
+    "candidate_name_patterns": ["problem-um-*"],
+    "selection_rule": "Select by problem_id from the canonical catalog first; repository names and source labels are locators, not Result outcomes."
+  },
+  "web_research_suite": {
+    "template_repository": "vibemathing/vibe-mathing-problem-public-template",
+    "harness_source": "harness-source:web-research-full",
+    "observed_harness_version": "1.2.4",
+    "required_start_files": [
+      "AGENTS.md",
+      "WEB_BOOTSTRAP.md",
+      "HARNESS_SNAPSHOT.json",
+      "WEB_CONTEXT_BUNDLE.md",
+      "WEB_ACTIVE_SKILLS.json",
+      "WEB_OUTPUT_CONTRACT.json"
+    ],
+    "candidate_write_paths": [
+      "research/artifacts/web-inbox/**",
+      "research/artifacts/candidates/**",
+      "research/artifacts/source-notes/**"
+    ],
+    "admission_boundary": "Issue, branch, commit, pull request, merge, checks, and model output transport candidates; they do not admit Evidence, Result, or Solution."
+  },
+  "integration_policy": {
+    "mode": "pointer-only until separately reviewed",
+    "remote_catalog_is_not_local_canonical": true,
+    "auto_import_problem_contracts": false,
+    "auto_clone_remote_repositories": false,
+    "auto_admit_results": false,
+    "local_canonical_ledger_path": "problem-library/records/canonical-problems.jsonl",
+    "prohibited_imports": [
+      "research/**",
+      "result-library/**",
+      "problem-library/raw/**",
+      "problem-library/derived/**",
+      "runtime logs",
+      "credentials",
+      "private paths"
+    ],
+    "revalidation": "Re-read the public catalog contract, repository identity, lifecycle, digest, and current branch before using any entry."
+  }
+}

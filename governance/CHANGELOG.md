@@ -4,11 +4,15 @@ type: changelog
 status: current
 owner: engineering
 created: 2026-08-13
-last_reviewed: 2026-08-29
+last_reviewed: 2026-09-01
 review_cycle: P90D
 ---
 
 # 治理包变更记录
+
+- 发布公开问题库的 candidate registry、CandidateObservation schema、ProblemContract v1 和 ResearchBundle 只读派生契约；明确来源状态不等于数学结论。
+- 发布 41 个工具族的公开成熟度注册表与两列工具目录；缺少公开运行证据的族保持为调研分类，不引用内部盘点文件。
+- 供应链新增固定的候选 Git reference 记录；抓取器拒绝未固定 clone、移动分支归档和不安全 TLS 绕过。
 
 - 新增公开仓库发布边界和自包含机器门禁，拒绝私密研究路径、恢复快照、生成物、绝对用户路径、私有网络标识与凭据模式进入公开 Git 树。
 - 初始化治理包。
@@ -17,3 +21,6 @@ review_cycle: P90D
 - 新增 GATE-0002，阻止有限证据、自我审查和陈述失真进入完整解视图。
 - 登记 problem-library、research、result-library 模块上下文和可移植/完整两级工具链。
 - 发布项目级 `VIBE-MATHING-SPEC v0.1`，把研究闭环压缩为 R1 候选隔离、R2 验证准入、R3 证据守恒；九条候选要求收敛为操作层推论。
+- 新增公共发布声明账本与 AI 发现资产的维护边界；它们是文档派生物，不是数学 Result 真相源。
+- 登记 `vibemathing` 公共问题总库、具体问题 locator、网页版研究模板和 pointer-only 集成策略；远端目录不会绕过本地 ProblemContract 准入。
+- 发布形式化方法与 Lean 定位地图，作为 skills、工具目录和 README 的方法层主线；不把教学目录、工具可运行或 Lean kernel check 写成数学 Result 证据。

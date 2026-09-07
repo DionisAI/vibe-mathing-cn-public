@@ -5,12 +5,23 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import stat
 import re
 import subprocess
 import sys
 from pathlib import Path
 
+from vibe_mathing.runtime import RuntimeErrorBase, execute_bounded
+
 sys.dont_write_bytecode = True
+BOUNDARY_COMMAND_TIMEOUT_SECONDS = 30
+MAX_COMMAND_OUTPUT_BYTES = 8_000_000
+MAX_TRACKED_FILE_BYTES = 128_000_000
+PUBLIC_ORIGINS = {
+    "https://github.com/tradecatlabs/vibe-mathing-cn-public.git",
+    "git@github.com:tradecatlabs/vibe-mathing-cn-public.git",
+}
 
 FORBIDDEN_PATH_PATTERNS = (
     re.compile(r"^governance/tasks/001[0-5]-millennium-"),
@@ -58,13 +69,70 @@ CREDENTIAL_PATTERNS = {
 }
 
 
+def _safe_environment() -> dict[str, str]:
+    allowed = {"PATH", "HOME", "LANG", "LC_ALL", "TMPDIR"}
+    environment = {
+        key: value for key, value in os.environ.items() if key in allowed
+    }
+    environment["PATH"] = environment.get("PATH", "/usr/local/bin:/usr/bin:/bin")
+    return environment
+
+
 def run_git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[bytes]:
-    return subprocess.run(
-        ["git", "-C", str(root), *args],
-        check=check,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+    argv = ["git", "-C", str(root), *args]
+    try:
+        result = execute_bounded(
+            argv,
+            cwd=root,
+            timeout_seconds=BOUNDARY_COMMAND_TIMEOUT_SECONDS,
+            max_output_bytes=MAX_COMMAND_OUTPUT_BYTES,
+            memory_budget_mb=512,
+            threads_max=1,
+            env=_safe_environment(),
+        )
+    except RuntimeErrorBase as exc:
+        raise RuntimeError(f"git boundary command failed: {exc}") from exc
+    completed = subprocess.CompletedProcess(
+        argv,
+        result["exit_code"],
+        result["stdout"].encode("utf-8", "replace"),
+        result["stderr"].encode("utf-8", "replace"),
     )
+    if check and completed.returncode != 0:
+        raise RuntimeError(f"git boundary command exited with {completed.returncode}")
+    return completed
+
+
+def read_tracked_file(path: Path) -> bytes:
+    if (
+        not path.is_absolute()
+        or len(str(path)) > 4_096
+        or "\x00" in str(path)
+        or "\\" in str(path)
+    ):
+        raise RuntimeError("tracked path is invalid")
+    nofollow = getattr(os, "O_NOFOLLOW", None)
+    if nofollow is None:
+        raise RuntimeError("O_NOFOLLOW unavailable; refusing boundary scan")
+    descriptor = os.open(path, os.O_RDONLY | nofollow)
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode):
+            raise RuntimeError("tracked path is not a regular file")
+        if file_stat.st_size > MAX_TRACKED_FILE_BYTES:
+            raise RuntimeError("tracked file exceeds boundary size budget")
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(descriptor, min(64 * 1024, MAX_TRACKED_FILE_BYTES - total + 1))
+            if not chunk:
+                return b"".join(chunks)
+            total += len(chunk)
+            if total > MAX_TRACKED_FILE_BYTES:
+                raise RuntimeError("tracked file exceeds boundary size budget")
+            chunks.append(chunk)
+    finally:
+        os.close(descriptor)
 
 
 def forbidden_path(path: str) -> bool:
@@ -92,11 +160,29 @@ def content_findings(data: bytes) -> list[str]:
 
 def validate(root: Path) -> list[dict[str, str]]:
     issues: list[dict[str, str]] = []
-    if not (root / ".git").exists():
+    if (
+        not root.is_absolute()
+        or len(str(root)) > 4_096
+        or "\x00" in str(root)
+        or "\\" in str(root)
+        or root.is_symlink()
+        or not root.is_dir()
+        or root.resolve() != root
+        or any(parent.is_symlink() for parent in [root.parent, *root.parents])
+    ):
+        return [{"code": "unsafe_project_root", "path": str(root), "message": "public root is not a regular directory"}]
+    git_path = root / ".git"
+    if (
+        git_path.is_symlink()
+        or not git_path.is_dir()
+        or git_path.resolve() != git_path
+    ):
         return [{"code": "not_git_repository", "path": str(root), "message": "public root is not a Git repository"}]
 
     origin = run_git(root, "remote", "get-url", "origin", check=False)
-    if origin.returncode == 0 and not origin.stdout.decode().strip().rstrip("/").endswith("vibe-mathing-cn-public.git"):
+    if origin.returncode != 0:
+        issues.append({"code": "missing_public_origin", "path": "origin", "message": "public repository origin is missing"})
+    elif origin.stdout.decode().strip() not in PUBLIC_ORIGINS:
         issues.append({"code": "wrong_public_origin", "path": "origin", "message": "origin is not the public repository"})
     remotes = run_git(root, "remote").stdout.decode().splitlines()
     for remote in remotes:
@@ -109,16 +195,32 @@ def validate(root: Path) -> list[dict[str, str]]:
         if forbidden_path(relative):
             issues.append({"code": "forbidden_public_path", "path": relative, "message": "path is not publishable"})
             continue
-        path = root / relative
+        relative_path = Path(relative)
+        if (
+            relative_path.is_absolute()
+            or any(part in {".", ".."} for part in relative_path.parts)
+            or "\\" in relative
+            or "\x00" in relative
+        ):
+            issues.append({"code": "unsafe_tracked_path", "path": relative, "message": "tracked path escapes public root"})
+            continue
+        path = root / relative_path
+        lexical = root
+        if any(
+            (lexical := lexical / part).is_symlink()
+            for part in relative_path.parts
+        ):
+            issues.append({"code": "public_symlink", "path": relative, "message": "tracked path contains a symlink"})
+            continue
         if path.is_symlink():
             issues.append({"code": "public_symlink", "path": relative, "message": "tracked symlinks are not allowed"})
             continue
         try:
-            data = path.read_bytes()
+            data = read_tracked_file(path)
         except OSError as error:
             issues.append({"code": "unreadable_tracked_file", "path": relative, "message": str(error)})
             continue
-        if b"\0" in data[:8192]:
+        if b"\0" in data:
             issues.append({"code": "unclassified_binary", "path": relative, "message": "binary tracked file is not allowlisted"})
             continue
         for finding in content_findings(data):
@@ -131,10 +233,11 @@ def main() -> int:
     parser.add_argument("--project-root", default=".")
     parser.add_argument("--format", choices=("text", "json"), default="text")
     args = parser.parse_args()
-    issues = validate(Path(args.project_root).resolve())
+    project_root = Path(os.path.abspath(args.project_root))
+    issues = validate(project_root)
     payload = {"decision": "PASS" if not issues else "BLOCK", "issue_count": len(issues), "issues": issues}
     if args.format == "json":
-        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        print(json.dumps(payload, ensure_ascii=False, indent=2, allow_nan=False))
     else:
         print(f"Public repository boundary: {payload['decision']}")
         for issue in issues:
@@ -143,4 +246,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except (OSError, RuntimeError, ValueError) as exc:
+        print(f"Public repository boundary: BLOCK\n- boundary_error: {exc}", file=sys.stderr)
+        raise SystemExit(1) from exc

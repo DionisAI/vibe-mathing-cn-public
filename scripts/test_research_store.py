@@ -31,13 +31,33 @@ def prepare(base: Path) -> None:
 
 def problem(identifier: str) -> dict[str, object]:
     return {
+        "schema_version": "1.0.0",
         "problem_id": f"problem:{identifier}",
         "title": identifier,
         "aliases": [],
         "statement": {"text": "测试问题", "language": "zh-CN", "version": 1},
+        "domain": {"description": "纯合成测试对象", "objects": ["synthetic object"]},
+        "quantifiers": [{"kind": "decide", "variables": [], "domain": "synthetic domain"}],
+        "definitions": [],
+        "assumptions": [],
+        "allowed_axioms": [],
         "msc": [],
         "sources": [{"source": "fixture", "source_record_id": None, "url": "https://example.com/test", "retrieved_at": NOW}],
-        "status": "open",
+        "acceptance": {"policy": "solution-admission-v1"},
+        "constraints": {
+            "allowed_methods": ["computation"],
+            "allowed_adapters": ["synthetic-test-v1"],
+            "max_attempts": 1,
+            "runtime": {
+                "max_transitions": 16,
+                "max_retries": 2,
+                "timeout_seconds": 30,
+                "max_output_bytes": 1_048_576,
+                "memory_budget_mb": 256,
+                "threads_max": 1,
+            },
+        },
+        "lifecycle": "active",
         "created_at": NOW,
         "updated_at": NOW,
     }
@@ -45,6 +65,22 @@ def problem(identifier: str) -> dict[str, object]:
 
 def concurrent_write(root: str, identifier: str) -> None:
     ResearchStore(Path(root)).upsert("problems", problem(identifier))
+
+
+def attempt(identifier: str, problem_id: str, method: str = "computation") -> dict[str, object]:
+    return {
+        "attempt_id": f"attempt:{identifier}",
+        "problem_id": problem_id,
+        "generator": "candidate-generator",
+        "objective": "纯合成 lifecycle 测试",
+        "method": method,
+        "lifecycle": "completed",
+        "started_at": NOW,
+        "completed_at": NOW,
+        "inputs": [],
+        "claims": [],
+        "artifacts": [],
+    }
 
 
 def main() -> int:
@@ -112,6 +148,48 @@ def main() -> int:
             assert "跨记录完整性失败" in str(exc)
         else:
             raise AssertionError("唯一 writer 不得写入断链 Attempt")
+
+    with tempfile.TemporaryDirectory(prefix="vibe-mathing-contract-lifecycle-") as temporary:
+        base = Path(temporary)
+        prepare(base)
+        store = ResearchStore(base)
+        draft = problem("lifecycle")
+        draft["lifecycle"] = "draft"
+        draft["constraints"]["max_attempts"] = 2
+        store.upsert("problems", draft)
+        first = attempt("lifecycle-first", draft["problem_id"])
+        try:
+            store.upsert("attempts", first)
+        except StoreError as exc:
+            assert "只有 active ProblemContract" in str(exc)
+        else:
+            raise AssertionError("draft ProblemContract 不得创建 Attempt")
+
+        active = {**draft, "lifecycle": "active", "updated_at": "2026-08-14T00:00:01Z"}
+        store.replace_problem(active)
+        assert store.upsert("attempts", first) is True
+
+        withdrawn = {
+            **active,
+            "lifecycle": "withdrawn",
+            "updated_at": "2026-08-14T00:00:02Z",
+        }
+        store.replace_problem(withdrawn)
+        assert store.read("attempts") == [first], "withdrawn 必须保留历史 Attempt"
+        try:
+            store.upsert("attempts", attempt("lifecycle-second", draft["problem_id"]))
+        except StoreError as exc:
+            assert "只有 active ProblemContract" in str(exc)
+        else:
+            raise AssertionError("withdrawn ProblemContract 不得创建新 Attempt")
+        try:
+            store.replace_problem(
+                {**withdrawn, "lifecycle": "active", "updated_at": "2026-08-14T00:00:03Z"}
+            )
+        except StoreError as exc:
+            assert "单向转换" in str(exc)
+        else:
+            raise AssertionError("withdrawn ProblemContract 不得重新激活")
 
     print("研究存储测试通过：幂等、并发唯一写入与 WAL 崩溃恢复均成立。")
     return 0

@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it using the metadata below."
+title: "vibe-mathing-cn: Trusted AI Mathematics Research and Verification Workbench"
+type: software
+authors:
+  - name: "TradeCat Labs"
+repository-code: "https://github.com/tradecatlabs/vibe-mathing-cn-public"
+license: MIT
+abstract: "A Chinese-first, Git-based workbench for AI-assisted mathematics research that separates untrusted candidate generation from trusted verification over ProblemContract, Attempt, Result, evidence ledgers, and derived Solution View."
+keywords:
+  - AI mathematics
+  - mathematical research
+  - trusted verification
+  - ProblemContract
+  - ResearchBundle
+  - proof assistant
+  - Lean 4
+  - Mathlib
+  - SymPy
+  - counterexample search
+  - formal verification
+  - open problems
+  - research automation
+  - LLM agents

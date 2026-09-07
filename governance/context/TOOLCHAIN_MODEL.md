@@ -4,71 +4,74 @@ type: context
 status: current
 owner: engineering
 created: 2026-08-13
-last_reviewed: 2026-08-13
+last_reviewed: 2026-09-01
 review_cycle: P90D
 ---
 
 # Toolchain Model
 
-本项目优先复用 Git、GitHub Actions、JSON Schema、Python 数学库和 proof assistant；自研代码只连接来源、研究记录、验证与派生索引。
+本项目优先复用 Git、GitHub Actions、JSON Schema、Python 数学库和 proof assistant；自研代码只连接来源、研究记录、验证和派生视图。
 
 ## 成熟工具优先
 
-- Git/GitHub Actions 管版本和持续验证。
-- JSON Schema 管结构契约，Python 脚本只做跨记录不变量和胶水编排。
-- SymPy、NumPy、SciPy、mpmath 管计算，不自研通用代数或数值内核。
-- Lean/Mathlib v4.33.0 管形式化证明，不自研 proof kernel；elan 安装器与 Mathlib commit 同时固定并校验。
+方法选型先按 [`FORMAL-METHODS-MAP.md`](../standards/FORMAL-METHODS-MAP.md) 定位，再按工具成熟度 registry 判断是否可运行；教程目录、包名或固定源码不能代替能力证据。
+
+- Git/GitHub Actions 管版本和持续验证；`vendor/sources.lock.json` 是公开来源固定的唯一清单。
+- JSON Schema 管对象结构，Python 脚本管跨记录不变量、路径安全和原子派生。
+- SymPy、NumPy、SciPy、mpmath 管有限计算，不自研通用代数或数值内核。
+- SAT/SMT canary 只验证明确的有限输入协议；它是横向自动化/决策过程，不等于 Lean 演绎证明或完整模型检查；没有公开运行证据时不进入 evidence/verifier route。
+- Lean/Mathlib v4.33.0 管固定 fixture 的形式化证明；Lean 位于依赖类型理论型演绎验证，kernel check 不替代陈述忠实性审查，也不代表整个形式化方法版图。
+- 工具族使用 `surveyed → source_locked → installed → smoke_checked → evidence_capable → verifier_admitted` 状态机。状态不是安装数量，也不是数学结论。
+
+41 个工具族的公开边界见 [`governance/tools/MATH_TOOL_CATALOG.md`](../tools/MATH_TOOL_CATALOG.md) 和机器注册表 [`governance/control-plane/math-tool-maturity.v1.json`](../control-plane/math-tool-maturity.v1.json)。
 
 ## 项目命令
 
-| 场景 | 命令 | 边界 |
-|---|---|---|
-| 安装依赖 | `python3 -m pip install -r requirements.txt` | 使用固定 Python 包版本 |
-| 可移植质量门 | `make check` | CI 和本地共用；不要求 ignored 材料 |
-| 本机完整门禁 | `make check-full` | 额外校验上游缓存、原始网页和电子书摘要 |
-| 单机生产闭环门禁 | `make check-production` | 现场运行可信证据、WAL、runtime、SymPy 和 Lean 垂直链，必须 100/100 |
-| 研究空间验证 | `python3 scripts/validate_research_spaces.py` | 只读校验记录与解库派生一致性 |
-| 研究运行 | `python3 scripts/vibe_mathing_cli.py run/resume/verify/status/cancel` | 仅注册 adapter；不提供任意命令执行 |
-| 生产成熟度审计 | `python3 scripts/pipeline_maturity_audit.py --strict` | 从真实命令退出码派生，不接受自报 PASS |
-| 刷新解库索引 | `python3 scripts/validate_research_spaces.py --write-index` | 只更新派生索引，随后仍需只读校验 |
-| 查询来源问题 | `python3 scripts/query_problem_library.py --text <query>` | 查询来源记录，不自动归一化 |
-| 刷新问题来源 | `python3 scripts/fetch_problem_library.py --refresh` | 网络操作；不在 CI 中运行 |
-| 同步供应链 | `make sync-supply-chain` | 网络操作；不在 CI 中运行 |
-| GitHub CI | `.github/workflows/ci.yml` | portable job 15 分钟；固定 Lean 生产闭环 job 30 分钟；最小只读权限 |
+| 场景 | 入口与边界 |
+|---|---|
+| 安装核心依赖 | `python3 -m pip install -r requirements.txt`；可选数学扩展使用 `requirements-math-tools.txt`。 |
+| 可移植质量门 | `make check`；不要求 ignored raw、电子书、上游缓存或运行报告。 |
+| 完整本地门禁 | `make check-full`；只在拥有本地来源/电子书/上游缓存时运行。 |
+| 研究空间验证 | `python3 scripts/validate_research_spaces.py`；只读校验 Problem/Attempt/Result 与派生解库。 |
+| ProblemContract 测试 | `python3 scripts/test_problem_contract.py`；验证定义域、量词、准入策略和预算。 |
+| ResearchBundle 导出 | `python3 scripts/vibe_mathing_cli.py export-bundle --problem-id <id>`；从一致快照派生，只读且冲突失败。 |
+| 候选 snapshot | `python3 scripts/build_candidate_observations.py`、`python3 scripts/validate_candidate_problem_library.py --verify-raw`；候选不准入。 |
+| 候选查询 | `python3 scripts/query_problem_library.py --collection candidates --limit 20`；默认 collection 仍是 admitted。 |
+| 工具成熟度 | `python3 scripts/validate_math_tool_maturity.py`；route 不得超过 maturity。 |
+| 工具探针 | `python3 scripts/check_math_tools.py --profile <profile> --strict`；每个外部命令都有 timeout，输出仅有稳定标签。 |
+| 工具 canary | `MATH_CANARY_SOURCE_SHA256=$(python3 -c 'import hashlib; print(hashlib.sha256(open("scripts/run_math_tool_canaries.py","rb").read()).hexdigest())') python3 scripts/run_math_tool_canaries.py --tools T13,T15,T16 --json --strict`；只执行合成有界案例，不创建数学 Result。 |
+| canary 报告校验 | `python3 scripts/validate_math_tool_canaries.py --report <report.json>`；公开仓不携带运行报告。 |
+| 文献 provider | `python3 scripts/check_literature_providers.py`；默认离线校验，`--live` 才访问网络且不保存正文。 |
+| 供应链校验 | `python3 scripts/sync_supply_chain.py --check`；Git reference 只允许 no-checkout、固定 commit 和根许可证摘要。 |
+| 问题库重建 | `python3 scripts/fetch_erdosproblems.py all`；网络抓取不作为 CI 提交门，使用缓存时仍需离线校验。 |
 
 ## 依赖边界
 
-- `requirements.txt` 是 CI 与本地可移植质量门的 Python 依赖真相源。
-- `requirements-problem-library.txt` 保留为抓取器的窄依赖清单；新增公共依赖必须同步评估两者职责。
-- `vendor/upstream/`、`problem-library/raw/`、`literature/files/` 是本地忽略材料，不得成为 `make check` 的隐式依赖。
-- `fixtures/lean-proof/lean-toolchain` 固定 Lean v4.33.0；`lakefile.toml` 固定 Mathlib commit `db584cd6…`。
-- CI 从 elan commit `464c9d2…` 获取安装器，并校验 SHA-256；禁止从动态 master 直接执行脚本。
-- `research/verifiers.json`、receipt schema 与 verifier policy 是证据能力和输出语义的项目契约。
+- `requirements.txt` 是 CI 与可移植质量门的直接依赖真相源；`requirements-math-tools.txt` 是可选探索扩展，不改变核心准入。
+- `vendor/upstream/`、`problem-library/raw/`、`problem-library/derived/` 和 `literature/files/` 是本地忽略材料，不得成为 `make check` 的隐式依赖。
+- `vendor/upstream/reference/` 只保存固定 Git 对象，不包含工作树；固定来源不等于安装、激活或验证器准入。
+- `fixtures/lean-proof/lean-toolchain` 固定 Lean v4.33.0；`lakefile.toml` 固定 Mathlib revision。编译、axiom audit 和 statement-faithfulness 是不同门。
+- `literature/providers.json` 只保存非敏感请求配置；凭据值只能来自调用进程环境，绝不写入仓库或审计输出。
+- `canonical-problem.schema.json` 是 ProblemContract 输入契约；`research-bundle.schema.json` 是只读派生输出契约，不拥有持久化 collection。
 
-## 性能与成本
+## 资源与安全
 
-- 可移植校验对记录数线性扫描，当前约 6012 条来源记录，适合每次 CI 运行。
-- JSONL 事务写入为 O(n) 全量重写，换取可审计、原子和无数据库所有权面；达到实测瓶颈后再迁移 SQLite/PostgreSQL。
-- Lean 首次工具链约 548 MiB，Mathlib cache 也有明显网络/磁盘成本，因此独立为 production-loop CI job，并设置 30 分钟上限。
-- `make check-full` 会读取约 1 GiB 电子书并校验哈希，只适合本地加强门禁，不放入普通 CI。
-- 问题抓取为外部网络 I/O，必须显式刷新、有限重试和限速，不作为提交门禁。
+- 所有计算、solver、CAS、外部命令、HTTP 请求和 canary 子进程都必须有 timeout、资源预算、重试/停止条件、输出或响应上限、终止回执和失败语义。
+- GPU 或并行粗筛如果被外部项目接入，也只能产生有限候选；精确裁决必须回到已审查的 CPU/形式化路径。
+- 工具成功、版本存在、固定 commit、Lean build、有限枚举和模型自评都不能单独升级 Result。
+- 失败路线只追加到 `research/records/failed-routes.jsonl`；不覆盖历史，也不把失败伪装成 solved/refuted。
+- 公开仓不保存 prompt、reasoning、session、机器路径、endpoint、IP、凭据、模型权重或运行日志。
 
 ## 禁止或谨慎使用
 
 - 禁止用 CI 重新抓取动态网页后覆盖版本化记录。
-- 禁止把本地 PDF、凭据、上游 Git pack 或原始网站快照上传到公开仓库。
-- 禁止手工修改 `solutions.json` 制造未通过 Result 验证的解。
-- 禁止 caller 自报 `independent`、摘要或自然语言 PASS 直接取得证据能力；必须通过 registry、policy、真实 artifact 和现场摘要。
-- 禁止新增无 owner、无验证命令、无错误语义的长期脚本。
-
-## 回滚
-
-工具链或 CI 变更通过普通 Git revert 回滚。派生索引可从 `results.jsonl` 重算；本地缓存与电子书不受 Git 回滚影响。
+- 禁止把有限枚举、数值拟合、模型自评、Lean build 或 canary PASS 直接升级为数学 Result。
+- 禁止执行没有 timeout、资源预算、停止条件和失败回执的 solver、CAS 或外部命令。
 
 ## 工具链变更流程
 
-1. 先证明现有工具与项目脚本不能满足当前需求。
-2. 明确版本、来源、owner、许可、安全权限、性能成本和退出路径。
-3. 同步 `requirements.txt`、Makefile、CI、脚本文档与本模型。
-4. 在干净环境运行 `make check`，本机材料相关变更再运行 `make check-full`。
-5. 用普通 Git revert 回滚；禁止为工具链升级改写已发布历史。
+1. 先证明现有公开工具和契约不能满足需求。
+2. 固定版本、来源、许可证、owner、资源预算、timeout、失败语义和证据上限。
+3. 同步 schema、脚本、测试、Makefile、CI 和本模型。
+4. 运行 `make check`；涉及 ignored 材料时再运行相应 full/production 门。
+5. 只能使用普通 Git revert 回滚；禁止改写已发布历史。

@@ -55,14 +55,25 @@
 | S27 | Background / Publisher policy | [SIAM: Artificial Intelligence](https://epubs.siam.org/artificial-intelligence) | SIAM 官方政策入口 | 用户提供的政策摘要指向工具披露、人类责任与计算/数据过程可评估性 | 本轮直接访问返回 HTTP 403，正文条款尚未完成一手复核；后续需通过可访问的 SIAM 官方版本核对措辞 |
 | S28 | Background / Primary guidance | [Pavel Etingof, “Use of AI in mathematical research: A guide for young mathematicians”](https://math.mit.edu/~etingof/aiuse.pdf), 2026-05 | MIT 托管作者 PDF | 采用的 AI 数学内容必须由研究者完整理解、逐项检查、以自己的方式重写，并能现场解释；AI 输出至多是起点或中间步骤 | 个人研究指南，不是期刊政策或正式技术标准；内容会随技术发展更新 |
 
-## F. Excluded or Downgraded Materials
+## F. Formal Methods Map and Lean Sources
+
+| ID | Layer / type | Source | Auditable material | Practice signal | Limits |
+|---|---|---|---|---|---|
+| S29 | Formal methods / Institutional | [NASA NTRS: Formal Methods Case Studies for DO-333](https://ntrs.nasa.gov/citations/20140004055) | DO-333 case studies for one avionics example | Directly illustrates theorem proving, model checking and abstract interpretation as different formal-method classes, with attention to produced verification evidence | Case studies are not a complete certification effort and do not define this project's admission rules |
+| S30 | Lean / Official reference | [Lean Language Reference](https://lean-lang.org/doc/reference/latest/) | Official positioning, dependent type theory, minimal kernel and tactic-produced proof terms | Supports placing Lean in dependent-type-theory interactive theorem proving for mathematics and software verification | Reference-version details change; current fixture toolchain must be checked independently |
+| S31 | Lean foundations / Official documentation | [Dependent Type Theory](https://lean-lang.org/theorem_proving_in_lean4/Dependent-Type-Theory/) | Dependent type theory, inductive types and Lean's foundational language model | Supports the first layers of the Lean stack: logic/kernel and language/elaboration | Educational foundation, not a statement that Lean covers every formal-methods technique |
+| S32 | Lean automation / Release record | [Lean 4.22.0 release notes](https://lean-lang.org/doc/reference/latest/releases/v4.22.0/) | Release note for the SMT-style `grind` tactic and theory-specific solvers | Supports treating automation/decision procedures as a layer around proof construction, not as a replacement for kernel checking | Historical release note; it is not evidence of this repository's installed or verifier-admitted capability |
+| S33 | Mathematical formalization / Community text | [Mathematics in Lean — Introduction](https://leanprover-community.github.io/mathematics_in_lean/C01_Introduction.html) | Interactive formalization workflow and Mathlib relationship | Supports treating library engineering and interactive practice as distinct Lean layers | Tutorial scope; it does not replace the project's ProblemContract or evidence gates |
+| S34 | Model checking / Classic textbook | [Baier & Katoen, Principles of Model Checking](https://mitpress.mit.edu/9780262026499/principles-of-model-checking/) | Canonical textbook entry for model-checking concepts and algorithms | Supports keeping state-space verification conceptually separate from deductive proof and SMT automation | Publisher page is a bibliographic entry; specific claims require reading the book or a primary source |
+
+## G. Excluded or Downgraded Materials
 
 - `vibemath.app` 等教育/动画产品：同名但不属于研究型 vibe-mathing。
 - 无真实 GitHub 仓库或引用不可解析的 RL “vibe prover” 教程：不能作为可重跑实践。
 - 小说、营销转载、社交平台口号：只可用于传播语义研究，不进入实践核心证据。
 - 中文聚合文章的“模型独立证明”“一个提示词解决”等说法：若与原论文中人类 scaffold、审稿和修补记录冲突，以原始材料为准。
 
-## G. Verification Status
+## H. Verification Status
 
 - 本轮完成：网页正文、论文 HTML/摘要、仓库 README、公开验证记录和社区索引的交叉阅读。
 - 本轮未完成：外部 Lean 仓库固定 commit 构建、全部聊天链接逐条归档、每个数学结论的领域专家独立复核，以及 SIAM AI 政策正文的一手复核。

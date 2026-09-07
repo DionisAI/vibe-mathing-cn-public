@@ -4,7 +4,7 @@ type: standard
 status: current
 owner: engineering
 created: 2026-08-13
-last_reviewed: 2026-08-13
+last_reviewed: 2026-09-07
 review_cycle: P90D
 version: 0.1
 source: ADR-0000
@@ -18,6 +18,16 @@ related_gates: [GATE-0002]
 ## 目标
 
 从问题库出发，由非可信 Agent 探索候选，由受信验证链裁决；只有完整、保真、可独立复核并带有效证据的证明或反例进入解库派生视图。
+
+## 方法层主线
+
+本项目采用以下 Formal Methods 上位地图指导规格、验证方法和工具路由：
+
+> **规格与语义 → 演绎验证/定理证明 → 模型检查 → 抽象解释 → SAT/SMT/符号推理（含符号执行）/决策过程 → 精化与程序综合**
+
+它是方法地图而不是强制流水线：不同问题可以在不同层闭合或保持 open，但必须说明覆盖范围和证据边界。Lean 位于依赖类型理论型演绎验证/交互式定理证明；Lean 的六层栈是类型理论与 Kernel、语言与 elaboration、Proof Engineering、自动化与决策过程、Library Engineering、应用形式化/验证。完整分类和学习顺序见 [`FORMAL-METHODS-MAP.md`](FORMAL-METHODS-MAP.md)。
+
+这一区分不能被弱化：SMT 或有限计算不是一般性定理证明，模型检查不是 Lean kernel check，工具可运行或自动化成功也不是数学 Result。项目的运行闭环仍然是 `Problem → Attempt → Result → Verification Artifacts`，方法地图与运行闭环是两个正交层次。
 
 ## 规范词
 
@@ -109,6 +119,7 @@ Problem → Attempt → Result → Verification Artifacts
 - 负例验证：`scripts/test_research_spaces.py`。
 - 治理门禁：`governance/architecture-gates/rules/GATE-0002-数学成果晋升必须有充分证据和独立验证.md`。
 - 架构依据：`governance/decisions/adr/ADR-0000-问题空间到解空间的最小闭环.md`。
+- 方法地图：`governance/standards/FORMAL-METHODS-MAP.md`，只负责方法层定位，不授予工具能力或 Result 状态。
 
 ## 成熟度边界
 

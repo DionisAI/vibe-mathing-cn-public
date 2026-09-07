@@ -198,6 +198,9 @@ def safe_read_text(path: Path, max_bytes: int) -> str | None:
         return None
 
 
+GIT_COMMAND_TIMEOUT_SECONDS = 30
+
+
 def load_files_from_git(repo: Path, mode: str) -> list[str]:
     commands = {
         "working": ["git", "diff", "--name-only", "-z", "HEAD"],
@@ -209,6 +212,7 @@ def load_files_from_git(repo: Path, mode: str) -> list[str]:
         cwd=repo,
         check=False,
         capture_output=True,
+        timeout=GIT_COMMAND_TIMEOUT_SECONDS,
     )
     if result.returncode != 0:
         return []

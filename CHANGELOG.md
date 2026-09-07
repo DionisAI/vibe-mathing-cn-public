@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-09-07 — 公共 README、AI 发现与 GEO 维护面
+
+- 重构中英文 README 首屏，统一项目实体、公共 URL、当前空 ledger 状态、快速开始和证据边界。
+- 新增 `llms.txt`、AI 引用资产、术语契约、双语回答矩阵和不承诺排名的 GEO 评估协议/机器报告模板。
+- 新增公共声明账本、贡献/安全边界文档以及 README/GEO 事实和链接校验。
+- 接入 `vibemathing` 公共具体问题索引、ProblemContract 总库 locator、网页版研究模板入口、只读 API/catalog 查询器和本地 draft ProblemContract 模板；远端条目不会自动准入。
+- 发布 `FORMAL-METHODS-MAP.md`：以“规格与语义 → 演绎验证 → 模型检查 → 抽象解释 → SAT/SMT/符号推理（含符号执行） → 精化/综合”为方法层主线，并把 Lean 准确放在依赖类型理论型演绎验证分支。
+- 公共文档仍不声称解决任何开放数学问题；GEO 评估只衡量理解和引用准确性，不是数学证据。
+
+## 2026-09-01 — 公开候选契约、研究 bundle 与工具边界
+
+- 发布 ProblemContract v1、CandidateObservation schema/registry、候选 snapshot 校验和默认 admitted 查询边界。
+- 发布只读 ResearchBundle、failed-route append-only schema、SMT/SymPy 有界 fixture 与文献 provider registry。
+- 发布 41 个工具族的公开成熟度 registry、严格两列工具目录和正例/反例/错误/timeout canary 契约；不携带内部运行报告。
+- 供应链来源只接受固定 commit/reference；抓取器拒绝未固定 Git clone、移动分支归档和 TLS 验证绕过，并为外部命令设置 timeout。
+- 公开仓继续保持 canonical Problem、Attempt、Result 和 Solution View 业务记录为空；候选不等于已解决问题。
+
 ## 2026-08-13 — 单机可信研究闭环 100/100
 
 - 新增受信 verifier registry、不可覆盖证据回执、现场摘要重算和 append-only 失效语义。
@@ -16,10 +33,9 @@
 - Result 证据能力新增 `axiom_escape_audit` 与 `prior_art_review`。
 - kernel 直接验证只有与独立公理/逃逸审计组合时才满足完整解准入。
 
-## 2026-08-13 - 本机 auto-research 完整镜像
+## 2026-08-13 - 供应链审计快照
 
-- 将 `~/.codex/archive/skills/auto-research` 完整工作树复制到被隔离的 `vendor/upstream/auto-research/`。
-- 保留 4,170 个 skill 入口和相关代码、文档与数据，排除嵌套 `.git` 和运行缓存；镜像不自动激活、不整体发布。
+- 增加经过隔离、范围受限的第三方材料精简快照；快照不自动激活，也不整体发布。
 - 扩展供应链脚本，以来源、目标、lockfile 三方 inventory 和树摘要提供幂等同步与漂移检查。
 
 ## 2026-08-13 - 问题空间到解空间基础框架
@@ -47,6 +63,6 @@
 - 初始化 Vibe Mathing 中文数学研究工作台。
 - 新增 6 个项目级 active skills：路由、发现、推导、计算、证明和形式化。
 - 拉取并锁定 RW、Wentor、K-Dense 三个上游供应链仓库。
-- 保存 Annals 三个证明相关 skill 和两个本机 research skill 的精简快照。
+- 保存 Annals 三个证明相关 skill 的精简审计快照。
 - 新增供应链同步、项目结构校验和 SymPy 数学 smoke 脚本。
 - 建立 `conjecture` 到 `kernel-checked` 的证据状态边界。

@@ -15,10 +15,13 @@ research/
 ├── schema/
 │   ├── attempt.schema.json
 │   ├── evidence-receipt.schema.json
+│   ├── research-bundle.schema.json # 只读派生响应契约
+│   ├── failed-route.schema.json
 │   ├── run-state.schema.json
 │   └── verifier-registry.schema.json
 └── records/
-    └── attempts.jsonl
+    ├── attempts.jsonl
+    └── failed-routes.jsonl       # 可选、append-only 失败路线账本
 ```
 
 ## 边界
@@ -27,8 +30,10 @@ research/
 - discovery、derivation、computation、proof、formalization 是研究方法，不是完成等级。
 - `lifecycle` 只描述尝试的运行状态，不表达数学结论；失败、阻塞和未闭合证明义务可以保存。
 - 研究产物要进入成果空间，必须另建 `Result` 并通过验证门。
-- Result 的证据项只是一张回执索引；真实性由 `artifacts/` 内回执、底层输出的现场 SHA-256 和 `verifiers.json` 共同派生。
+- Result 的证据项只是一张回执索引；真实性由 `artifacts/` 内回执、底层输出的现场 SHA-256 和 `verifiers.json` 共同派生。每张回执还必须记录正 timeout、memory/threads/output 资源预算、停止条件和 termination 状态；accept 只能来自 completed 且 exit code 为 0 的路径。
 - 运行时采用单机 `flock + WAL + fsync + os.replace` 唯一 writer；中断后重启先完成日志恢复，再接受新写入，跨表断链在锁内拒绝。
+- `ResearchBundle` 从同一锁内的一致快照派生，不是第四张可写真相表；`export-bundle` 遇到 proof/counterexample 双闭合冲突必须非零失败。
+- 失败路线账本只追加，不能覆盖历史；它记录方法阻塞，不等于数学反例或 Result。
 
 ## 验证
 
@@ -37,4 +42,6 @@ python3 scripts/validate_research_spaces.py
 python3 scripts/test_trusted_evidence.py
 python3 scripts/test_evidence_attacks.py
 python3 scripts/test_research_store.py
+python3 scripts/test_research_bundle.py
+python3 scripts/validate_failed_routes.py
 ```

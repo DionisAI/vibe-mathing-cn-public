@@ -19,6 +19,15 @@
 
 该书覆盖大量数学分支，但其书目本质是综合辞典，因此只使用 `00A20` 作为主分类；具体分支属于内容覆盖范围，不作为辅助 MSC 无限展开。
 
+## Provider registry
+
+`providers.json` 登记 arXiv、Crossref、OpenAlex 和 Semantic Scholar 的公开请求形状、timeout、重试和响应格式，并为每个响应设置 1 MiB 上限。凭据只从环境变量读取，默认检查离线运行；`--live` 只做 HTTPS 有界健康检查，不保存全文或 credential。
+
+```bash
+python3 scripts/check_literature_providers.py
+python3 scripts/check_literature_providers.py --live --provider arxiv
+```
+
 ## 维护
 
 ```bash

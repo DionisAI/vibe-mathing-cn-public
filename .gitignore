@@ -3,6 +3,8 @@ vendor/upstream/
 
 # 外部问题目录数据是可重建本地缓存；公开 Git 只发布抓取器、schema 与 canonical Problem。
 problem-library/raw/
+problem-library/derived/
+problem-library/staging/
 problem-library/records/problems.jsonl
 problem-library/manifest.json
 problem-library/indexes/
@@ -21,6 +23,8 @@ research/.store.lock
 research/.store-transaction.json
 research/.store-transaction.json.tmp
 research/runs/
+research/artifacts/outputs/
+research/records/failed-routes.jsonl
 .venv/
 .ipynb_checkpoints/
 build/

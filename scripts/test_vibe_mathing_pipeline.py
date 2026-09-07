@@ -49,6 +49,7 @@ def invoke(base: Path, *arguments: str, expect: int = 0) -> subprocess.Completed
         check=False,
         capture_output=True,
         text=True,
+        timeout=30,
     )
     assert completed.returncode == expect, completed.stderr
     return completed
@@ -69,11 +70,60 @@ def concurrent_run(base: str, problem_id: str, queue: multiprocessing.Queue[int]
         check=False,
         capture_output=True,
         text=True,
+        timeout=30,
     )
     queue.put(completed.returncode)
 
 
 def main() -> int:
+    with tempfile.TemporaryDirectory(prefix="vibe-mathing-problem-lifecycle-") as temporary:
+        base = Path(temporary)
+        prepare(base)
+        problem_id = "problem:sympy-counterexample-fixture"
+        draft_file = base / "draft-problem.json"
+        draft = json.loads(
+            (ROOT / "fixtures/sympy-counterexample/problem.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        draft["lifecycle"] = "draft"
+        draft_file.write_text(json.dumps(draft), encoding="utf-8")
+        invoke(base, "register-problem", "--file", str(draft_file))
+        assert "lifecycle=active" in invoke(
+            base, "run", "--problem-id", problem_id, expect=1
+        ).stderr
+        activated = json.loads(
+            invoke(
+                base,
+                "set-problem-lifecycle",
+                "--problem-id",
+                problem_id,
+                "--lifecycle",
+                "active",
+            ).stdout
+        )
+        assert activated == {"problem_id": problem_id, "lifecycle": "active"}
+        withdrawn = json.loads(
+            invoke(
+                base,
+                "set-problem-lifecycle",
+                "--problem-id",
+                problem_id,
+                "--lifecycle",
+                "withdrawn",
+            ).stdout
+        )
+        assert withdrawn == {"problem_id": problem_id, "lifecycle": "withdrawn"}
+        assert "单向转换" in invoke(
+            base,
+            "set-problem-lifecycle",
+            "--problem-id",
+            problem_id,
+            "--lifecycle",
+            "active",
+            expect=2,
+        ).stderr
+
     with tempfile.TemporaryDirectory(prefix="vibe-mathing-pipeline-") as temporary:
         base = Path(temporary)
         prepare(base)
@@ -126,13 +176,26 @@ def main() -> int:
         store.upsert(
             "problems",
             {
+                "schema_version": "1.0.0",
                 "problem_id": problem_id,
                 "title": "确定性反例 fixture",
                 "aliases": [],
                 "statement": {"text": EXPECTED_STATEMENT, "language": "zh-CN", "version": 1},
+                "domain": {"description": "实数上的一元全称不等式", "objects": ["real number"]},
+                "quantifiers": [{"kind": "forall", "variables": ["x"], "domain": "x ∈ ℝ"}],
+                "definitions": [],
+                "assumptions": [],
+                "allowed_axioms": ["ordered-field"],
                 "msc": [],
                 "sources": [{"source": "fixture", "source_record_id": None, "url": "https://example.com/sympy-fixture", "retrieved_at": NOW}],
-                "status": "open",
+                "acceptance": {"policy": "solution-admission-v1"},
+                "constraints": {
+                    "allowed_methods": ["computation"],
+                    "allowed_adapters": ["sympy-counterexample-v1"],
+                    "max_attempts": 1,
+                    "runtime": {"max_transitions": 16, "max_retries": 2, "timeout_seconds": 30, "max_output_bytes": 1_048_576, "memory_budget_mb": 256, "threads_max": 1},
+                },
+                "lifecycle": "active",
                 "created_at": NOW,
                 "updated_at": NOW,
             },
@@ -160,13 +223,26 @@ def main() -> int:
         store.upsert(
             "problems",
             {
+                "schema_version": "1.0.0",
                 "problem_id": problem_id,
                 "title": "确定性反例 fixture",
                 "aliases": [],
                 "statement": {"text": EXPECTED_STATEMENT, "language": "zh-CN", "version": 1},
+                "domain": {"description": "实数上的一元全称不等式", "objects": ["real number"]},
+                "quantifiers": [{"kind": "forall", "variables": ["x"], "domain": "x ∈ ℝ"}],
+                "definitions": [],
+                "assumptions": [],
+                "allowed_axioms": ["ordered-field"],
                 "msc": [],
                 "sources": [{"source": "fixture", "source_record_id": None, "url": "https://example.com/sympy-fixture", "retrieved_at": NOW}],
-                "status": "open",
+                "acceptance": {"policy": "solution-admission-v1"},
+                "constraints": {
+                    "allowed_methods": ["computation"],
+                    "allowed_adapters": ["sympy-counterexample-v1"],
+                    "max_attempts": 1,
+                    "runtime": {"max_transitions": 16, "max_retries": 2, "timeout_seconds": 30, "max_output_bytes": 1_048_576, "memory_budget_mb": 256, "threads_max": 1},
+                },
+                "lifecycle": "active",
                 "created_at": NOW,
                 "updated_at": NOW,
             },

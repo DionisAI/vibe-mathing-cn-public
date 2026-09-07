@@ -20,3 +20,5 @@ review_cycle: P90D
 2. 再读 `context/AGENT-ENTRY.md`。
 3. 按 `context/CONTEXT-ROUTER.md` 选择最小上下文。
 4. 需要模块事实时，通过 `context/CONTEXT-MAP.md` 找到对应 module context。
+5. 公共 README、AI 发现和声明元数据见 [`publication/README.md`](publication/README.md)；这些资产不是数学 Result 真相源。
+6. 方法层主线和 Lean 定位见 [`standards/FORMAL-METHODS-MAP.md`](standards/FORMAL-METHODS-MAP.md)；它是教学/路由地图，不替代研究闭环规范和证据门禁。

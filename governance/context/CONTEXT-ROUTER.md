@@ -30,3 +30,4 @@ review_cycle: P90D
 | Review | auto-review module context、门禁与护栏 | lessons、agent-feedback | PASS/WARN/BLOCK finding |
 | 复盘 | 文档治理规则、门禁与护栏 | postmortems/INDEX.md | 防复发动作 |
 | 文档治理 | PROJECT_OPERATING_MODEL、DOCUMENT_DRIVEN_DEVELOPMENT、TOOLCHAIN_MODEL、CONTEXT-ROUTER | ADR、module context、任务 closeout | 文档同步证据或豁免理由 |
+| 形式化方法/工具选型 | `standards/FORMAL-METHODS-MAP.md`、`context/TOOLCHAIN_MODEL.md`、对应 active skill | math-tool maturity registry、fixtures、来源账本 | 方法定位、能力边界和可复跑验证证据 |

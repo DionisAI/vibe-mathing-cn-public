@@ -23,6 +23,13 @@
       "capabilities": []
     },
     {
+      "id": "smt-generator",
+      "role": "generator",
+      "trust_domain": "candidate-generation",
+      "policy": null,
+      "capabilities": []
+    },
+    {
       "id": "sympy-counterexample-verifier",
       "role": "verifier",
       "trust_domain": "exact-computation",
@@ -34,6 +41,20 @@
       "role": "verifier",
       "trust_domain": "semantic-review",
       "policy": "sympy-statement-fixture-v1",
+      "capabilities": ["statement_faithfulness"]
+    },
+    {
+      "id": "sympy-smt-verifier",
+      "role": "verifier",
+      "trust_domain": "sympy-sat-qf-lra",
+      "policy": "sympy-smt-counterexample-fixture-v1",
+      "capabilities": ["counterexample_check"]
+    },
+    {
+      "id": "smt-statement-faithfulness-verifier",
+      "role": "verifier",
+      "trust_domain": "semantic-review",
+      "policy": "smt-statement-fixture-v1",
       "capabilities": ["statement_faithfulness"]
     },
     {

@@ -1,4 +1,10 @@
-# vibe-mathing-cn：可信数学研究与验证系统
+# vibe-mathing-cn：可信 AI 数学研究与验证工作台
+
+[![CI](https://github.com/tradecatlabs/vibe-mathing-cn-public/actions/workflows/ci.yml/badge.svg)](https://github.com/tradecatlabs/vibe-mathing-cn-public/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB)](requirements.txt)
+[![Lean fixture](https://img.shields.io/badge/Lean-fixture-4B69FF)](fixtures/lean-proof/README.md)
+[![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
+[![Solution index](https://img.shields.io/badge/solutions-empty-orange)](result-library/indexes/solutions.json)
 
 > **非可信候选生成器 + 受信验证链：从问题空间构造候选，经验证后派生解空间。**
 
@@ -6,11 +12,44 @@
 
 💬 中文交流群：[Telegram · Vibe Mathing 中文社区](https://t.me/vibe_mathing_cn)
 
+本仓库自有代码与文档按 [MIT License](LICENSE) 发布；`vendor/` 中的第三方材料以各自许可证和来源锁为准。
+
+> **当前公共状态：** canonical Problem、Attempt、Result 记录和 `result-library/indexes/solutions.json` 当前均为空；本仓库不声称解决 Riemann 假设、P vs NP 或任何其他开放数学问题。公开内容是可移植的 Schema、验证规则、owner skills、合成 Fixture、CLI 和 CI。
+
+公共仓库地址：<https://github.com/tradecatlabs/vibe-mathing-cn-public>
+
+## 30 秒理解
+
+| 你想知道 | 直接答案 |
+| --- | --- |
+| 这是什么？ | 一个把 AI 数学探索组织为 ProblemContract、Attempt、Result 和证据账本的研究与验证工作台 |
+| 它解决什么问题？ | 防止候选、证明草稿、有限计算或模型自评直接变成数学结论 |
+| 输入是什么？ | 冻结陈述、定义域、量词、假设、来源、验收策略和资源约束的 ProblemContract |
+| 输出是什么？ | 可追溯的 ResearchBundle，以及由合格 Result 派生的只读 Solution View |
+| 当前有新数学解吗？ | 没有；canonical ledger 和解库索引为空，合成 Fixture 只验证工程链路 |
+| 它明确不是什么？ | 不是保证解决任意开放问题的通用求解器，也不是外部数学认证机构 |
+| 具体开放问题在哪里？ | 见 [Vibe Mathing 公共问题索引](problem-library/VIBEMATHING_PUBLIC_INDEX.md)；远端 catalog 与单问题仓库不会自动成为本地 Result |
+
+## 快速导航
+
+- [项目定位](#项目定位)
+- [系统输入与输出](#系统输入与输出)
+- [信任边界](#信任边界)
+- [状态模型：结果 × 证据](#状态模型结果-证据)
+- [解库准入](#解库准入)
+- [当前能力](#当前能力)
+- [快速开始](#快速开始)
+- [FAQ](#faq)
+- [机器可读入口与引用](#机器可读入口与引用)
+- [Vibe Mathing 公共问题索引](#公共具体问题索引)
+
+**最小入口：** 全新公共 checkout 安装 `requirements.txt` 后运行 `make check`；问题契约从 [`canonical-problem.schema.json`](problem-library/schema/canonical-problem.schema.json) 开始，完整命令见[快速开始](#快速开始)。
+
 ## 项目定位
 
 本项目不是承诺对任意输入都返回答案的“通用数学问题求解器”，而是：
 
-> **面向广泛数学问题的通用、可信、可审计研究与验证系统。**
+> **面向广泛数学问题的通用、可信、可审计研究与验证工作台。**
 
 “通用”表示系统采用统一的 Problem、Attempt、Result 和证据契约组织不同数学领域的研究，不表示搜索完备、必然终止或所有问题都可判定。系统保证的不是“总能求解”，而是：
 
@@ -43,11 +82,13 @@ ProblemContract {
   assumptions      // 假设、允许公理和前置结果
   sources          // 来源、已有文献和检索时间
   acceptance       // 什么证明或反例能够闭合问题
-  constraints      // 可用工具、时间和资源边界
+  constraints      // 可用工具、timeout、内存/线程/输出和状态转换边界
 }
 ```
 
-当前机器真相源使用 canonical `Problem` schema 保存稳定标识、陈述版本、MSC 分类、来源和状态；定义域、量词、定义与假设在进入自动研究前必须被规范化进陈述及其引用上下文。未来扩展字段时仍以 Problem Contract 为唯一输入语义，不另建第二套问题模型。
+当前机器真相源使用 [`canonical-problem.schema.json`](problem-library/schema/canonical-problem.schema.json) 保存 ProblemContract v1：稳定标识、statement、domain、quantifiers、definitions、assumptions、allowed_axioms、sources、acceptance 和 constraints。`lifecycle=active` 才允许进入自动研究；定义域、量词和假设不能在尝试中悄悄改变。未来扩展字段时仍以 Problem Contract 为唯一输入语义，不另建第二套问题模型。
+
+来源抓取的 `CandidateObservation` 是 discovery 输入，不是 ProblemContract：它必须绑定来源许可、原始 artifact、解析器和 snapshot 摘要，且 `research_eligible=false`。候选不能直接创建 Attempt、Result 或 Solution；默认问题查询只返回 admitted，使用 `--collection candidates|all` 才会查询候选。
 
 ### 输出：Research Bundle
 
@@ -64,7 +105,7 @@ ResearchBundle {
 }
 ```
 
-`ResearchBundle` 是从 Problem / Attempt / Result、验证产物和 Solution View 聚合出的响应或导出视图，不是第四张可写表。顶层裁决定义为：
+`ResearchBundle` 是从同一锁内一致的 Problem / Attempt / Result、验证产物和 Solution View 聚合出的只读响应或导出视图，不是第四张可写表。其 schema 还显式保留 `unresolved_obligations`；proof 与 counterexample 同时闭合时导出必须 fail-closed。顶层裁决定义为：
 
 | Disposition | 严格含义 |
 |:---|:---|
@@ -73,6 +114,26 @@ ResearchBundle {
 | `open` | 尚无完整可信证明或反例；可以包含支持性证据、局部结果、失败路径和下一步建议 |
 
 若同一 Problem、同一语义范围同时出现通过准入的证明和反例，系统必须把它视为契约、形式化或验证链冲突并 fail-closed，不能任选一个答案。`open` 不是失败：它表示系统准确保存了“目前真正知道什么”和“还缺什么”。
+
+## 方法层主线：形式化方法地图
+
+本项目的方法层主线不是“把 Lean 教程章节当成领域目录”，而是先建立上位地图：
+
+```text
+规格与语义
+  → 演绎验证 / 定理证明（Lean 的主战场）
+  → 模型检查 / 抽象解释 / SAT/SMT/符号推理（含符号执行）
+  → 精化与程序综合
+```
+
+Lean 是依赖类型理论型交互式定理证明平台，不等于形式化方法的全部。对应的 Lean 二级栈是：
+
+```text
+类型理论与 Kernel → 语言与 elaboration → Proof Engineering
+  → 自动化与决策过程 → Library Engineering → 应用形式化/验证
+```
+
+在本项目中，`ProblemContract` 承担规格与语义冻结，`math-proof` 承担证明义务，`math-formalization` 承担 Lean/proof-term/kernel/axiom/escape/faithfulness 分离，`math-computation` 承担有界计算与横向自动化。SMT、模型检查和抽象解释是不同的验证范式，不能因工具能运行就混称为 Lean 证明。完整分类、学习顺序与官方起点见 [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)。
 
 ## 形式模型
 
@@ -237,33 +298,35 @@ vibe-mathing-cn/
 
 ## 当前能力
 
-| 能力 | 状态 | 真实后端或边界 |
+| 能力 | 可核验入口 | 公共边界 |
 |:---|:---|:---|
-| 问题来源库 | 可用 | Wikipedia MediaWiki API + UnsolvedMath 公开目录快照 |
-| 数学电子书库 | 可用 | Work → Edition → File 目录 + MSC2020 分类 + 文件摘要 |
-| 文献与定义检索 | 可用 | Codex Web/SearXNG；arXiv、Semantic Scholar、Crossref、OpenAlex 可降级 |
-| 公式推导 | 可用 | 结构化推导契约；不冒充证明 |
-| 符号计算 | 可用 | Python 3.12 + SymPy 1.14 |
-| 数值检查 | 可用 | NumPy、SciPy、mpmath |
-| 自然语言证明 | 可用 | 证明义务、依赖图与反例审计契约 |
-| LaTeX 构建 | 可用 | latexmk、pdfLaTeX、XeLaTeX、LuaLaTeX、BibTeX、Biber |
-| `/vibe-mathing` 单机入口 | 可用 | `run/resume/verify/status/cancel` + checkpoint + 有界状态机 |
-| 研究空间与成果空间 | 可用 | Problem/Attempt/Result schema + `flock/WAL/os.replace` 唯一 writer |
-| 解库视图 | 可用 | 真实 artifact/receipt/registry 校验后派生；当前业务记录为空 |
-| Lean 形式化验证 | 固定 fixture | Lean/Mathlib v4.33.0；kernel + escape/axiom + faithfulness 三证据 |
+| ProblemContract | [`canonical-problem.schema.json`](problem-library/schema/canonical-problem.schema.json)、[`problem-library/README.md`](problem-library/README.md) | 冻结陈述、定义域和量词；来源记录不会自动成为 canonical Problem。 |
+| Vibe Mathing 公共问题总库 | [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)、[`vibemathing-public-source.v1.json`](problem-library/registry/vibemathing-public-source.v1.json) | 指向外部 canonical catalog、具体问题仓库和网页版模板；pointer-only，不自动导入或准入。 |
+| CandidateObservation | [`candidate-observation.schema.json`](problem-library/schema/candidate-observation.schema.json)、[`RESEARCH_CANDIDATES.md`](problem-library/RESEARCH_CANDIDATES.md) | 仅是来源发现输入，必须保持 `research_eligible=false`，不能直接进入研究或解库。 |
+| ResearchBundle | [`research-bundle.schema.json`](research/schema/research-bundle.schema.json)、[`test_research_bundle.py`](scripts/test_research_bundle.py) | 从一致快照派生的只读视图；不是第四张可写真相表。 |
+| Attempt / Result / evidence | [`research/README.md`](research/README.md)、[`result-library/README.md`](result-library/README.md)、[`test_evidence_attacks.py`](scripts/test_evidence_attacks.py) | 证据能力与 outcome 分开；当前 canonical ledger 和业务解库为空。 |
+| 问题来源与候选重建 | [`OVERVIEW.md`](problem-library/OVERVIEW.md)、[`candidate-sources.json`](problem-library/registry/candidate-sources.json) | raw、动态网页和候选快照只在本地按许可重建；不把来源状态当数学结论。 |
+| 文献与定义检索 | [`literature/README.md`](literature/README.md)、[`providers.json`](literature/providers.json) | provider registry 不是 live 请求证明；凭据和全文不进入公开记录。 |
+| SymPy 计算 | [`sympy-counterexample/`](fixtures/sympy-counterexample/)、[`test_vibe_mathing_pipeline.py`](scripts/test_vibe_mathing_pipeline.py) | 可重跑的有界精确算术 Fixture，不证明一般定理。 |
+| SMT / canary vertical slice | [`smt-lra/case.json`](fixtures/smt-lra/case.json)、[`test_smt_pipeline.py`](scripts/test_smt_pipeline.py) | 覆盖正例、反例、错误和 timeout 协议；canary 不创建数学 Result。 |
+| Lean / Mathlib 形式化 | [`fixtures/lean-proof/README.md`](fixtures/lean-proof/README.md)、[`test_lean_pipeline.py`](scripts/test_lean_pipeline.py) | kernel、axiom/escape 和 statement faithfulness 是不同门；不自动验证自然语言题面。 |
+| `/vibe-mathing` 单机入口 | [`vibe_mathing_cli.py`](scripts/vibe_mathing_cli.py)、[`test_vibe_mathing_runtime.py`](scripts/test_vibe_mathing_runtime.py) | 只接受已注册 adapter，具备 checkpoint、timeout、预算和取消语义。 |
+| 工具成熟度 registry | [`math-tool-maturity.v1.json`](governance/control-plane/math-tool-maturity.v1.json)、[`validate_math_tool_maturity.py`](scripts/validate_math_tool_maturity.py) | 41 个工具族状态是证据状态机，不等于当前安装、可执行或 verifier 准入。 |
+| 六个 Active Skills | [`.codex/skills/README.md`](.codex/skills/README.md)、[`validate_project.py`](scripts/validate_project.py) | owner skill 生成候选和研究计划，不能自行宣布数学结论。 |
+| CI 与公共边界 | [`check.sh`](scripts/check.sh)、[`PUBLIC_REPOSITORY_BOUNDARY.md`](governance/processes/PUBLIC_REPOSITORY_BOUNDARY.md) | `make check` 验证工程链路；通过不等于外部数学认证或开放问题已解决。 |
 
 ## Active Skills
 
 当前项目级 skills 位于 `.codex/skills/`：
 
-| Skill | 当前职责 | 停止条件 |
-|:---|:---|:---|
-| `vibe-mathing-router` | 判断当前研究瓶颈，只选择一个 owner | 已明确唯一下一步 |
-| `math-discovery` | 定义问题、检索文献、建立来源账本 | 问题和证据边界已经清楚 |
-| `math-derivation` | 固定对象、假设与记号，建立推导链 | 推导一致或暴露出明确缺口 |
-| `math-computation` | 符号/数值检查和有限反例搜索 | 产生可重跑证据或达到停止条件 |
-| `math-proof` | 拆分证明义务、攻击反例、形成证明草稿 | 义务闭合或明确阻塞点 |
-| `math-formalization` | Lean 预检、形式化切片和内核验证 | 真正编译通过或 fail-closed |
+| 工具族 | 解释与说明 |
+|:---|:---|
+| `vibe-mathing-router` | 判断当前研究瓶颈，只选择一个 owner；停止于唯一下一步明确。 |
+| `math-discovery` | 定义问题、检索文献、建立来源账本；停止于问题和证据边界清楚。 |
+| `math-derivation` | 固定对象、假设与记号，建立推导链；缺口必须显式暴露。 |
+| `math-computation` | 执行符号/数值检查和有限反例搜索；必须有界并可重跑。 |
+| `math-proof` | 拆分证明义务、攻击反例、形成证明草稿；不把草稿当验证。 |
+| `math-formalization` | Lean 预检、形式化切片和内核验证；还需公理与陈述忠实性门。 |
 
 当前路由关系：
 
@@ -283,13 +346,14 @@ vibe-mathing-router
 ### 查询问题库
 
 ```bash
-python3 scripts/query_problem_library.py --text "Riemann" --limit 10
-python3 scripts/query_problem_library.py --source unsolvedmath --category "Number Theory" --limit 20
+python3 scripts/query_problem_library.py --collection admitted --text "Riemann" --limit 10
+python3 scripts/query_problem_library.py --collection admitted --source unsolvedmath --category "Number Theory" --limit 20
+python3 scripts/query_problem_library.py --collection candidates --source theoremdb --limit 20
 ```
 
-`problem-library/` 当前保存的是可追溯的**来源记录**。同名记录不自动等于同一个数学问题，也不代表问题陈述已经足够完整。
+`problem-library/` 当前保存的是可追溯的**来源记录**与隔离候选契约。CandidateObservation 不等于 canonical Problem；同名记录不自动等于同一个数学问题，也不代表问题陈述已经足够完整。
 
-公开仓库不会分发 UnsolvedMath 未明确授权的派生目录内容或原始网页；首次克隆后需要运行抓取器在本地重建来源库。canonical Problem、schema 和抓取代码可以版本化。
+公开仓库不会分发 UnsolvedMath 未明确授权的派生目录内容、候选 raw 或原始网页；首次克隆后需要运行抓取器在本地重建来源库。canonical Problem、CandidateObservation schema、registry 和抓取/校验代码可以版本化。
 
 明确刷新公开来源快照：
 
@@ -298,6 +362,27 @@ python3 scripts/fetch_problem_library.py --refresh
 ```
 
 默认重建会复用本地原始缓存；只有 `--refresh` 会重新访问来源网站。
+
+## 公共具体问题索引
+
+本仓库通过 [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md) 连接 `vibemathing` 的公开问题生态：
+
+- [`vibe-mathing-problem-library-public`](https://github.com/vibemathing/vibe-mathing-problem-library-public)：问题总库和 ProblemContract catalog；
+- [`vibe-mathing-problem-public-template`](https://github.com/vibemathing/vibe-mathing-problem-public-template)：单问题网页版研究 Harness 模板；
+- [`vibemathing` 具体问题仓库列表](https://github.com/vibemathing?tab=repositories)：`problem-opg-*`、`problem-erdos-*` 等具体问题 locator。
+
+只读查询远端公开元数据和 canonical catalog：
+
+```bash
+make index-public-problems
+python3 scripts/query_vibemathing_public.py --kind library
+python3 scripts/query_vibemathing_public.py --kind concrete --limit 20
+python3 scripts/query_vibemathing_public.py --catalog
+```
+
+推荐顺序是“先读 catalog 合同 → 核对 `problem_id`、`lifecycle` 和 digest → 再进入对应单问题仓库 → 按 `WEB_BOOTSTRAP.md` 的顺序阅读固定 Web 套件”。远端 catalog、Issue/PR、网页版 Harness 和单问题仓库都只是外部问题/候选运输层，不会自动写入本仓库的 canonical Problem、Attempt、Result 或 Solution。
+
+本仓库另提供可复制的 [`problem-library/templates/problem-contract.template.json`](problem-library/templates/problem-contract.template.json)，用于起草本地 `ProblemContract`；它保持 `lifecycle=draft`，不是某个真实开放问题。
 
 ### 使用电子书库
 
@@ -334,6 +419,17 @@ CLI 只接受已注册 adapter 和 canonical Problem，不提供任意命令执�
 make check-full
 ```
 
+检查公开工具成熟度和有界 canary 契约：
+
+```bash
+python3 scripts/validate_math_tool_maturity.py
+python3 scripts/check_math_tools.py --profile portable --strict
+MATH_CANARY_SOURCE_SHA256="$(sha256sum scripts/run_math_tool_canaries.py | awk '{print $1}')" \
+  python3 scripts/run_math_tool_canaries.py --tools T13,T15,T16 --json --strict
+```
+
+canary 报告只证明合成 bounded runtime 行为；公开仓不携带内部运行报告。
+
 首次或需要重新拉取固定版本的上游供应链缓存时：
 
 ```bash
@@ -343,15 +439,23 @@ python3 scripts/sync_supply_chain.py
 ## 项目结构
 
 ```text
-vibe-mathing-cn/
-├── README.md                  # 项目思想、能力、入口与路线图
+vibe-mathing-cn-public/
+├── README.md                  # 中文项目思想、能力、入口与路线图
+├── README.en.md               # English discovery entrypoint
+├── llms.txt                   # 短机器可读项目入口
+├── CITATION.cff               # 引用元数据
+├── codemeta.json              # 研究软件元数据
 ├── AGENTS.md                  # Agent 操作规则与数学真实性边界
+├── CONTRIBUTING.md            # 公共贡献边界与检查清单
+├── SECURITY.md                # 公共发布与工程安全报告规则
 ├── CHANGELOG.md               # 项目变更记录
-├── problem-library/           # 公开问题目录的快照、统一记录与索引
+├── assets/                    # AI 发现、引用和 GEO 维护资产
+├── problem-library/           # 来源记录、公共具体问题索引、候选观察和 ProblemContract schema
 ├── literature/                # 数学电子书书目、分类和本地文件
 ├── research/                  # 一次次研究运行及其机器契约
 ├── result-library/            # 候选/验证成果与派生解库索引
 ├── governance/                # 项目操作模型、标准、ADR、Gate 与任务证据
+│   └── publication/           # 公共声明和 AI 发布面元数据
 ├── .github/workflows/         # GitHub Actions 可移植质量门
 ├── .codex/skills/             # 当前项目 active skills
 ├── scripts/                   # 供应链、结构、问题库、文献库和数学验证脚本
@@ -364,13 +468,18 @@ vibe-mathing-cn/
 
 详细的数据与维护边界：
 
-- [`problem-library/README.md`](problem-library/README.md)：来源范围、许可、重建和查询方法；
+- [`problem-library/README.md`](problem-library/README.md)：来源范围、许可、候选隔离、重建和查询方法；
+- [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)：外部具体问题总库、网页版模板和开始方法；
+- [`problem-library/templates/`](problem-library/templates/)：可复制的 draft ProblemContract 模板；
 - [`literature/README.md`](literature/README.md)：电子书分类和 Work/Edition/File 模型；
-- [`research/README.md`](research/README.md)：Attempt 契约与研究过程边界；
+- [`research/README.md`](research/README.md)：Attempt、ResearchBundle 和研究过程边界；
 - [`result-library/README.md`](result-library/README.md)：Result 晋升与解库派生规则；
 - [`governance/README.md`](governance/README.md)：项目治理和上下文入口；
 - [`scripts/README.md`](scripts/README.md)：项目脚本职责；
-- [`vendor/README.md`](vendor/README.md)：研究 skill 供应链与审计边界。
+- [`vendor/README.md`](vendor/README.md)：研究 skill 供应链与审计边界；
+- [`governance/tools/MATH_TOOL_CATALOG.md`](governance/tools/MATH_TOOL_CATALOG.md)：公开工具族目录（严格两列）；
+- [`assets/ai-citation/`](assets/ai-citation/)：面向人和 AI 的摘要、术语、FAQ 与 GEO 评估协议；
+- [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及证据引用。
 
 ## 项目原则
 
@@ -401,8 +510,46 @@ vibe-mathing-cn/
 - 问题库的“完整”只表示抓取批次覆盖来源目录，不表示覆盖全部数学问题。
 - UnsolvedMath 未发现公开许可声明；这里只保存公开目录事实字段和短摘要，不镜像详情正文。
 - 只有固定 fixture 和真实成功 receipt 能声明 `kernel_check`；自然语言到 Lean 的语义仍需独立 faithfulness 审查。
-- 当前解库索引为空；只有 `Result` 满足证明/反例、直接证据、独立验证与陈述忠实性条件后才允许进入。
-- 100% 就绪度仅指本仓库定义的单机、单 Agent、可恢复、可审计生产闭环；不包含分布式高可用、外部 reviewer 实际签发或保证解决任意开放问题。
+- 当前 canonical Problem、Attempt、Result 和解库业务索引均为空；只有 `Result` 满足证明/反例、直接证据、独立验证与陈述忠实性条件后才允许进入。
+- 工具 registry 的状态只表示公开契约边界，不等于当前机器安装或运行；100% 就绪度仅指本仓库定义的单机、单 Agent、可恢复、可审计生产闭环；不包含分布式高可用、外部 reviewer 实际签发或保证解决任意开放问题。
+
+## FAQ
+
+### 这个项目解决了哪些开放数学问题？
+
+没有。公共 canonical Problem、Attempt、Result 和解库索引当前为空；本仓库发布的是研究与验证基础设施，不是开放问题答案集合。
+
+### 为什么通过测试不等于数学证明？
+
+测试只能说明代码、Schema 或有界输入满足某个检查条件。它不自动覆盖一般命题的全称范围、陈述忠实性、独立性或新颖性。
+
+### `ProblemContract`、`Attempt` 和 `Result` 有什么区别？
+
+`ProblemContract` 冻结研究什么；`Attempt` 记录做过什么；`Result` 记录有范围的原子主张及其 outcome/evidence。来源候选和证明草稿都不能跳过验证门直接进入解库。
+
+### Lean、SymPy 和 SMT 在这里分别做什么？
+
+Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；SymPy 和 SMT Fixture 验证有界、可重跑的计算链路。它们都不自动把自然语言题目或有限计算变成普遍定理。
+
+### 如何运行公开示例？
+
+先安装 `requirements.txt` 并运行 `make check`，再执行本 README“快速开始”中的确定性 SymPy 命令。该示例是合成工程 Fixture，不构成开放数学新结论。
+
+### `solutions.json` 为什么为空？
+
+它是从通过严格证据、独立性和陈述忠实性准入的 proof 或 counterexample Result 派生的只读索引。当前没有业务 Result 满足全部闭合条件，所以空索引是正确状态。
+
+## 机器可读入口与引用
+
+- [`llms.txt`](llms.txt)：稳定、短版的 AI/检索入口；
+- [`assets/ai-citation/`](assets/ai-citation/)：摘要、FAQ、术语表、双语回答矩阵、GEO 评估协议和机器报告模板；
+- [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；
+- [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)：外部具体问题总库、单问题仓库和网页版研究模板入口；
+- [`governance/standards/FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)：形式化方法主线、Lean 定位与学习地图；
+- [`CITATION.cff`](CITATION.cff) 与 [`codemeta.json`](codemeta.json)：引用和软件元数据；
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) 与 [`SECURITY.md`](SECURITY.md)：贡献和安全报告边界。
+
+这里的 GEO（Generative Engine Optimization，生成式引擎优化）只表示让生成式引擎更准确地识别实体、状态、证据和边界。检查衡量“项目是否被准确理解和引用”，不承诺搜索排名、模型推荐或未来引用。动态状态以公共文件和当前质量门为准。
 
 ---
 

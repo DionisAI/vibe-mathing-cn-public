@@ -1,18 +1,21 @@
 # 研究技能供应链
 
-当前供应链分两层：
+`vendor/sources.lock.json` 是公开供应链的固定来源清单。它只记录经审查的 URL、固定 commit/reference、许可证摘要、导入路径和用途；reference-only 对象不等于已安装、激活或验证器准入。
 
-- Git 上游：RW Research Skill、Wentor Research Plugins、K-Dense Scientific Skills。
-- 本机完整镜像：`~/.codex/archive/skills/auto-research` 被复制到 `upstream/auto-research/`，保留 4,170 个 skill 入口，但不参与 active skill 发现。
-- 本机最小快照：Annals of Mathematics Skills；其 README 声明的独立远端当前不可访问，因此只作方法来源。
+当前公开锁定来源包括：
 
-Git 上游以 shallow clone + sparse checkout 保存到 `upstream/`。本机完整镜像排除嵌套 `.git`、Python 缓存和系统垃圾文件，并用文件数、字节数与树摘要验真。父项目通过 `.gitignore` 排除这些供应链缓存，只提交 `sources.lock.json` 和本项目派生 skills。
+- 可移植研究与数学 discovery/proof 方法来源；
+- `teorth/erdosproblems` 与 `google-deepmind/formal-conjectures` 的固定 reference，用于候选/形式化生态调研；
+- 只在许可证和 owner mapping 闭合后才会进入 `.codex/skills/` 的上游材料。
+
+公开仓不携带工作树、运行日志、研究报告、私密供应链清单、原始网页或模型资产。移动分支、未固定 Git archive、未知许可证和 TLS 验证失败都保持 discovery-only 或进入失败账本。
 
 运行：
 
 ```bash
-python3 scripts/sync_supply_chain.py
 python3 scripts/sync_supply_chain.py --check
+# 只有在明确需要重建本地固定缓存时：
+python3 scripts/sync_supply_chain.py
 ```
 
-同步命令是幂等的：本机镜像使用 `rsync --delete --delete-excluded` 与锁定排除规则重建；`--check` 同时比较来源、目标和 lockfile inventory，并拒绝失效或越界符号链接。各子项目许可证互不相同，未完成逐项许可审计前不得整体发布或直接激活。
+同步命令必须有 timeout、无绕过 TLS 的网络验证、固定 commit 和根许可证摘要。失败时非零退出；不得用旧缓存或空目录伪造同步成功。

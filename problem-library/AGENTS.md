@@ -1,54 +1,57 @@
 # Problem Library Agent Guide
 
-本目录是公开数学问题目录的本地、可重建镜像。`manifest.json` 是抓取批次和完整性真相源；`records/problems.jsonl` 是查询与研究路由入口；`raw/` 只保存来源响应，不接受人工编辑。
+本目录分离来源观察、候选发现和稳定研究输入。`raw/` 是不可编辑、可重建的来源证据；`derived/` 是带输入摘要的候选派生层；只有 `records/canonical-problems.jsonl` 中的 ProblemContract 才能进入研究生命周期。
 
 ## 目录结构
 
 ```text
 problem-library/
-├── AGENTS.md                 # 数据边界与维护规则
-├── README.md                 # 数据范围、许可和使用方法
-├── COMPLETION_EXEMPLAR.md    # 本次完成方法与复用边界（人读）
-├── COMPLETION_EXEMPLAR.json  # 可重算证据绑定的机器契约
-├── RETROSPECTIVE.md          # 项目内复盘草稿，不是全局 canonical record
-├── REUSE_SAMPLING.json       # 主要任务复用采样决策
-├── AUDIT_CASE_SAMPLING.md    # 缺陷修复后的审计案例采样判定
-├── manifest.json             # 批次、来源、计数、哈希与覆盖率
+├── README.md
+├── RESEARCH_CANDIDATES.md       # 候选来源范围与许可边界
+├── OVERVIEW.md                  # 公开能力与资源路径图
+├── VIBEMATHING_PUBLIC_INDEX.md  # 外部具体问题库与网页版模板入口
+├── templates/                   # 可复制的 draft ProblemContract 模板
 ├── schema/
-│   ├── problem.schema.json   # 单条来源记录契约
-│   └── canonical-problem.schema.json # 规范化研究问题契约
-├── raw/
-│   ├── wikipedia/            # MediaWiki API 原始 JSON
-│   └── unsolvedmath/         # 来源发现证据与 109 个公开目录页 HTML 快照
-├── records/
-│   ├── problems.jsonl        # 两个来源的统一记录流
-│   └── canonical-problems.jsonl # 经确认的稳定研究问题
-└── indexes/
-    ├── catalog.json          # 总量、来源、状态与分类计数
-    ├── by-category.json      # 分类到记录 ID 的倒排索引
-    └── by-source.json        # 来源到记录 ID 的倒排索引
+│   ├── problem.schema.json
+│   ├── canonical-problem.schema.json
+│   ├── candidate-source.schema.json
+│   └── candidate-observation.schema.json
+├── registry/candidate-sources.json
+├── registry/vibemathing-public-source.v1.json
+├── raw/                         # Git ignored：来源响应、inventory、失败账本
+├── derived/candidate-observations/ # Git ignored：CandidateObservation snapshot
+└── records/
+    ├── problems.jsonl           # 已准入来源观察（本地生成）
+    └── canonical-problems.jsonl # ProblemContract 输入，目前为空
 ```
 
-## 边界与依赖
+## 边界与不变量
 
-- 上游：Wikipedia MediaWiki API 与 UnsolvedMath 公开目录分页。
-- 下游：`scripts/query_problem_library.py`、研究选题、来源核验和后续去重/补全流程。
-- Wikipedia 记录继承 CC BY-SA 4.0，必须保留来源、版本和归属。
-- UnsolvedMath 未发现公开许可声明；只规范化目录事实与简短卡片摘要，不镜像详情正文。
-- UnsolvedMath 来源数据、原始快照、manifest 与派生索引只留本地，不进入公开 Git；需要时通过抓取器重建。
-- `raw/` 是证据缓存，不是可编辑知识；刷新只能运行抓取脚本。
-- UnsolvedMath 的公开 ID/详情 URL 存在一对多冲突，不得作为主键；本地 ID 由卡片内容指纹生成，冲突组必须进入 manifest。
-- 来源记录不能直接作为 canonical Problem；归一化问题必须有版本化陈述和稳定来源 URL，本地来源记录存在时再校验其 ID。
-- 任何“完整”声明必须同时满足：目录声明总数、解析总数、本地唯一 ID、源 ID 冲突账本、所有原始页哈希和索引一致性全部通过。
+- 来源数据、raw 快照、manifest、索引和候选 snapshot 只在本地重建，不进入公开 Git。
+- `raw/` 不是知识编辑区；刷新只能通过抓取器完成，不能用手工空记录掩盖失败。
+- CandidateObservation 必须是 `collection=candidate`、`admission.state=candidate`、`research_eligible=false`。
+- `answered`、`resolved`、`solved` 和 `open` 是来源状态，不是数学 Result；候选不能直接创建 Attempt、Result、Solution 或 canonical Problem。
+- 默认查询 collection 是 `admitted`；查询候选必须显式使用 `--collection candidates` 或 `--collection all`。
+- 候选记录必须绑定 registry 的 parser、source status map、license、raw artifact 路径和 digest；snapshot 必须绑定 inventory、parser、schema 和 registry digest。
+- artifact、latest pointer 和 snapshot output 路径必须是仓库相对路径且不能逃逸允许的 raw/derived 根目录。
+- Git 来源必须先进入 `vendor/sources.lock.json` 的固定 reference；禁止抓取器执行未固定的 clone 或 branch archive。
+- 来源记录不能直接作为 canonical Problem。ProblemContract 必须冻结陈述、定义域、量词、定义、假设、允许公理、固定准入策略和有界执行预算。
+- `lifecycle` 只表示 ProblemContract 是否可研究：`draft → active → withdrawn`；不恢复解题 `status` 双真相。
 
 ## 维护命令
 
 ```bash
-python3 scripts/fetch_problem_library.py
-python3 scripts/fetch_problem_library.py --refresh
+python3 scripts/fetch_erdosproblems.py all
+python3 scripts/fetch_candidates.py --only theoremdb
+python3 scripts/build_candidate_observations.py
+python3 scripts/validate_candidate_problem_library.py [--verify-raw]
+python3 scripts/audit_candidate_admission.py --source theoremdb
+python3 scripts/query_problem_library.py --collection admitted --limit 10
+python3 scripts/query_problem_library.py --collection candidates --limit 10
+python3 scripts/query_vibemathing_public.py --catalog
+python3 scripts/query_vibemathing_public.py --kind concrete --limit 20
 python3 scripts/validate_problem_library.py
 python3 scripts/test_problem_library.py
-python3 scripts/query_problem_library.py --text riemann --limit 10
 ```
 
-新增或改变来源适配器时，先保存可复现的代表性结构证据，再修改解析器；结构漂移必须 fail-closed，禁止用空字段或旧缓存伪装成功。
+所有网络请求和外部命令都必须有 timeout、限速、响应/输出上限、停止条件和非零失败语义。并行 agent 不得同时重建同一 `records/manifest/indexes` 真相源；重建后必须重新运行校验。

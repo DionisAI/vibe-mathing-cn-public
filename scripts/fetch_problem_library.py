@@ -8,8 +8,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
+import stat
 import sys
 import time
 import urllib.error
@@ -39,6 +41,15 @@ BY_SOURCE_PATH = LIBRARY / "indexes" / "by-source.json"
 BY_CATEGORY_PATH = LIBRARY / "indexes" / "by-category.json"
 
 USER_AGENT = "vibe-mathing-problem-library/0.1 (local research archive)"
+DEFAULT_MAX_RESPONSE_BYTES = 30_000_000
+ROBOTS_MAX_RESPONSE_BYTES = 1_000_000
+MAX_TIMEOUT_SECONDS = 300.0
+MAX_DELAY_SECONDS = 300.0
+MAX_RETRIES = 10
+MAX_PAGES = 1000
+MAX_RECORDS = 100_000
+MAX_RECORDS_BYTES = 128_000_000
+MAX_PATH_CHARS = 4_096
 WIKIPEDIA_PAGE = "List of unsolved problems in mathematics"
 WIKIPEDIA_URL = "https://en.wikipedia.org/wiki/List_of_unsolved_problems_in_mathematics"
 WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php"
@@ -46,21 +57,81 @@ UNSOLVEDMATH_URL = "https://www.unsolvedmath.com/problems"
 SCHEMA_VERSION = "1.0.0"
 
 
+def _reject_json_constant(value: str) -> object:
+    raise ValueError(f"JSON contains non-portable constant: {value}")
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def file_timestamp(path: Path) -> str:
-    return (
-        datetime.fromtimestamp(path.stat().st_mtime, timezone.utc)
-        .replace(microsecond=0)
-        .isoformat()
-        .replace("+00:00", "Z")
-    )
+    assert_safe_library_path(path)
+    descriptor = os.open(path, os.O_RDONLY | _nofollow_flag())
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode):
+            raise RuntimeError(f"问题库路径不是普通文件：{path}")
+        return (
+            datetime.fromtimestamp(file_stat.st_mtime, timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+    finally:
+        os.close(descriptor)
 
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _nofollow_flag() -> int:
+    value = getattr(os, "O_NOFOLLOW", None)
+    if value is None:
+        raise RuntimeError("当前平台缺少 O_NOFOLLOW，拒绝访问问题库文件")
+    return value
+
+
+def _directory_flag() -> int:
+    value = getattr(os, "O_DIRECTORY", None)
+    if value is None:
+        raise RuntimeError("当前平台缺少 O_DIRECTORY，拒绝耐久发布问题库文件")
+    return value
+
+
+def read_bounded_bytes(path: Path, max_bytes: int) -> bytes:
+    if (
+        not isinstance(max_bytes, int)
+        or isinstance(max_bytes, bool)
+        or max_bytes <= 0
+        or max_bytes > MAX_RECORDS_BYTES
+    ):
+        raise ValueError("文件读取大小上限无效")
+    assert_safe_library_path(path)
+    descriptor = os.open(path, os.O_RDONLY | _nofollow_flag())
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode):
+            raise RuntimeError(f"问题库路径不是普通文件：{path}")
+        if file_stat.st_size > max_bytes:
+            raise ResponseTooLarge(f"文件超过上限 {max_bytes} bytes：{path}")
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(descriptor, min(64 * 1024, max_bytes - total + 1))
+            if not chunk:
+                return b"".join(chunks)
+            total += len(chunk)
+            if total > max_bytes:
+                raise ResponseTooLarge(f"文件超过上限 {max_bytes} bytes：{path}")
+            chunks.append(chunk)
+    finally:
+        os.close(descriptor)
+
+
+def read_text_bounded(path: Path, max_bytes: int = DEFAULT_MAX_RESPONSE_BYTES) -> str:
+    return read_bounded_bytes(path, max_bytes).decode("utf-8")
 
 
 def normalize_space(value: str) -> str:
@@ -68,23 +139,179 @@ def normalize_space(value: str) -> str:
 
 
 def write_atomic(path: Path, data: bytes) -> None:
+    if not isinstance(data, bytes):
+        raise TypeError("问题库输出必须是 bytes")
+    assert_safe_library_path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    assert_safe_library_path(path.parent)
     temporary = path.with_name(f".{path.name}.tmp-{os.getpid()}")
-    temporary.write_bytes(data)
-    os.replace(temporary, path)
+    descriptor = os.open(
+        temporary,
+        os.O_WRONLY | os.O_CREAT | os.O_EXCL | _nofollow_flag(),
+        0o600,
+    )
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+        directory_descriptor = os.open(
+            path.parent,
+            os.O_RDONLY | _directory_flag() | _nofollow_flag(),
+        )
+        try:
+            os.fsync(directory_descriptor)
+        finally:
+            os.close(directory_descriptor)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def write_json(path: Path, value: Any) -> None:
-    payload = json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
-    write_atomic(path, payload.encode("utf-8"))
+    payload = (
+        json.dumps(
+            value,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+            allow_nan=False,
+        )
+        + "\n"
+    )
+    encoded = payload.encode("utf-8")
+    if len(encoded) > MAX_RECORDS_BYTES:
+        raise ResponseTooLarge(f"问题库 JSON 输出超过上限：{path}")
+    write_atomic(path, encoded)
+
+
+class FetchError(RuntimeError):
+    pass
+
+
+class ResponseTooLarge(FetchError):
+    pass
+
+
+def _set_response_timeout(response: Any, timeout: float) -> None:
+    """Keep each socket read within the remaining monotonic deadline."""
+    candidates: list[Any] = [response]
+    current = response
+    for attribute in ("fp", "raw", "_sock"):
+        current = getattr(current, attribute, None)
+        if current is None:
+            break
+        candidates.append(current)
+    for candidate in candidates:
+        setter = getattr(candidate, "settimeout", None)
+        if callable(setter):
+            try:
+                setter(max(0.001, timeout))
+            except OSError as exc:
+                raise FetchError("无法设置响应读取超时") from exc
+            return
+    # Test doubles and non-socket file-like responses are still checked at the
+    # loop boundary; urllib responses in production expose a socket above.
+
+
+class HTTPSRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req: Any, fp: Any, code: int, msg: str, headers: Any, newurl: str) -> Any:
+        target = urllib.parse.urljoin(req.full_url, newurl)
+        if urllib.parse.urlparse(target).scheme.lower() != "https":
+            raise FetchError(f"拒绝非 HTTPS 重定向：{target}")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+HTTPS_OPENER = urllib.request.build_opener(HTTPSRedirectHandler())
+
+
+def assert_safe_library_path(path: Path) -> None:
+    """Reject symlinked or out-of-tree cache/output paths."""
+    path = Path(path)
+    if (
+        len(str(path)) > MAX_PATH_CHARS
+        or "\x00" in str(path)
+        or "\\" in str(path)
+        or any(part == ".." for part in path.parts)
+    ):
+        raise RuntimeError(f"问题库路径包含非法组件：{path}")
+    candidate = path if path.is_absolute() else ROOT / path
+    try:
+        relative = candidate.relative_to(ROOT)
+    except ValueError as exc:
+        raise RuntimeError(f"问题库路径越界：{candidate}") from exc
+    if ".." in relative.parts:
+        raise RuntimeError(f"问题库路径越界：{candidate}")
+    lexical = ROOT
+    for part in relative.parts:
+        lexical = lexical / part
+        if lexical.is_symlink():
+            raise RuntimeError(f"问题库路径不能包含 symlink：{candidate}")
+    if candidate.is_symlink() or not candidate.is_absolute():
+        raise RuntimeError(f"问题库路径不能是 symlink 或相对路径：{candidate}")
 
 
 class Fetcher:
     def __init__(self, *, timeout: float, delay: float, retries: int) -> None:
+        if not math.isfinite(timeout) or timeout <= 0 or timeout > MAX_TIMEOUT_SECONDS:
+            raise ValueError(f"timeout 必须在 (0, {MAX_TIMEOUT_SECONDS}] 内")
+        if not math.isfinite(delay) or delay < 0 or delay > MAX_DELAY_SECONDS:
+            raise ValueError(f"delay 必须在 [0, {MAX_DELAY_SECONDS}] 内")
+        if retries < 1 or retries > MAX_RETRIES:
+            raise ValueError(f"retries 必须在 [1, {MAX_RETRIES}] 内")
         self.timeout = timeout
         self.delay = delay
         self.retries = retries
         self._last_request_at = 0.0
+
+    def _read_limited(self, response: Any, max_bytes: int) -> bytes:
+        if max_bytes <= 0 or max_bytes > DEFAULT_MAX_RESPONSE_BYTES:
+            raise ValueError("响应大小上限无效")
+        declared = response.headers.get("Content-Length")
+        if declared:
+            try:
+                declared_size = int(declared)
+            except (TypeError, ValueError) as exc:
+                raise FetchError("响应 Content-Length 无效") from exc
+            if declared_size < 0:
+                raise FetchError("响应 Content-Length 无效")
+            if declared_size > max_bytes:
+                raise ResponseTooLarge(f"响应声明大小超过上限 {max_bytes} bytes")
+        deadline = time.monotonic() + self.timeout
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise FetchError(f"响应读取超时：{self.timeout}s")
+            _set_response_timeout(response, min(self.timeout, remaining))
+            chunk = response.read(min(64 * 1024, max_bytes - total + 1))
+            if not chunk:
+                return b"".join(chunks)
+            total += len(chunk)
+            if total > max_bytes:
+                raise ResponseTooLarge(f"响应超过上限 {max_bytes} bytes")
+            chunks.append(chunk)
+
+    def _request(self, url: str, *, max_bytes: int) -> tuple[bytes, int, Any]:
+        parsed_url = urllib.parse.urlparse(url)
+        if parsed_url.scheme.lower() != "https" or not parsed_url.netloc:
+            raise FetchError(f"问题库来源只允许带主机的 HTTPS URL：{url}")
+        request = urllib.request.Request(
+            url,
+            headers={
+                "Accept": "text/html,application/json;q=0.9,*/*;q=0.1",
+                "Accept-Encoding": "identity",
+                "User-Agent": USER_AGENT,
+            },
+        )
+        with HTTPS_OPENER.open(request, timeout=self.timeout) as response:
+            final_url = response.geturl()
+            final_parsed = urllib.parse.urlparse(final_url)
+            if final_parsed.scheme.lower() != "https" or not final_parsed.netloc:
+                raise FetchError(f"问题库响应不是带主机的 HTTPS URL：{final_url}")
+            body = self._read_limited(response, max_bytes)
+            return body, response.status, response.headers
 
     def fetch(self, url: str) -> tuple[bytes, dict[str, str]]:
         error: Exception | None = None
@@ -92,47 +319,46 @@ class Fetcher:
             elapsed = time.monotonic() - self._last_request_at
             if elapsed < self.delay:
                 time.sleep(self.delay - elapsed)
-            request = urllib.request.Request(
-                url,
-                headers={
-                    "Accept": "text/html,application/json;q=0.9,*/*;q=0.1",
-                    "Accept-Encoding": "identity",
-                    "User-Agent": USER_AGENT,
-                },
-            )
             try:
-                with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                    body = response.read()
-                    headers = {key.lower(): value for key, value in response.headers.items()}
-                    self._last_request_at = time.monotonic()
-                    return body, headers
-            except (urllib.error.URLError, TimeoutError) as exc:
+                body, status, raw_headers = self._request(
+                    url, max_bytes=DEFAULT_MAX_RESPONSE_BYTES
+                )
+                if not 200 <= status < 300:
+                    raise FetchError(f"HTTP {status}")
+                headers = {
+                    key.lower(): value for key, value in raw_headers.items()
+                }
+                self._last_request_at = time.monotonic()
+                return body, headers
+            except urllib.error.HTTPError as exc:
+                self._last_request_at = time.monotonic()
+                error = exc
+                if attempt < self.retries and exc.code in {408, 429, 500, 502, 503, 504}:
+                    time.sleep(min(2 ** (attempt - 1), 8))
+                    continue
+                raise FetchError(f"抓取失败 HTTP {exc.code}：{url}") from exc
+            except (FetchError, urllib.error.URLError, TimeoutError) as exc:
                 self._last_request_at = time.monotonic()
                 error = exc
                 if attempt < self.retries:
                     time.sleep(min(2 ** (attempt - 1), 8))
-        raise RuntimeError(f"抓取失败（重试 {self.retries} 次）：{url}: {error}") from error
+        raise FetchError(f"抓取失败（重试 {self.retries} 次）：{url}: {error}") from error
 
     def probe(self, url: str) -> dict[str, Any]:
         elapsed = time.monotonic() - self._last_request_at
         if elapsed < self.delay:
             time.sleep(self.delay - elapsed)
-        request = urllib.request.Request(
-            url,
-            headers={"Accept-Encoding": "identity", "User-Agent": USER_AGENT},
-        )
         observed_at = utc_now()
         try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                body = response.read()
-                status = response.status
-                headers = response.headers
+            body, status, headers = self._request(
+                url, max_bytes=ROBOTS_MAX_RESPONSE_BYTES
+            )
         except urllib.error.HTTPError as exc:
-            body = exc.read()
+            body = self._read_limited(exc, ROBOTS_MAX_RESPONSE_BYTES)
             status = exc.code
             headers = exc.headers
-        except (urllib.error.URLError, TimeoutError) as exc:
-            raise RuntimeError(f"来源发现探测失败：{url}: {exc}") from exc
+        except (FetchError, urllib.error.URLError, TimeoutError) as exc:
+            raise FetchError(f"来源发现探测失败：{url}: {exc}") from exc
         finally:
             self._last_request_at = time.monotonic()
         return {
@@ -153,8 +379,9 @@ def cached_fetch(
     *,
     refresh: bool,
 ) -> tuple[bytes, dict[str, str], bool]:
+    assert_safe_library_path(path)
     if path.is_file() and not refresh:
-        return path.read_bytes(), {}, True
+        return read_bounded_bytes(path, DEFAULT_MAX_RESPONSE_BYTES), {}, True
     body, headers = fetcher.fetch(url)
     if not body:
         raise RuntimeError(f"来源返回空响应：{url}")
@@ -326,7 +553,10 @@ def fetch_wikipedia(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     raw_path = RAW_WIKIPEDIA / "list-of-unsolved-problems.json"
     if raw_path.is_file() and not refresh:
-        raw = json.loads(raw_path.read_text(encoding="utf-8"))
+        raw = json.loads(
+            read_text_bounded(raw_path, DEFAULT_MAX_RESPONSE_BYTES),
+            parse_constant=_reject_json_constant,
+        )
         from_cache = True
     else:
         parse_url = wikipedia_api_url(
@@ -362,9 +592,9 @@ def fetch_wikipedia(
         parse_body, _ = fetcher.fetch(parse_url)
         page_body, _ = fetcher.fetch(page_url)
         rights_body, _ = fetcher.fetch(rights_url)
-        parse_data = json.loads(parse_body)
-        page_data = json.loads(page_body)
-        rights_data = json.loads(rights_body)
+        parse_data = json.loads(parse_body, parse_constant=_reject_json_constant)
+        page_data = json.loads(page_body, parse_constant=_reject_json_constant)
+        rights_data = json.loads(rights_body, parse_constant=_reject_json_constant)
         if "error" in parse_data or "error" in page_data or "error" in rights_data:
             raise RuntimeError("Wikipedia API 返回错误，拒绝生成不完整快照。")
         raw = {
@@ -381,7 +611,7 @@ def fetch_wikipedia(
         {
             "source_url": WIKIPEDIA_URL,
             "raw_file": str(raw_path.relative_to(ROOT)),
-            "raw_sha256": sha256_bytes(raw_path.read_bytes()),
+            "raw_sha256": sha256_bytes(read_bounded_bytes(raw_path, DEFAULT_MAX_RESPONSE_BYTES)),
             "from_cache": from_cache,
             "record_scope": "all direct list items in the open and solved-since-1995 sections",
         }
@@ -394,7 +624,13 @@ def listing_summary(soup: BeautifulSoup) -> tuple[int, int]:
     match = pattern.search(normalize_space(soup.get_text(" ", strip=True)))
     if not match:
         raise RuntimeError("无法从 UnsolvedMath 目录页识别总条目数和页数。")
-    return int(match.group(1).replace(",", "")), int(match.group(2).replace(",", ""))
+    total = int(match.group(1).replace(",", ""))
+    pages = int(match.group(2).replace(",", ""))
+    if total <= 0 or total > MAX_RECORDS or pages <= 0 or pages > MAX_PAGES:
+        raise RuntimeError(
+            f"UnsolvedMath 目录规模超出预算：records={total} pages={pages}"
+        )
+    return total, pages
 
 
 def parse_unsolvedmath_card(card: Tag, *, page_number: int, order: int, retrieved_at: str) -> dict[str, Any]:
@@ -474,7 +710,10 @@ def fetch_unsolvedmath(
         }
         write_json(discovery_path, discovery)
     else:
-        discovery = json.loads(discovery_path.read_text(encoding="utf-8"))
+        discovery = json.loads(
+            read_text_bounded(discovery_path, DEFAULT_MAX_RESPONSE_BYTES),
+            parse_constant=_reject_json_constant,
+        )
     first_path = RAW_UNSOLVEDMATH / "page-001.html"
     first_body, _, first_from_cache = cached_fetch(
         fetcher,
@@ -511,6 +750,8 @@ def fetch_unsolvedmath(
             raise RuntimeError(f"UnsolvedMath 第 {page_number}/{page_count} 页没有问题卡片。")
         page_record_ids: list[str] = []
         for card in cards_by_url.values():
+            if len(records) >= MAX_RECORDS:
+                raise RuntimeError("问题库记录数超过资源预算")
             order += 1
             record = parse_unsolvedmath_card(
                 card,
@@ -568,7 +809,7 @@ def fetch_unsolvedmath(
         },
         "discovery": discovery,
         "discovery_file": str(discovery_path.relative_to(ROOT)),
-        "discovery_sha256": sha256_bytes(discovery_path.read_bytes()),
+        "discovery_sha256": sha256_bytes(read_bounded_bytes(discovery_path, DEFAULT_MAX_RESPONSE_BYTES)),
         "expected_record_count": expected_total,
         "record_count": len(records),
         "page_count": page_count,
@@ -622,13 +863,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--timeout", type=float, default=30.0, help="单次 HTTP 请求超时秒数。")
     parser.add_argument("--retries", type=int, default=3, help="瞬时网络失败的最大尝试次数。")
     args = parser.parse_args()
-    if args.delay < 0 or args.timeout <= 0 or args.retries < 1:
-        parser.error("delay 必须非负，timeout/retries 必须为正数。")
+    if not math.isfinite(args.delay) or args.delay < 0 or args.delay > MAX_DELAY_SECONDS:
+        parser.error(f"delay 必须在 [0, {MAX_DELAY_SECONDS}] 内。")
+    if not math.isfinite(args.timeout) or args.timeout <= 0 or args.timeout > MAX_TIMEOUT_SECONDS:
+        parser.error(f"timeout 必须在 (0, {MAX_TIMEOUT_SECONDS}] 内。")
+    if args.retries < 1 or args.retries > MAX_RETRIES:
+        parser.error(f"retries 必须在 [1, {MAX_RETRIES}] 内。")
     return args
 
 
 def main() -> int:
     args = parse_args()
+    for directory in (LIBRARY, RAW_WIKIPEDIA, RAW_UNSOLVEDMATH):
+        assert_safe_library_path(directory)
     generated_at = utc_now()
     fetcher = Fetcher(timeout=args.timeout, delay=args.delay, retries=args.retries)
     wikipedia_records, wikipedia_metadata = fetch_wikipedia(
@@ -643,15 +890,21 @@ def main() -> int:
         retrieved_at=generated_at,
     )
     records = wikipedia_records + unsolvedmath_records
-    payload = "".join(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n" for record in records)
-    write_atomic(RECORDS_PATH, payload.encode("utf-8"))
+    payload = "".join(
+        json.dumps(record, ensure_ascii=False, sort_keys=True, allow_nan=False) + "\n"
+        for record in records
+    )
+    payload_bytes = payload.encode("utf-8")
+    if len(payload_bytes) > MAX_RECORDS_BYTES:
+        raise ResponseTooLarge(f"问题库记录输出超过上限：{RECORDS_PATH}")
+    write_atomic(RECORDS_PATH, payload_bytes)
     catalog = build_indexes(records, generated_at=generated_at)
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "generated_at": generated_at,
         "generator": "scripts/fetch_problem_library.py",
         "records_file": str(RECORDS_PATH.relative_to(ROOT)),
-        "records_sha256": sha256_bytes(RECORDS_PATH.read_bytes()),
+        "records_sha256": sha256_bytes(read_bounded_bytes(RECORDS_PATH, MAX_RECORDS_BYTES)),
         "record_count": len(records),
         "catalog": catalog,
         "sources": {
@@ -670,6 +923,15 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (OSError, RuntimeError, ValueError, KeyError, json.JSONDecodeError) as exc:
+    except (
+        OSError,
+        RuntimeError,
+        ValueError,
+        KeyError,
+        TypeError,
+        AttributeError,
+        IndexError,
+        json.JSONDecodeError,
+    ) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         raise SystemExit(1) from exc

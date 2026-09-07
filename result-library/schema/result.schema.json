@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://vibe-mathing.local/schema/result.schema.json",
+  "$id": "https://tradecatlabs.com/vibe-mathing/schema/result.schema.json",
   "title": "Vibe Mathing Result",
   "type": "object",
   "additionalProperties": false,

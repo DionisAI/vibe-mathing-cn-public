@@ -1,0 +1,81 @@
+{
+  "document_type": "public-claims",
+  "schema_version": "public-claims.v1",
+  "repository": "tradecatlabs/vibe-mathing-cn-public",
+  "display_name": "vibe-mathing-cn",
+  "last_verified": "2026-09-07",
+  "claims": [
+    {
+      "claim_id": "claim:identity",
+      "text": "vibe-mathing-cn is a Chinese-first trusted AI mathematics research and verification workbench.",
+      "scope": "public-description",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "README.en.md", "llms.txt", "CITATION.cff", "codemeta.json"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "metadata"]
+    },
+    {
+      "claim_id": "claim:workflow",
+      "text": "The public workflow separates candidate generation from verification admission through ProblemContract, Attempt, Result, evidence capabilities, and derived views.",
+      "scope": "architecture",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "README.en.md", "problem-library/schema/canonical-problem.schema.json", "research/schema/attempt.schema.json", "research/schema/research-bundle.schema.json", "result-library/schema/result.schema.json"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    },
+    {
+      "claim_id": "claim:status",
+      "text": "The public canonical Problem, Attempt, and Result ledgers are empty, the solution index has no result IDs, and the repository does not claim to solve an open mathematics problem.",
+      "scope": "current-status",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "README.en.md", "llms.txt", "problem-library/records/canonical-problems.jsonl", "research/records/attempts.jsonl", "result-library/records/results.jsonl", "result-library/indexes/solutions.json"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "metadata"]
+    },
+    {
+      "claim_id": "claim:fixtures",
+      "text": "The public repository contains deterministic SymPy and SMT fixtures plus a fixed Lean/Mathlib fixture for bounded engineering checks.",
+      "scope": "capability",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "fixtures/sympy-counterexample/problem.json", "fixtures/smt-lra/case.json", "fixtures/lean-proof/README.md", "scripts/test_smt_pipeline.py", "scripts/test_lean_pipeline.py"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    },
+    {
+      "claim_id": "claim:bounded-evidence",
+      "text": "Finite numerical, symbolic, SMT, or canary checks are bounded evidence or candidate-generation tools and do not by themselves prove a universal mathematical claim.",
+      "scope": "limitation",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "README.en.md", "governance/architecture-gates/rules/GATE-0002-数学成果晋升必须有充分证据和独立验证.md", "scripts/test_evidence_attacks.py"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    },
+    {
+      "claim_id": "claim:tool-maturity",
+      "text": "The tool-maturity registry records evidence states and runtime routes; a maturity label is not an installation or verifier-admission claim without matching public evidence.",
+      "scope": "capability-boundary",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "governance/control-plane/math-tool-maturity.v1.json", "governance/control-plane/math-tool-maturity.schema.json", "scripts/validate_math_tool_maturity.py"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    },
+    {
+      "claim_id": "claim:problem-catalog",
+      "text": "The public discovery index points to the vibemathing ProblemContract catalog, concrete problem repositories, and the fixed Web research template; these external entries are not automatically admitted into this repository.",
+      "scope": "public-integration",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "README.en.md", "llms.txt", "problem-library/VIBEMATHING_PUBLIC_INDEX.md", "problem-library/registry/vibemathing-public-source.v1.json", "problem-library/templates/README.md"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    },
+    {
+      "claim_id": "claim:method-map",
+      "text": "The project uses a two-level formal-methods map: a six-part method landscape with Lean in dependent-type-theory deductive verification, plus a six-layer Lean stack from kernel foundations to applications.",
+      "scope": "methodology",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["README.md", "README.en.md", "llms.txt", "governance/standards/FORMAL-METHODS-MAP.md", ".codex/skills/README.md", ".codex/skills/math-formalization/SKILL.md"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation"]
+    }
+  ]
+}

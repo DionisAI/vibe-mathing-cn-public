@@ -1,6 +1,8 @@
 name = "vibe_mathing_fixture"
 version = "0.1.0"
 defaultTargets = ["VibeMathingFixture"]
+# Keep each Lean worker single-threaded when the fixture is run under a bounded executor.
+moreLeanArgs = ["-j1"]
 
 [[require]]
 name = "mathlib"

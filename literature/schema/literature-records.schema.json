@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://vibe-mathing.local/schema/literature-records.schema.json",
+  "$id": "https://tradecatlabs.com/vibe-mathing/schema/literature-records.schema.json",
   "title": "Vibe Mathing Literature Catalog Records",
   "$defs": {
     "nonEmptyString": {"type": "string", "minLength": 1},

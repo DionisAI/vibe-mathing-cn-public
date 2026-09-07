@@ -7,6 +7,10 @@ description: "数学研究任务路由器。用户提出找问题、查文献、
 
 识别当前数学研究瓶颈，只把任务交给一个 owner；不把整条研究链同时启动。
 
+## Position in the Method Map
+
+路由器先问“规格和语义是否已经冻结”，再区分演绎证明、模型检查、抽象解释、SAT/SMT/符号推理（含符号执行）或精化/综合的验证范式。Lean 是依赖类型理论型演绎验证的主战场，不是整张形式化方法地图。完整的上位/二级地图见 [`FORMAL-METHODS-MAP.md`](../../../governance/standards/FORMAL-METHODS-MAP.md)。
+
 ## When to Use This Skill
 
 - 用户提出开放式数学问题，但尚未说明需要检索、推导、计算还是证明。

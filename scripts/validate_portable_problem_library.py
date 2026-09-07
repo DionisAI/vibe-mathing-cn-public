@@ -7,12 +7,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import stat
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator, SchemaError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,22 +26,126 @@ CATALOG_PATH = LIBRARY / "indexes" / "catalog.json"
 BY_SOURCE_PATH = LIBRARY / "indexes" / "by-source.json"
 BY_CATEGORY_PATH = LIBRARY / "indexes" / "by-category.json"
 
+MAX_FILE_BYTES = 128_000_000
+MAX_RECORDS = 100_000
+MAX_LINE_BYTES = 30_000_000
+MAX_PATH_CHARS = 4_096
+
+
+def _nofollow_flag() -> int:
+    value = getattr(os, "O_NOFOLLOW", None)
+    if value is None:
+        raise RuntimeError("当前平台缺少 O_NOFOLLOW，拒绝读取问题库文件")
+    return value
+
+
+def _safe_path(path: Path) -> Path:
+    path = Path(path)
+    if (
+        len(str(path)) > MAX_PATH_CHARS
+        or any(part in {".", ".."} for part in path.parts)
+        or "\x00" in str(path)
+        or "\\" in str(path)
+    ):
+        raise ValueError(f"问题库路径包含非法组件：{path}")
+    candidate = Path(os.path.abspath(path if path.is_absolute() else ROOT / path))
+    try:
+        relative = candidate.relative_to(ROOT)
+    except ValueError as exc:
+        raise ValueError(f"问题库路径越界：{candidate}") from exc
+    current = ROOT
+    for part in relative.parts:
+        current /= part
+        if current.is_symlink():
+            raise ValueError(f"问题库路径不能包含 symlink：{candidate}")
+    return candidate
+
+
+def _read_bounded(path: Path, *, max_bytes: int = MAX_FILE_BYTES) -> bytes:
+    if (
+        not isinstance(max_bytes, int)
+        or isinstance(max_bytes, bool)
+        or max_bytes <= 0
+        or max_bytes > MAX_FILE_BYTES
+    ):
+        raise ValueError("问题库文件读取大小上限无效")
+    candidate = _safe_path(path)
+    descriptor = os.open(candidate, os.O_RDONLY | _nofollow_flag())
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode):
+            raise ValueError(f"问题库路径不是普通文件：{candidate}")
+        if file_stat.st_size > max_bytes:
+            raise ValueError(f"问题库文件超过上限 {max_bytes} bytes：{candidate}")
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(descriptor, min(64 * 1024, max_bytes - total + 1))
+            if not chunk:
+                return b"".join(chunks)
+            total += len(chunk)
+            if total > max_bytes:
+                raise ValueError(f"问题库文件超过上限 {max_bytes} bytes：{candidate}")
+            chunks.append(chunk)
+    finally:
+        os.close(descriptor)
+
+
+def _reject_json_constant(value: str) -> Any:
+    raise ValueError(f"JSON 常量非法：{value}")
+
 
 def load_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(_read_bounded(path).decode("utf-8"), parse_constant=_reject_json_constant)
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
-    with path.open(encoding="utf-8") as handle:
-        return [json.loads(line) for line in handle if line.strip()]
+    records: list[dict[str, Any]] = []
+    for line_number, raw_line in enumerate(_read_bounded(path).splitlines(), 1):
+        if len(raw_line) > MAX_LINE_BYTES:
+            raise ValueError(f"问题库 JSONL 第 {line_number} 行超过大小上限")
+        if not raw_line.strip():
+            continue
+        try:
+            value = json.loads(raw_line.decode("utf-8"), parse_constant=_reject_json_constant)
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+            raise ValueError(f"问题库 JSONL 第 {line_number} 行无效：{exc}") from exc
+        if not isinstance(value, dict):
+            raise ValueError(f"问题库 JSONL 第 {line_number} 行不是对象")
+        records.append(value)
+        if len(records) > MAX_RECORDS:
+            raise ValueError(f"问题库 JSONL 记录数超过上限 {MAX_RECORDS}")
+    return records
 
 
-def sha256_file(path: Path) -> str:
+def sha256_file(path: Path, *, max_bytes: int = MAX_FILE_BYTES) -> str:
+    candidate = _safe_path(path)
+    if (
+        not isinstance(max_bytes, int)
+        or isinstance(max_bytes, bool)
+        or max_bytes <= 0
+        or max_bytes > MAX_FILE_BYTES
+    ):
+        raise ValueError("问题库哈希大小上限无效")
+    descriptor = os.open(candidate, os.O_RDONLY | _nofollow_flag())
     digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode):
+            raise ValueError(f"问题库路径不是普通文件：{candidate}")
+        if file_stat.st_size > max_bytes:
+            raise ValueError(f"问题库文件超过上限 {max_bytes} bytes：{candidate}")
+        total = 0
+        while True:
+            chunk = os.read(descriptor, min(1024 * 1024, max_bytes - total + 1))
+            if not chunk:
+                return digest.hexdigest()
+            total += len(chunk)
+            if total > max_bytes:
+                raise ValueError(f"问题库文件超过上限 {max_bytes} bytes：{candidate}")
             digest.update(chunk)
-    return digest.hexdigest()
+    finally:
+        os.close(descriptor)
 
 
 def main() -> int:
@@ -54,7 +160,7 @@ def main() -> int:
         try:
             schema = load_json(SCHEMA_PATH)
             Draft202012Validator.check_schema(schema)
-        except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+        except (OSError, ValueError, KeyError, TypeError, AttributeError, SchemaError) as exc:
             print(f"ERROR: {exc}", file=sys.stderr)
             return 1
         print("可移植问题库校验通过：未携带可重建来源数据，schema 有效。")
@@ -72,6 +178,8 @@ def main() -> int:
         catalog = load_json(CATALOG_PATH)
         by_source = load_json(BY_SOURCE_PATH)
         by_category = load_json(BY_CATEGORY_PATH)
+        if not all(isinstance(value, dict) for value in (manifest, schema, catalog, by_source, by_category)):
+            raise ValueError("问题库 manifest、索引和 schema 顶层必须是对象")
         Draft202012Validator.check_schema(schema)
         validator = Draft202012Validator(schema)
         ids: set[str] = set()
@@ -81,18 +189,34 @@ def main() -> int:
             for error in sorted(validator.iter_errors(record), key=lambda item: list(item.path)):
                 errors.append(f"第 {position} 条 schema 错误：{error.message}")
             record_id = record.get("id")
-            if record_id in ids:
+            if isinstance(record_id, str) and record_id in ids:
                 errors.append(f"重复 id：{record_id}")
             if isinstance(record_id, str):
                 ids.add(record_id)
                 source = record.get("source")
+                if not isinstance(source, str):
+                    source = "<invalid-source>"
                 calculated_by_source[source].append(record_id)
-                for category in record.get("categories", []):
-                    calculated_by_category[category].append(record_id)
-        source_counts = dict(sorted(Counter(item["source"] for item in records).items()))
-        status_counts = dict(sorted(Counter(item["status"] for item in records).items()))
+                categories = record.get("categories", [])
+                if isinstance(categories, list):
+                    for category in categories:
+                        if isinstance(category, str):
+                            calculated_by_category[category].append(record_id)
+        source_counts = dict(sorted(Counter(
+            item.get("source") if isinstance(item.get("source"), str) else "<invalid-source>"
+            for item in records
+        ).items()))
+        status_counts = dict(sorted(Counter(
+            item.get("status") if isinstance(item.get("status"), str) else "<invalid-status>"
+            for item in records
+        ).items()))
         category_counts = dict(
-            sorted(Counter(category for item in records for category in item["categories"]).items())
+            sorted(Counter(
+                category
+                for item in records
+                for category in (item.get("categories") if isinstance(item.get("categories"), list) else [])
+                if isinstance(category, str)
+            ).items())
         )
         if manifest.get("record_count") != len(records):
             errors.append("manifest record_count 与 records 不一致")
@@ -110,7 +234,7 @@ def main() -> int:
             errors.append("by-source 索引与 records 不一致")
         if by_category.get("items") != dict(sorted(calculated_by_category.items())):
             errors.append("by-category 索引与 records 不一致")
-    except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, SchemaError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 1
 

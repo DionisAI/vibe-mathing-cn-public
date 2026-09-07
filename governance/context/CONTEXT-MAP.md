@@ -19,6 +19,7 @@ review_cycle: P90D
 | 研究空间 | `research/` | `module-contexts/research/CONTEXT.md` | ADR-0000 | research spaces validation |
 | 成果/解空间 | `result-library/` | `module-contexts/result-library/CONTEXT.md` | ADR-0000、GATE-0002 | research spaces validation + negative tests |
 | 文献空间 | `literature/` | `literature/README.md`、`literature/AGENTS.md` | - | portable/full literature validation |
+| 形式化方法地图 | `governance/standards/FORMAL-METHODS-MAP.md` | `FORMAL-METHODS-MAP.md`、`.codex/skills/` | GATE-0002 | README/skill boundary checks + governance strict/health |
 | 治理包 | `governance/` | `AGENT-ENTRY.md` | GATE-0000/0001 | governance strict/health |
 
 ## 维护规则

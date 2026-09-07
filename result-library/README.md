@@ -32,6 +32,8 @@ result-library/
 
 `solutions.json` 必须由校验器重算并核对，不接受绕过 `results.jsonl` 的手工答案。
 
+按 Problem 导出时，`ResearchBundle.disposition` 从当前有效 Solution View 派生为 `solved|refuted|open`。若同一 Problem 同时存在通过准入的 proof 与 counterexample，研究空间校验和 `export-bundle` 都会非零失败；系统不会任选一侧，也不会把冲突伪装成 open。
+
 ## 验证
 
 ```bash

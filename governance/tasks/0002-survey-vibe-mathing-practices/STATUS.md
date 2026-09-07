@@ -1,7 +1,7 @@
 # Task Status
 
 - Overall Status: `In Progress`
-- Survey snapshot: `2026-08-13`
+- Survey snapshot: `2026-09-01`
 - First-round status: `Complete`
 
 # Next Executable Leaves
@@ -26,7 +26,7 @@
 - 检索主流程：`math-discovery`。
 - 任务与治理编排：`auto-tasks` + `auto-governance`。
 - 研究形态：单 Agent、跨来源 Web 检索、人工证据分级。
-- 没有修改数学记录、active skill、项目依赖、CI 或远端状态。
+- Public export 已补充 ProblemContract/ResearchBundle schema、候选隔离管线、工具成熟度契约和可移植测试；没有携带内部运行报告、候选 raw 或研究记录。
 
 # Recent Evidence
 
@@ -52,6 +52,7 @@
 ## Primary Artifacts
 
 - `SYNTHESIS.md`：术语谱系、案例矩阵、实践协议与项目建议。
+- `MATH_TOOL_LANDSCAPE.md`：公开工具成熟度状态机、证据上限和 canary 边界；不引用内部运行盘点。
 - `SOURCE_LEDGER.md`：来源、证据层级、可审计材料与局限。
 - `SEARCH_PROTOCOL.md`：检索范围、来源优先级、失败策略与停止条件。
 - `REVIEW.md`：审查结论、风险、未知项与总任务门禁。
@@ -64,7 +65,7 @@
 - governance strict/health：`PASS`，0 issue、0 stale、0 placeholder。
 - `git diff --check`：`PASS`。
 - 审查裁决：`WARN`。外部 Lean 工程尚未固定版本本地复跑，动态聚合站状态可能漂移；限制已记录在 `REVIEW.md`。
-- 交付状态：未提交、未推送；未修改数学真相源、active skills、依赖或 CI。
+- 交付状态：本轮公开导出待提交/推送；canonical/Attempt/Result 业务记录仍未新增，运行报告和私密材料未导出。
 
 ## Next Slice
 

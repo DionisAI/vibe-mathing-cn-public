@@ -78,7 +78,9 @@ def main() -> int:
         kernel_receipt = json.loads(
             (project_root / kernel["locator"]).read_text(encoding="utf-8")
         )
-        assert kernel_receipt["command"]["argv"][-2:] == ["--quiet", "build"]
+        kernel_argv = kernel_receipt["command"]["argv"]
+        assert kernel_argv[1:3] == ["-j1", "-o"]
+        assert kernel_argv[-1] == "VibeMathingFixture.lean"
         assert audit["verdict"] == "accept"
         print(json.dumps({"result_id": result["result_id"], "capabilities": [item["capability"] for item in result["evidence"]]}, ensure_ascii=False))
     return 0

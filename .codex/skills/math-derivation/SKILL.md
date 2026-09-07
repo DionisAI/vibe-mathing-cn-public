@@ -7,6 +7,10 @@ description: "数学公式与理论线推导。用于整理散乱公式、固定
 
 建立诚实、可检查的推导链；不把解释、近似或数值现象伪装成严格证明。
 
+## Position in the Method Map
+
+本 skill 连接“规格与语义”到“演绎验证/定理证明”：它先保持 ProblemContract 的定义和量词不变，再将论证拆成可复核的中间命题。它不是 Lean elaboration，也不是自动化求解器；需要形式化 proof term 时转交 `math-formalization`。地图总览见 [`FORMAL-METHODS-MAP.md`](../../../governance/standards/FORMAL-METHODS-MAP.md)。
+
 ## When to Use This Skill
 
 - 用户要求推导公式、整理理论线或解释等式来源。
@@ -15,6 +19,7 @@ description: "数学公式与理论线推导。用于整理散乱公式、固定
 
 ## Not For / Boundaries
 
+- CandidateObservation 未形成明确用户目标或 active ProblemContract 时回到 `math-discovery`；不得用推导文本替候选完成准入。
 - 完整定理证明交给 `math-proof`。
 - 具体符号/数值检查交给 `math-computation`，其结果只是证据层。
 - 不静默增加假设、交换极限/积分、忽略收敛条件或改变目标对象。
@@ -55,6 +60,6 @@ Status：coherent / coherent-after-reframing / blocked。
 
 ## Maintenance
 
-- Sources：`local-formula-derivation`，并吸收本项目计算证据分层规则。
+- Sources：`kdense-scientific-skills` 与本项目 ProblemContract/证据分层规则；不依赖未发布本机来源。
 - Last updated：2026-08-13。
 - Verification：`python3 scripts/smoke_math.py` 只验证计算层；推导仍需逐步审计。

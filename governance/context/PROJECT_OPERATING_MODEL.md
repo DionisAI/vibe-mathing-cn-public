@@ -26,6 +26,7 @@ review_cycle: P90D
 ## 技术模型
 
 - 主要运行形态：Git 管理的 Markdown、JSON/JSONL、JSON Schema、Python 单机 runtime/校验器、固定 Lean/Mathlib fixture 和项目级 Codex skills。
+- 方法层主线：规格与语义 → 演绎验证/定理证明 → 模型检查 → 抽象解释 → SAT/SMT/符号推理（含符号执行）/决策过程 → 精化与程序综合；Lean 位于依赖类型理论型演绎验证/交互式定理证明，不等于整个形式化方法版图。完整地图见 `governance/standards/FORMAL-METHODS-MAP.md`。
 - 数据事实源：来源记录在 `problem-library/records/problems.jsonl`；规范化问题在 `canonical-problems.jsonl`；研究与成果分别在 `research/records/` 和 `result-library/records/`。
 - 派生视图：`result-library/indexes/solutions.json`，禁止绕过 Result 真相源直接录入。
 - 外部依赖：公开问题来源、文献数据库、Python 数学/校验库、Lean/Mathlib；上游 skill 版本由 `vendor/sources.lock.json` 固定，形式工具链由 fixture 固定。
@@ -52,6 +53,7 @@ review_cycle: P90D
 | 文献书目 | `literature/catalog/*.jsonl` | 电子书二进制保持本地忽略 |
 | 研究方法 | `.codex/skills/` | 只保存 active owner skills |
 | Vibe-Mathing 核心规范 | `governance/standards/VIBE-MATHING-SPEC-v0.1.md` | 三条基本法则及操作层要求 |
+| 形式化方法地图 | `governance/standards/FORMAL-METHODS-MAP.md` | 方法层主线、Lean 定位、Lean 六层栈与学习顺序 |
 | 供应链版本 | `vendor/sources.lock.json` | URL、commit、许可和导入映射 |
 | 项目治理 | `governance/` | 标准、ADR、Gate 和任务证据 |
 | CI 入口 | `.github/workflows/ci.yml` | portable 与固定 Lean production-loop 双门 |
@@ -75,6 +77,7 @@ review_cycle: P90D
 - 改对象字段：同步修改 owner schema、局部 README/AGENTS、校验器与回归测试。
 - 改晋升规则：同步修改 Result schema、校验器、负例、GATE-0002 和 ADR。
 - 改工具/CI：同步修改 `Makefile`、`scripts/check.sh`、`.github/workflows/ci.yml` 与 `TOOLCHAIN_MODEL.md`。
+- 改方法层地图：同步修改 `FORMAL-METHODS-MAP.md`、相关 skill 的职责边界、工具目录和 README 的定位摘要；不得把教学地图写成运行能力或数学证据。
 - 新增目录或重划职责：同步根与目标目录 README/AGENTS、PROJECT-TOPOLOGY 和 module context。
 
 ## 验证入口

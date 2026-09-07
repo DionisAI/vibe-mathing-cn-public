@@ -50,17 +50,15 @@ jobs:
 
       - name: Install fixed Lean toolchain
         run: |
-          curl --proto '=https' --tlsv1.2 -sSf -o /tmp/elan-init.sh https://raw.githubusercontent.com/leanprover/elan/464c9d28395000a2a0128e07081e4956d50eced2/elan-init.sh
+          timeout 300s curl --connect-timeout 15 --max-time 240 --proto '=https' --tlsv1.2 -sSf -o /tmp/elan-init.sh https://raw.githubusercontent.com/leanprover/elan/464c9d28395000a2a0128e07081e4956d50eced2/elan-init.sh
           echo "a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53  /tmp/elan-init.sh" | sha256sum --check --strict
-          sh /tmp/elan-init.sh -y --default-toolchain none
+          timeout 600s sh /tmp/elan-init.sh -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-          "$HOME/.elan/bin/elan" toolchain install leanprover/lean4:v4.33.0
+          timeout 900s "$HOME/.elan/bin/elan" toolchain install leanprover/lean4:v4.33.0
 
       - name: Restore Mathlib cache
         working-directory: fixtures/lean-proof
-        run: |
-          lake update
-          lake exe cache get
+        run: timeout 900s lake exe cache get
 
       - name: Audit production loop
         run: python3 scripts/pipeline_maturity_audit.py --strict

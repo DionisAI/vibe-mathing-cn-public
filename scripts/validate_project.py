@@ -6,6 +6,8 @@
 from __future__ import annotations
 
 import json
+import os
+import stat
 import re
 import sys
 from pathlib import Path
@@ -21,6 +23,12 @@ REQUIRED = [
     "## Examples",
     "## Maintenance",
 ]
+MAX_FILE_BYTES = 5_000_000
+MAX_SKILLS = 100
+MAX_LOCK_SOURCES = 1_000
+MAX_PATH_CHARS = 4_096
+
+
 FORBIDDEN = [
     "mcp__codex__",
     "mcp__manual_review__",
@@ -30,6 +38,45 @@ FORBIDDEN = [
 ]
 
 
+def _reject_json_constant(value: str) -> object:
+    raise ValueError(f"JSON 常量非法：{value}")
+
+
+def _read_text(path: Path) -> str:
+    path = Path(path)
+    if len(str(path)) > MAX_PATH_CHARS or "\x00" in str(path) or "\\" in str(path):
+        raise ValueError(f"路径超过大小预算：{path}")
+    try:
+        relative = path.relative_to(ROOT)
+    except ValueError as exc:
+        raise ValueError(f"路径越界：{path}") from exc
+    lexical = ROOT
+    for part in relative.parts:
+        lexical = lexical / part
+        if lexical.is_symlink():
+            raise ValueError(f"路径不能包含 symlink：{path}")
+    nofollow = getattr(os, "O_NOFOLLOW", None)
+    if nofollow is None:
+        raise RuntimeError("O_NOFOLLOW unavailable; refusing project validation")
+    descriptor = os.open(path, os.O_RDONLY | nofollow)
+    try:
+        file_stat = os.fstat(descriptor)
+        if not stat.S_ISREG(file_stat.st_mode) or file_stat.st_size > MAX_FILE_BYTES:
+            raise ValueError(f"文件超过大小预算：{path}")
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(descriptor, min(64 * 1024, MAX_FILE_BYTES - total + 1))
+            if not chunk:
+                return b"".join(chunks).decode("utf-8")
+            total += len(chunk)
+            if total > MAX_FILE_BYTES:
+                raise ValueError(f"文件超过大小预算：{path}")
+            chunks.append(chunk)
+    finally:
+        os.close(descriptor)
+
+
 def frontmatter_value(text: str, key: str) -> str | None:
     match = re.search(rf"(?m)^{re.escape(key)}:\s*[\"']?([^\n\"']+)", text)
     return match.group(1).strip() if match else None
@@ -37,16 +84,47 @@ def frontmatter_value(text: str, key: str) -> str | None:
 
 def main() -> int:
     errors: list[str] = []
-    lock = json.loads(LOCK.read_text(encoding="utf-8"))
-    source_ids = {source["id"] for source in lock["sources"]}
-    skill_dirs = sorted(path for path in SKILLS.iterdir() if path.is_dir())
+    if (
+        ROOT.is_symlink()
+        or ROOT.resolve() != ROOT
+        or LOCK.is_symlink()
+        or SKILLS.is_symlink()
+        or any(parent.is_symlink() for parent in ROOT.parents)
+    ):
+        raise ValueError("项目关键路径不能是 symlink")
+    lock = json.loads(_read_text(LOCK), parse_constant=_reject_json_constant)
+    if (
+        not isinstance(lock, dict)
+        or not isinstance(lock.get("sources"), list)
+        or len(lock["sources"]) > MAX_LOCK_SOURCES
+    ):
+        raise ValueError("供应链 lockfile 结构无效")
+    source_ids: set[str] = set()
+    for source in lock["sources"]:
+        if not isinstance(source, dict) or not isinstance(source.get("id"), str):
+            raise ValueError("供应链 lockfile source entry 无效")
+        if source["id"] in source_ids:
+            raise ValueError("供应链 lockfile source ID 重复")
+        source_ids.add(source["id"])
+    skill_dirs = sorted(
+        path for path in SKILLS.iterdir()
+        if path.is_symlink()
+    )
+    if skill_dirs:
+        raise ValueError("active skill 目录不能是 symlink")
+    skill_dirs = sorted(
+        path for path in SKILLS.iterdir()
+        if path.is_dir()
+    )
+    if len(skill_dirs) > MAX_SKILLS:
+        raise ValueError("active skill 数量超过上限")
 
     for skill_dir in skill_dirs:
         skill_file = skill_dir / "SKILL.md"
         if not skill_file.is_file():
             errors.append(f"缺少 SKILL.md：{skill_dir}")
             continue
-        text = skill_file.read_text(encoding="utf-8")
+        text = _read_text(skill_file)
         name = frontmatter_value(text, "name")
         if name != skill_dir.name or not re.fullmatch(r"[a-z][a-z0-9-]*", name or ""):
             errors.append(f"skill 名称不匹配：{skill_dir} -> {name}")
@@ -69,7 +147,7 @@ def main() -> int:
                 errors.append(f"{skill_dir.name} 含禁止的不可用依赖：{token}")
         source_map = skill_dir / "references" / "source-map.md"
         if source_map.is_file() and skill_dir.name != "vibe-mathing-router":
-            mapped = source_map.read_text(encoding="utf-8")
+            mapped = _read_text(source_map)
             if not any(source_id in mapped for source_id in source_ids):
                 errors.append(f"{skill_dir.name} 未映射 lockfile 来源")
 
@@ -90,4 +168,8 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except (OSError, RuntimeError, ValueError, TypeError, KeyError, UnicodeError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        raise SystemExit(1) from exc
