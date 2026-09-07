@@ -11,13 +11,15 @@ source: sanitized public synthesis of lifecycle orchestration design
 related_gates: [GATE-0002]
 ---
 
-# 研究任务全生命周期与编排模型 v0.1
+# 研究任务全生命周期与编排模型 v0.1 — PLFB F05 过程面
 
-本文件定义项目的**顶层生命周期认识**。它补充而不替代 `ProblemContract`、`Attempt`、`Result` schema 和数学证据准入规则。
+本文件定义项目唯一 [Point–Line–Face–Body 元模型](POINT-LINE-FACE-BODY-METAMODEL-v0.1.md)中 **F05 Process/PWTSJ** 面内的生命周期认识。它补充而不替代 `ProblemContract`、`Attempt`、Outcome Space、Evidence、`Result` schema 和数学证据准入规则。
 
-它首先是一个公开的架构与术语模型，不是已实现的分布式调度器、自动证明器、启动授权或能力认证。文档中出现的未来机制必须视为设计目标，不能当作当前运行能力。
+PWTSJ 是 F05 面内模型，不是并列元模型根。OSPS 属于 F04：它维护 OutcomeNode、Obligation、候选分支和搜索前沿；PWTSJ 组织有界执行。二者必须通过显式跨面 Line 绑定。
 
-## 一、唯一的五级顶层结构
+它首先是一个公开的架构与术语模型，不是已实现的分布式调度器、OSPS orchestrator、Body runtime、统一 Observation Ledger、自动证明器、启动授权或能力认证。文档中出现的未来机制必须视为设计目标，不能当作当前运行能力。
+
+## 一、F05 的五级结构
 
 ```text
 Project
@@ -110,11 +112,12 @@ Project：研究一个固定数学问题
 状态轴不得互相偷换：
 
 ```text
-Job 成功
-  ≠ Step 验收通过
-  ≠ Task 证明义务闭合
-  ≠ Workflow 验证完成
-  ≠ Project 的问题解决
+Job succeeded
+  ≠ Step accepted
+  ≠ Obligation closed
+  ≠ OutcomeNode closed
+  ≠ Result admitted
+  ≠ Project solved
 ```
 
 运行完成只说明一次活动结束。暂停、路线阻塞、预算耗尽和工具失败都不能自动改变数学 `outcome`；`Result` 当前结论必须由有效证据重新派生。

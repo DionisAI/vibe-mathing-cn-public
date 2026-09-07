@@ -14,9 +14,13 @@ A `ProblemContract` fixes the statement, domain, quantifiers, definitions, assum
 
 The upper map is `Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis`. Lean belongs in dependent-type-theory deductive verification; its secondary stack is Type Theory/Kernel, Language/Elaboration, Proof Engineering, Automation, Library Engineering, and Applications. This map is orientation, not a claim that every problem follows every method.
 
-## Top-level lifecycle
+## Single conceptual root and lifecycle
 
-The execution model is `Project -> Workflow -> Task -> Step -> Job`. A Job is one bounded execution instance of a Step; retries create new Jobs and verified checkpoint recovery does not change the mathematical result. This is orthogonal to the mathematical chain `ProblemContract -> Attempt -> Result`; a successful Job is not a closed proof obligation or a solved Project. The public five-level model is architecture language, not a claim of a general scheduler or multi-worker production system.
+Point-Line-Face-Body (PLFB) is the single conceptual metamodel root. Stable objects are Points, typed directed relationships are Lines, bounded knowledge or operation dimensions are Faces, and a reference-only Body composes Faces and cross-face Lines. PWTSJ belongs to Face F05; OSPS belongs to Face F04.
+
+In F05 the execution model is `Project -> Workflow -> Task -> Step -> Job`. A Job is one bounded execution instance of a Step; retries create new Jobs and verified checkpoint recovery does not change the mathematical result. F04 maintains OutcomeNodes, Obligations, alternatives, and the search frontier. `Job succeeded != Step accepted != Obligation closed != OutcomeNode closed != Result admitted != Project solved`.
+
+The public PLFB/PWTSJ/OSPS material is conceptual architecture language, not a claim of a deployed PLFB registry service, Body runtime, OSPS orchestrator, general scheduler, unified Observation Ledger, or multi-worker production system.
 
 ## Freshness and authority
 

@@ -25,6 +25,10 @@
     "ResearchBundle",
     "formal methods",
     "Lean 4",
+    "Point-Line-Face-Body metamodel",
+    "PLFB",
+    "PWTSJ",
+    "OSPS",
     "research lifecycle",
     "workflow orchestration",
     "source freshness and revalidation",
@@ -33,8 +37,13 @@
   "about": [
     {
       "@type": "DefinedTerm",
+      "name": "Point → Line → Face → Body",
+      "description": "The single conceptual metamodel root; PWTSJ belongs to Face F05 and OSPS belongs to Face F04."
+    },
+    {
+      "@type": "DefinedTerm",
       "name": "Project → Workflow → Task → Step → Job",
-      "description": "A five-level execution architecture language; Job is one bounded execution of a Step."
+      "description": "The PWTSJ execution architecture language inside Face F05; Job is one bounded execution of a Step."
     },
     {
       "@type": "DefinedTerm",
@@ -47,6 +56,11 @@
       "@type": "DigitalDocument",
       "name": "GEO guide",
       "url": "https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/GEO.md"
+    },
+    {
+      "@type": "DigitalDocument",
+      "name": "Point-Line-Face-Body metamodel",
+      "url": "https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md"
     },
     {
       "@type": "DigitalDocument",

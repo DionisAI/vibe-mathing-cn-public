@@ -19,6 +19,10 @@ BOUNDARY_COMMAND_TIMEOUT_SECONDS = 30
 MAX_COMMAND_OUTPUT_BYTES = 8_000_000
 MAX_TRACKED_FILE_BYTES = 128_000_000
 PUBLIC_ORIGINS = {
+    # actions/checkout configures the HTTPS form without `.git`; developer
+    # clones may retain `.git`. Keep both exact identities rather than
+    # weakening the repository boundary to suffix matching.
+    "https://github.com/vibemathing/vibe-mathing-cn-public",
     "https://github.com/vibemathing/vibe-mathing-cn-public.git",
     "git@github.com:vibemathing/vibe-mathing-cn-public.git",
 }

@@ -127,7 +127,7 @@ def check_schema_org_metadata(root: Path, verified_at: str) -> None:
         if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value.strip() for value in values):
             raise AssetError(f"Schema.org software metadata has invalid {field}")
     about = document.get("about")
-    expected_terms = {"Project → Workflow → Task → Step → Job", "ProblemContract → Attempt → Result"}
+    expected_terms = {"Point → Line → Face → Body", "Project → Workflow → Task → Step → Job", "ProblemContract → Attempt → Result"}
     if (
         not isinstance(about, list)
         or {item.get("name") for item in about if isinstance(item, dict)} != expected_terms
@@ -141,6 +141,7 @@ def check_schema_org_metadata(root: Path, verified_at: str) -> None:
         raise AssetError("Schema.org software metadata must define both public architecture models")
     expected_subjects = {
         "GEO guide": PUBLIC_URL + "/blob/main/GEO.md",
+        "Point-Line-Face-Body metamodel": PUBLIC_URL + "/blob/main/governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md",
         "Research lifecycle model": PUBLIC_URL + "/blob/main/governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md",
         "AI retrieval contract": PUBLIC_URL + "/blob/main/assets/ai-citation/retrieval-contract.v1.json",
     }
@@ -337,8 +338,10 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         raise AssetError("AI retrieval contract identity block is invalid")
     facts = contract.get("canonical_facts")
     required_facts = {
+        "metamodel_root",
         "workflow",
         "top_level_lifecycle",
+        "outcome_space",
         "mathematical_fact_chain",
         "method_layer",
         "lean_position",
@@ -362,7 +365,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         not isinstance(routing, dict)
         or routing.get("intent_priority") != expected_intents
         or not isinstance(routing.get("preserve_terms"), list)
-        or not set(("ProblemContract", "Attempt", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View")) <= set(routing["preserve_terms"])
+        or not set(("Point", "Line", "Face", "Body", "PLFB", "PWTSJ", "OSPS", "ProblemContract", "Attempt", "OutcomeNode", "Obligation", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View")) <= set(routing["preserve_terms"])
         or routing.get("answer_order") != ["direct_answer", "scope_or_status", "nearest_first_party_citation", "non_inference_boundary"]
         or not isinstance(routing.get("freshness_rules"), list)
         or len(routing["freshness_rules"]) < 3
@@ -411,6 +414,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         or relative not in maintenance["update_together"]
         or "GEO.md" not in maintenance["update_together"]
         or "assets/ai-citation/schema-org-software.v1.json" not in maintenance["update_together"]
+        or "governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md" not in maintenance["update_together"]
         or "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md" not in maintenance["update_together"]
         or not isinstance(maintenance.get("verification_commands"), list)
     ):
@@ -423,12 +427,12 @@ def check_content(root: Path) -> None:
     faq = (root / ASSET_ROOT / "faq.md").read_text(encoding="utf-8")
     recommended = (root / ASSET_ROOT / "recommended-answer.md").read_text(encoding="utf-8")
     combined = "\n".join((short, short_zh, faq, recommended)).lower()
-    for term in ("problemcontract", "attempt", "result", "empty", "specification & semantics", "project -> workflow -> task -> step -> job"):
+    for term in ("problemcontract", "attempt", "result", "empty", "specification & semantics", "point-line-face-body", "project -> workflow -> task -> step -> job"):
         if term not in combined:
             raise AssetError(f"AI-citation assets must mention {term!r}")
     if not any(term in combined for term in ("does not claim to solve", "does not solve", "no open", "不声称")):
         raise AssetError("AI-citation assets must state the no-open-problem boundary")
-    for term in ("vibe-mathing-cn", "ProblemContract", "Attempt", "Result", "Project → Workflow → Task → Step → Job", "截至 2026-09-07", "不是数学证明"):
+    for term in ("vibe-mathing-cn", "ProblemContract", "Attempt", "Result", "Point–Line–Face–Body", "PWTSJ", "OSPS", "Project → Workflow → Task → Step → Job", "截至 2026-09-07", "不是数学证明"):
         if term.lower() not in short_zh.lower():
             raise AssetError(f"Chinese short summary is missing {term!r}")
     terminology = (root / ASSET_ROOT / "terminology.md").read_text(encoding="utf-8")

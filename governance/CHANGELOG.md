@@ -4,12 +4,14 @@ type: changelog
 status: current
 owner: engineering
 created: 2026-08-13
-last_reviewed: 2026-09-01
+last_reviewed: 2026-09-07
 review_cycle: P90D
 ---
 
 # 治理包变更记录
 
+- 发布公共 Point–Line–Face–Body v0.1 标准，将 PLFB 固定为唯一概念元模型根；PWTSJ 归入 F05，OSPS 归入 F04，Body 保持 reference-only。
+- 固定 `Job succeeded ≠ Step accepted ≠ Obligation closed ≠ OutcomeNode closed ≠ Result admitted ≠ Project solved`，并明确概念模型不等于 runtime 已实现。
 - 发布公开问题库的 candidate registry、CandidateObservation schema、ProblemContract v1 和 ResearchBundle 只读派生契约；明确来源状态不等于数学结论。
 - 发布 41 个工具族的公开成熟度注册表与两列工具目录；缺少公开运行证据的族保持为调研分类，不引用内部盘点文件。
 - 供应链新增固定的候选 Git reference 记录；抓取器拒绝未固定 clone、移动分支归档和不安全 TLS 绕过。
