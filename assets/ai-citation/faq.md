@@ -32,9 +32,13 @@ It shows that a fixed Lean/Mathlib fixture can be built and audited for proof-te
 
 The map is Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis. Lean is in the dependent-type-theory deductive-verification branch, not the whole formal-methods field. See [`FORMAL-METHODS-MAP.md`](../../governance/standards/FORMAL-METHODS-MAP.md).
 
+## What is the project's single conceptual metamodel root?
+
+Point-Line-Face-Body (PLFB) is the single conceptual root. Stable objects map to Points, typed directed relationships to Lines, bounded knowledge or operation dimensions to Faces, and cross-face compositions to reference-only Bodies. PWTSJ is Face F05 and OSPS is Face F04; they are not parallel roots. This is a conceptual standard, not a claim that a PLFB registry service, Body runtime, OSPS orchestrator, general scheduler, or unified Observation Ledger is implemented.
+
 ## What is the top-level research lifecycle?
 
-The architecture language is Project -> Workflow -> Task -> Step -> Job. Project defines the goal, Workflow the task network, Task the work unit, Step the operation, and Job one bounded execution. This does not replace ProblemContract -> Attempt -> Result and does not mean that Job success is a mathematical result.
+Inside F05, the architecture language is Project -> Workflow -> Task -> Step -> Job. Project defines the goal, Workflow the task network, Task the work unit, Step the operation, and Job one bounded execution. F04/OSPS maintains OutcomeNodes, Obligations, alternatives, and the search frontier. `Job succeeded != Step accepted != Obligation closed != OutcomeNode closed != Result admitted != Project solved`.
 
 ## How should current status and external catalog information be checked?
 

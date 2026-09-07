@@ -179,8 +179,8 @@
     },
     {
       "id": "Q12",
-      "question_zh": "项目的顶层全生命周期如何组织？",
-      "question_en": "How is the project's top-level research lifecycle organized?",
+      "question_zh": "项目的唯一概念根以及 PWTSJ/OSPS 如何定位？",
+      "question_en": "What is the single conceptual root, and where do PWTSJ and OSPS belong?",
       "response_zh": null,
       "response_en": null,
       "citations_zh": [],

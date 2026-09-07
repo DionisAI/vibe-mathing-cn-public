@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
 [![Solution index](https://img.shields.io/badge/solutions-empty-orange)](result-library/indexes/solutions.json)
 [![GEO](https://img.shields.io/badge/GEO-fact--bounded-7C3AED)](GEO.md)
-[![Lifecycle](https://img.shields.io/badge/lifecycle-5--level%20architecture-0B7A75)](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)
+[![Metamodel](https://img.shields.io/badge/metamodel-Point--Line--Face--Body-0B7A75)](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md)
 
 > **非可信候选生成器 + 受信验证链：从问题空间构造候选，经验证后派生解空间。**
 
@@ -30,19 +30,21 @@
 | 输出是什么？ | 可追溯的 ResearchBundle，以及由合格 Result 派生的只读 Solution View |
 | 当前有新数学解吗？ | 没有；canonical ledger 和解库索引为空，合成 Fixture 只验证工程链路 |
 | 它明确不是什么？ | 不是保证解决任意开放问题的通用求解器，也不是外部数学认证机构 |
-| 顶层生命周期怎么组织？ | `Project → Workflow → Task → Step → Job`；Job 是 Step 的一次有界执行，不等于问题已解决 |
+| 唯一概念根是什么？ | `Point → Line → Face → Body`；PWTSJ 是 F05 过程面，OSPS 是 F04 结果空间面 |
+| 顶层生命周期怎么组织？ | F05 中使用 `Project → Workflow → Task → Step → Job`；Job 是 Step 的一次有界执行，不等于问题已解决 |
 | 具体开放问题在哪里？ | 见 [Vibe Mathing 公共问题索引](problem-library/VIBEMATHING_PUBLIC_INDEX.md)；远端 catalog 与单问题仓库不会自动成为本地 Result |
 
 ## 架构总览
 
 ![vibe-mathing-cn 双层架构总览](assets/architecture.svg)
 
-上图是静态视觉总览，也是阅读和路由模型：执行链组织工作，事实链裁决数学主张；两条链通过有界产物和证据门连接，但不能互相替代。纯文本客户端可直接阅读下方的生命周期与事实链章节；实现边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+上图是静态视觉总览，也是阅读和路由模型：PLFB 是唯一概念根；F05/PWTSJ 组织执行，F04/OSPS 维护结果空间，F09/F10 裁决证据与 Result。各面通过显式 Line 连接，但不能互相越权闭合。纯文本客户端可阅读 [`POINT-LINE-FACE-BODY-METAMODEL-v0.1.md`](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md)；F05 细节见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
 
 ## 快速导航
 
 - [架构总览](#架构总览)
 - [项目定位](#项目定位)
+- [唯一概念元模型：Point-Line-Face-Body](#唯一概念元模型pointlinefacebody)
 - [系统输入与输出](#系统输入与输出)
 - [信任边界](#信任边界)
 - [顶层全生命周期：Project-Workflow-Task-Step-Job](#顶层全生命周期project-workflow-task-step-job)
@@ -128,11 +130,17 @@ ResearchBundle {
 
 若同一 Problem、同一语义范围同时出现通过准入的证明和反例，系统必须把它视为契约、形式化或验证链冲突并 fail-closed，不能任选一个答案。`open` 不是失败：它表示系统准确保存了“目前真正知道什么”和“还缺什么”。
 
+## 唯一概念元模型：Point–Line–Face–Body
+
+Vibe Math 以 **Point–Line–Face–Body（PLFB）** 作为唯一概念元模型根：稳定对象是 Point，类型化有向关系是 Line，有明确边界的知识或运行维度是 Face，多面与跨面关系通过 reference-only Body 组合。PWTSJ、OSPS、Formal Methods、ProblemContract、Evidence 和 Result 都只能是 Face 或面内模型，而不是并列顶层。
+
+公开 Face 地图、跨面绑定、四图一账本和 Body 边界见 [`POINT-LINE-FACE-BODY-METAMODEL-v0.1.md`](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md)。当前发布的是概念标准，不宣称已经实现 PLFB registry service、Body runtime、OSPS orchestrator 或统一 Observation Ledger。
+
 ## 顶层全生命周期：Project → Workflow → Task → Step → Job
 
-项目的顶层组织是五级结构：`Project` 定完整目标，`Workflow` 定任务网络，`Task` 定输入/输出工作单元，`Step` 定具体方法与操作，`Job` 记录一次有时间、资源和输出上限的执行。一个 Step 可以产生多个 Job 用于参数变体、有限重试或独立验证；恢复同一 Job 必须绑定已验证 checkpoint，重新执行则创建新的 Job。
+PWTSJ 属于 PLFB 的 F05 过程面。`Project` 定完整目标，`Workflow` 定任务网络，`Task` 定输入/输出工作单元，`Step` 定具体方法与操作，`Job` 记录一次有时间、资源和输出上限的执行。一个 Step 可以产生多个 Job 用于参数变体、有限重试或独立验证；恢复同一 Job 必须绑定已验证 checkpoint，重新执行则创建新的 Job。
 
-这套执行结构与数学事实链正交：
+这套执行结构与 F04 Outcome Space、F09 Evidence 及 F10 Result 正交：
 
 ```text
 Project → Workflow → Task → Step → Job
@@ -140,7 +148,7 @@ Project → Workflow → Task → Step → Job
 ProblemContract → Attempt → candidate/evidence → Result → Solution View
 ```
 
-因此 `Job succeeded` 不等于 Step 验收通过，不等于 Task 的证明义务闭合，更不等于 Project 的问题解决。当前公共仓库把五级结构作为顶层生命周期与未来编排的公共语言，尚未宣称提供通用 DAG 调度器、五套持久化 schema 或多 Worker 生产能力。完整边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+因此 `Job succeeded ≠ Step accepted ≠ Obligation closed ≠ OutcomeNode closed ≠ Result admitted ≠ Project solved`。当前公共仓库把五级结构作为 F05 的生命周期与未来编排语言，尚未宣称提供通用调度器、五套持久化 schema、OSPS runtime 或多 Worker 生产能力。完整边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
 
 ## 方法层主线：形式化方法地图
 
@@ -588,7 +596,10 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 - [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json)：Schema.org 软件实体元数据；仅用于公开实体发现与引用，不是数学证据；
 - [`assets/ai-citation/`](assets/ai-citation/)：摘要、FAQ、术语表、双语回答矩阵、GEO 评估协议和机器报告模板；
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；
+- [`governance/control-plane/plfb-metamodel.v0.1.json`](governance/control-plane/plfb-metamodel.v0.1.json) 与 [`plfb-metamodel.schema.json`](governance/control-plane/plfb-metamodel.schema.json)：只保存概念类型、F01–F13、B0–B4 和能力边界，不保存业务实例；
+- [`scripts/validate_plfb_metamodel.py`](scripts/validate_plfb_metamodel.py)：拒绝重复类型、悬空引用、错误 Face 归属、PWTSJ/OSPS 错位和虚假 runtime 能力声明；
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)：外部具体问题总库、单问题仓库和网页版研究模板入口；
+- [`governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md`](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md)：PLFB 唯一概念根与跨面/Body 边界；
 - [`governance/standards/FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)：形式化方法主线、Lean 定位与学习地图；
 - [`governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)：Project → Workflow → Task → Step → Job 顶层生命周期模型；
 - [`CITATION.cff`](CITATION.cff) 与 [`codemeta.json`](codemeta.json)：引用和软件元数据；

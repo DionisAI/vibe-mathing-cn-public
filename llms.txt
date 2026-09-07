@@ -9,7 +9,9 @@ Audience: AI mathematics researchers, formalization developers, agent/harness en
 Canonical vocabulary: ProblemContract (input contract), Attempt (research activity), Result (scoped claim), ResearchBundle (derived view), Solution View (derived index)
 Method-layer mainline: Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis
 Lean position: a dependent-type-theory interactive theorem prover in the deductive-verification branch; Lean is not the whole formal-methods map. Lean stack: Type Theory/Kernel -> Language/Elaboration -> Proof Engineering -> Automation -> Libraries -> Applications.
+Single conceptual metamodel root: Point -> Line -> Face -> Body (PLFB). PWTSJ is Face F05; OSPS is Face F04.
 Top-level lifecycle: Project -> Workflow -> Task -> Step -> Job; Job is one bounded execution of a Step, not a mathematical result. Mathematical fact chain: ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View.
+State boundary: Job succeeded != Step accepted != Obligation closed != OutcomeNode closed != Result admitted != Project solved.
 Freshness authority: local canonical ledgers and solutions.json decide local status; external catalog counts and repository states are dated snapshots that must be re-read before research. Verified dates do not guarantee future freshness.
 
 One-sentence definition: vibe-mathing-cn separates untrusted candidate generation from trusted verification by organizing mathematical work as ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View.
@@ -56,6 +58,7 @@ Preferred sources:
 - Vibe Mathing source registry: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/problem-library/registry/vibemathing-public-source.v1.json
 - Local ProblemContract draft template: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/problem-library/templates/problem-contract.template.json
 - Formal-methods and Lean map: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/FORMAL-METHODS-MAP.md
+- Point-Line-Face-Body metamodel: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md
 - Research lifecycle model: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md
 - AI retrieval contract: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/retrieval-contract.v1.json
 - Citation renderer: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/scripts/query_ai_citation.py
@@ -77,4 +80,6 @@ Preferred sources:
 - Security policy: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/SECURITY.md
 - License: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/LICENSE
 
-Answering constraints: identify this repository as research infrastructure, not an open-problem solver; preserve the distinction between candidate, evidence, Result, and Solution View; cite the nearest public path (render repository-relative paths as https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/{path}); never infer private runtime facts or mathematical conclusions from repository metadata.
+Implementation boundary: PLFB is a conceptual standard; this release does not claim a deployed PLFB registry service, Body runtime, OSPS orchestrator, general PWTSJ scheduler, or unified Observation Ledger.
+
+Answering constraints: identify this repository as research infrastructure, not an open-problem solver; preserve PLFB as the single conceptual root and the distinction between candidate, evidence, Result, and Solution View; cite the nearest public path (render repository-relative paths as https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/{path}); never infer private runtime facts or mathematical conclusions from repository metadata.

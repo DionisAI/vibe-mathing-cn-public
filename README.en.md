@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-MIT-0B7A75)](LICENSE)
 [![Solution index](https://img.shields.io/badge/solutions-empty-orange)](result-library/indexes/solutions.json)
 [![GEO](https://img.shields.io/badge/GEO-fact--bounded-7C3AED)](GEO.md)
-[![Lifecycle](https://img.shields.io/badge/lifecycle-5--level%20architecture-0B7A75)](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)
+[![Metamodel](https://img.shields.io/badge/metamodel-Point--Line--Face--Body-0B7A75)](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md)
 
 > **Untrusted candidate generation + trusted verification: construct candidates from a problem space, then derive a solution view only after verification.**
 
@@ -23,6 +23,7 @@ The repository's original code and documentation are released under the [MIT Lic
 - [Architecture at a glance](#architecture-at-a-glance)
 - [Quick start](#quick-start)
 - [Core contract](#core-contract)
+- [Single conceptual root](#single-conceptual-root-pointlinefacebody)
 - [Top-level lifecycle](#top-level-lifecycle-project-workflow-task-step-job)
 - [Method-layer map](#method-layer-map)
 - [Candidate isolation](#candidate-isolation)
@@ -79,7 +80,7 @@ Select a canonical catalog contract first, re-check its identity, lifecycle, sta
 
 ![vibe-mathing-cn two-layer architecture overview](assets/architecture.svg)
 
-This static diagram is also a reading and routing model: the execution chain organizes work, while the fact chain adjudicates mathematical claims. They meet through bounded artifacts and evidence gates but cannot replace one another. Plain-text clients can read the lifecycle and fact-chain sections below. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md) for the implementation boundary.
+This static diagram is also a reading and routing model: PLFB is the single conceptual root; F05/PWTSJ organizes execution, F04/OSPS maintains outcome space, and F09/F10 adjudicates evidence and Results. Faces meet through explicit Lines but cannot close one another's state. Plain-text clients should start with [`POINT-LINE-FACE-BODY-METAMODEL-v0.1.md`](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md); see [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md) for F05 details.
 
 ## Core contract
 
@@ -100,11 +101,17 @@ The result state is two-dimensional:
 
 A finite computation, a Lean build, or a model self-review does not by itself establish a mathematical result. A proof and a counterexample that both pass closure for the same problem are a fail-closed conflict, not a choice between answers.
 
+## Single conceptual root: Point–Line–Face–Body
+
+Vibe Math uses **Point–Line–Face–Body (PLFB)** as its single conceptual metamodel root: stable objects are Points, typed directed relations are Lines, bounded knowledge or operation dimensions are Faces, and a reference-only Body composes Faces and cross-face Lines. PWTSJ, OSPS, Formal Methods, ProblemContract, Evidence, and Result are Faces or face-local models, not parallel top-level roots.
+
+See [`POINT-LINE-FACE-BODY-METAMODEL-v0.1.md`](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md) for the public Face map, cross-face bindings, four graphs plus one ledger, and Body boundary. This release defines a conceptual standard; it does not claim an implemented PLFB registry service, Body runtime, OSPS orchestrator, or unified Observation Ledger.
+
 ## Top-level lifecycle: Project → Workflow → Task → Step → Job
 
-The top-level organization has five levels: `Project` defines the complete goal, `Workflow` defines the task network, `Task` defines an input/output work unit, `Step` defines an operation and its method, and `Job` records one bounded execution. A Step may create multiple Jobs for parameter variants, bounded retries, or independent verification; recovering one Job requires a verified checkpoint, while rerunning creates a new Job.
+PWTSJ belongs to PLFB Face F05. `Project` defines the complete goal, `Workflow` defines the task network, `Task` defines an input/output work unit, `Step` defines an operation and its method, and `Job` records one bounded execution. A Step may create multiple Jobs for parameter variants, bounded retries, or independent verification; recovering one Job requires a verified checkpoint, while rerunning creates a new Job.
 
-This execution structure is orthogonal to the mathematical fact chain:
+This execution structure is orthogonal to F04 Outcome Space, F09 Evidence, and F10 Result:
 
 ```text
 Project → Workflow → Task → Step → Job
@@ -112,7 +119,7 @@ Project → Workflow → Task → Step → Job
 ProblemContract → Attempt → candidate/evidence → Result → Solution View
 ```
 
-`Job succeeded` does not mean that a Step was accepted, a Task's proof obligation was closed, or the Project was solved. The public repository treats this as a top-level architecture and routing language; it does not claim to provide a general DAG scheduler, five persistent lifecycle schemas, or multi-worker production capability. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md).
+`Job succeeded ≠ Step accepted ≠ Obligation closed ≠ OutcomeNode closed ≠ Result admitted ≠ Project solved`. The public repository treats this as the F05 architecture and routing language; it does not claim to provide a general scheduler, five persistent lifecycle schemas, an OSPS runtime, or multi-worker production capability. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md).
 
 ## Method-layer map
 
@@ -210,7 +217,10 @@ It is a derived read-only index. Only a proof or counterexample Result that pass
 - [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json): Schema.org software-entity metadata for discovery and citation, not mathematical evidence;
 - [`assets/ai-citation/`](assets/ai-citation/): summaries, terminology, bilingual answer matrix, GEO evaluation protocol, and report template;
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json): public claims and evidence references;
+- [`governance/control-plane/plfb-metamodel.v0.1.json`](governance/control-plane/plfb-metamodel.v0.1.json) and [`plfb-metamodel.schema.json`](governance/control-plane/plfb-metamodel.schema.json): conceptual types, F01–F13, B0–B4, and capability boundaries without business instances;
+- [`scripts/validate_plfb_metamodel.py`](scripts/validate_plfb_metamodel.py): rejects duplicates, dangling references, wrong Face ownership, PWTSJ/OSPS misplacement, and false runtime capability claims;
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md): external concrete-problem catalog, repositories, and Web research template entrypoint;
+- [`governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md`](governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md): the single PLFB conceptual root and cross-face/Body boundaries;
 - [`governance/standards/FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md): the formal-methods taxonomy and Lean positioning;
 - [`governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md): the Project → Workflow → Task → Step → Job lifecycle model;
 - [`CITATION.cff`](CITATION.cff) and [`codemeta.json`](codemeta.json): citation and software metadata;

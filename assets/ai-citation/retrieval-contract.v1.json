@@ -18,22 +18,24 @@
     ]
   },
   "canonical_facts": {
+    "metamodel_root": "Point -> Line -> Face -> Body (PLFB); PWTSJ is Face F05 and OSPS is Face F04",
     "workflow": "ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View",
-    "top_level_lifecycle": "Project -> Workflow -> Task -> Step -> Job",
+    "top_level_lifecycle": "Inside Face F05: Project -> Workflow -> Task -> Step -> Job",
+    "outcome_space": "Inside Face F04: ProblemContract -> OutcomeNode -> Obligation -> CandidateArtifact -> EvidenceLink -> Result",
     "mathematical_fact_chain": "ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View",
     "method_layer": "Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution) -> Refinement/Synthesis",
     "lean_position": "Lean is a dependent-type-theory interactive theorem prover in the deductive-verification branch; it is not the whole formal-methods field.",
     "public_status": "The public canonical Problem, Attempt, and Result ledgers are empty, and the solution index has no result IDs.",
     "open_problem_boundary": "The repository does not claim to solve an open mathematics problem.",
-    "lifecycle_boundary": "Project/Workflow/Task/Step/Job execution states do not determine Problem/Attempt/Result mathematical outcomes.",
-    "implementation_boundary": "The public lifecycle model is architecture and routing language, not a claim of a general scheduler, five persistent lifecycle schemas, or multi-worker production capability.",
+    "lifecycle_boundary": "Job succeeded does not imply Step accepted, Obligation closed, OutcomeNode closed, Result admitted, or Project solved.",
+    "implementation_boundary": "PLFB is a conceptual standard; the public model is not a claim of a deployed PLFB registry service, Body runtime, OSPS orchestrator, general PWTSJ scheduler, unified Observation Ledger, five persistent lifecycle schemas, or multi-worker production capability.",
     "external_catalog_boundary": "The external problem catalog and Web template are pointer-only discovery inputs and require revalidation before local admission.",
     "evidence_boundary": "GEO assets, metadata, tests, finite computation, and Job completion are not mathematical proof or Result admission by themselves.",
     "freshness_boundary": "Verified dates describe the checked public snapshot; a remote catalog or repository state must be re-read before making a current research claim."
   },
   "query_routing": {
     "intent_priority": ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary", "freshness-and-authority"],
-    "preserve_terms": ["ProblemContract", "Attempt", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View"],
+    "preserve_terms": ["Point", "Line", "Face", "Body", "PLFB", "PWTSJ", "OSPS", "ProblemContract", "Attempt", "OutcomeNode", "Obligation", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View"],
     "answer_order": ["direct_answer", "scope_or_status", "nearest_first_party_citation", "non_inference_boundary"],
     "freshness_rules": [
       "Re-read the three canonical ledgers and solution index when answering current status.",
@@ -74,13 +76,13 @@
     },
     {
       "id": "lifecycle-model",
-      "query_aliases_zh": ["顶层全生命周期", "五级生命周期", "Project Workflow Task Step Job", "Job 是什么", "研究任务怎么编排"],
-      "query_aliases_en": ["top-level research lifecycle", "five-level research lifecycle", "Project Workflow Task Step Job", "what is a Job", "how are research tasks orchestrated"],
-      "answer_zh": "顶层组织是 Project → Workflow → Task → Step → Job；Job 是 Step 的一次有界执行。它与 ProblemContract → Attempt → Result 数学事实链正交，Job 成功不等于问题解决。",
-      "answer_en": "The top-level organization is Project -> Workflow -> Task -> Step -> Job; a Job is one bounded execution of a Step. It is orthogonal to the ProblemContract -> Attempt -> Result fact chain, and Job success is not a solved problem.",
-      "citation_targets": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "README.md", "README.en.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
-      "must_preserve": ["five-level execution model", "orthogonality to mathematical facts", "bounded Job semantics"],
-      "must_not_infer": ["general scheduler already exists", "Job success is mathematical proof", "Attempt lifecycle is a result outcome"]
+      "query_aliases_zh": ["唯一概念元模型", "点线面体", "PWTSJ OSPS", "顶层全生命周期", "Project Workflow Task Step Job", "Job 是什么"],
+      "query_aliases_en": ["single conceptual metamodel", "Point Line Face Body", "PWTSJ OSPS", "top-level research lifecycle", "Project Workflow Task Step Job", "what is a Job"],
+      "answer_zh": "唯一概念根是 Point–Line–Face–Body。PWTSJ 属于 F05，使用 Project → Workflow → Task → Step → Job；OSPS 属于 F04，维护 OutcomeNode、Obligation、分支和搜索前沿。Job 成功不等于 Obligation/OutcomeNode 闭合、Result 准入或 Project 解决。",
+      "answer_en": "Point-Line-Face-Body is the single conceptual root. PWTSJ belongs to F05 and uses Project -> Workflow -> Task -> Step -> Job; OSPS belongs to F04 and maintains OutcomeNodes, Obligations, alternatives, and the search frontier. Job success is not Obligation/OutcomeNode closure, Result admission, or a solved Project.",
+      "citation_targets": ["governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "README.md", "README.en.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
+      "must_preserve": ["PLFB as the single conceptual root", "PWTSJ is F05", "OSPS is F04", "bounded Job semantics", "no upward state propagation"],
+      "must_not_infer": ["parallel metamodel roots", "OSPS orchestrator already exists", "general scheduler already exists", "Job success is mathematical proof"]
     },
     {
       "id": "method-layer-map",
@@ -129,14 +131,14 @@
     "local_reference_format": "repository-relative POSIX path",
     "current_status_source_priority": ["result-library/indexes/solutions.json", "problem-library/records/canonical-problems.jsonl", "research/records/attempts.jsonl", "result-library/records/results.jsonl"],
     "methodology_source_priority": ["governance/standards/FORMAL-METHODS-MAP.md", "governance/standards/VIBE-MATHING-SPEC-v0.1.md", "README.md"],
-    "lifecycle_source_priority": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md", "README.md"],
+    "lifecycle_source_priority": ["governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md", "README.md"],
     "identity_source_priority": ["GEO.md", "README.md", "README.en.md", "assets/ai-citation/entity-card.v1.json", "assets/ai-citation/schema-org-software.v1.json"],
     "freshness_source_priority": ["governance/publication/public-claims.v1.json", "GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "problem-library/registry/vibemathing-public-source.v1.json"],
     "external_catalog_source_priority": ["problem-library/VIBEMATHING_PUBLIC_INDEX.md", "problem-library/registry/vibemathing-public-source.v1.json"],
     "never_promote_to_result": ["model response", "proof draft", "finite search", "passing test", "GEO score", "source status label", "Issue or pull request status"]
   },
   "maintenance": {
-    "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/schema-org-software.v1.json", "governance/publication/public-claims.v1.json", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md"],
+    "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/schema-org-software.v1.json", "governance/publication/public-claims.v1.json", "governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md"],
     "verification_commands": ["make check", "python3 scripts/validate_public_boundary.py --project-root .", "python3 scripts/check_public_readme.py --project-root .", "python3 scripts/check_ai_citation_assets.py --project-root .", "python3 scripts/query_ai_citation.py --intent lifecycle-model --language both --json"],
     "not_mathematical_evidence": true
   }

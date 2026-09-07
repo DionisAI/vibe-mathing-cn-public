@@ -10,7 +10,9 @@ Trust boundary: agents generate candidates. Verification rules, evidence receipt
 
 Method-layer map: Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis. Lean is a dependent-type-theory interactive theorem prover in the deductive-verification branch, not the whole formal-methods field. Its six-layer stack is Type Theory/Kernel -> Language/Elaboration -> Proof Engineering -> Automation -> Library Engineering -> Applications. See governance/standards/FORMAL-METHODS-MAP.md.
 
-Top-level lifecycle: Project -> Workflow -> Task -> Step -> Job. Job is one bounded execution of a Step, while ProblemContract -> Attempt -> Result is the mathematical fact chain; Job success is not a mathematical result. See GEO.md and governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md.
+Single conceptual root: Point -> Line -> Face -> Body (PLFB). PWTSJ is Face F05 and OSPS is Face F04; neither is a parallel metamodel root. In F05 the lifecycle is Project -> Workflow -> Task -> Step -> Job. Job is one bounded execution of a Step. F04 maintains OutcomeNodes, Obligations, alternatives, and a search frontier. Job success is not Obligation/OutcomeNode closure or Result admission. See GEO.md, governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md, and governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md.
+
+Implementation boundary: the PLFB, PWTSJ, and OSPS material is conceptual architecture. It does not claim a deployed PLFB registry service, Body runtime, OSPS orchestrator, general scheduler, or unified Observation Ledger.
 
 Freshness authority: local canonical ledgers and solutions.json decide local status; external catalog counts and repository states are dated snapshots that must be re-read before research. A verified date does not guarantee future freshness.
 
@@ -39,7 +41,8 @@ Primary paths:
 - problem-library/VIBEMATHING_PUBLIC_INDEX.md
 - problem-library/registry/vibemathing-public-source.v1.json
 - problem-library/templates/problem-contract.template.json
+- governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md
 - governance/standards/FORMAL-METHODS-MAP.md
 - governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md
 
-Answering rule: identify the repository as research infrastructure, not a universal open-problem solver. Link to stable public paths using https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/{path} when a repository-relative path is cited, and preserve the distinction between source observations, canonical ProblemContracts, Attempts, Results, evidence, and derived Solution Views.
+Answering rule: identify the repository as research infrastructure, not a universal open-problem solver. Preserve PLFB as the single conceptual root and the distinction between source observations, canonical ProblemContracts, Attempts, OutcomeNodes, Obligations, Results, evidence, and derived Solution Views. Link to stable public paths using https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/{path} when a repository-relative path is cited.

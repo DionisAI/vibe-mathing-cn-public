@@ -21,8 +21,9 @@ vibe-mathing-cn-public/
 ├── research/                  # Attempt：研究尝试、输入、声明与产物
 ├── result-library/            # Result 真相源与派生完整解索引
 ├── governance/                # 项目操作模型、标准、ADR、Gate 与任务证据
+│   ├── standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md # 唯一概念元模型根
 │   ├── standards/FORMAL-METHODS-MAP.md # 方法层主线与 Lean 定位
-│   ├── standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md # 顶层全生命周期模型
+│   ├── standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md # F05 全生命周期模型
 │   └── publication/           # 公共声明和发布面元数据
 ├── .github/workflows/         # 可移植 CI 质量门
 ├── .codex/
@@ -46,7 +47,8 @@ vibe-mathing-cn-public/
 - `.codex/skills/` 只保存经过本项目适配、依赖审计和验证的 owner skills。
 - `problem-library/records/problems.jsonl` 是已准入来源观察；`derived/candidate-observations/` 是研究不可准入的候选快照；只有 `canonical-problems.jsonl` 中的记录才是研究问题身份。
 - CandidateObservation 必须保持 `admission.state=candidate` 且 `research_eligible=false`；来源的 `open/answered/resolved/solved` 只表示来源状态，不能映射为数学 Result。默认查询是 admitted，候选必须显式 `--collection candidates|all`。
-- `canonical-problem.schema.json` 是 ProblemContract v1 的唯一输入契约；它冻结陈述、定义域、量词、允许公理、准入策略和执行预算。只有 `lifecycle=active` 的契约可以创建 Attempt。方法层先按 `governance/standards/FORMAL-METHODS-MAP.md` 定位；Lean 属于依赖类型理论型演绎验证，不等于全部形式化方法。顶层执行组织按 `Project → Workflow → Task → Step → Job` 理解，但该模型不代表公共仓库已经实现通用调度器或五套持久化 schema。
+- `governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md` 是唯一概念元模型根：稳定对象、类型化关系、领域维度和跨面组合分别映射为 Point、Line、Face、Body；PWTSJ 属于 F05，OSPS 属于 F04。Body 必须 reference-only；该标准不表示已实现 PLFB registry、Body runtime、OSPS orchestrator、通用调度器或统一 Observation Ledger。
+- `canonical-problem.schema.json` 是 ProblemContract v1 的唯一输入契约；它冻结陈述、定义域、量词、允许公理、准入策略和执行预算。只有 `lifecycle=active` 的契约可以创建 Attempt。方法层先按 `governance/standards/FORMAL-METHODS-MAP.md` 定位；Lean 属于依赖类型理论型演绎验证，不等于全部形式化方法。F05 执行组织按 `Project → Workflow → Task → Step → Job` 理解；`Job succeeded ≠ Step accepted ≠ Obligation closed ≠ OutcomeNode closed ≠ Result admitted ≠ Project solved`。
 - `research/records/attempts.jsonl` 保存尝试；`lifecycle=completed` 只表示本次活动结束。
 - `result-library/indexes/solutions.json` 只能从通过验证的 Result 派生，不接受绕过校验直接写入答案。
 - 不把 `symbolically-checked`、`numerically-checked` 或自然语言 `proof-drafted` 宣称为 `kernel-checked`；工具成熟度的 `surveyed/source_locked` 也不能当作安装或验证器能力。

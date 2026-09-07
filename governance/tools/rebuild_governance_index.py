@@ -207,6 +207,7 @@ def write_root_index(root: Path, dry_run: bool) -> Path:
             "当前标准",
             [
                 ("standards/VIBE-MATHING-SPEC-v0.1.md", True),
+                ("standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md", True),
                 ("standards/FORMAL-METHODS-MAP.md", True),
                 ("standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", True),
                 ("standards/工程质量标准.md", True),

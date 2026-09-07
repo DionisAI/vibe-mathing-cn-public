@@ -27,9 +27,15 @@ def main() -> int:
 
     intent = module.find_intent(contract, "lifecycle-model")
     rendered = module.render_intent(contract, intent, "both")
+    assert "Point–Line–Face–Body" in rendered["answer_zh"]
+    assert "PWTSJ 属于 F05" in rendered["answer_zh"]
+    assert "OSPS 属于 F04" in rendered["answer_zh"]
     assert "Project → Workflow → Task → Step → Job" in rendered["answer_zh"]
+    assert "Point-Line-Face-Body" in rendered["answer_en"]
+    assert "PWTSJ belongs to F05" in rendered["answer_en"]
+    assert "OSPS belongs to F04" in rendered["answer_en"]
     assert "Project -> Workflow -> Task -> Step -> Job" in rendered["answer_en"]
-    assert rendered["citation_urls"][0].startswith(module.PUBLIC_URL + "/blob/main/")
+    assert rendered["citation_urls"][0].endswith("governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md")
     assert "general scheduler already exists" in rendered["must_not_infer"]
     freshness = module.render_intent(contract, module.find_intent(contract, "freshness-and-authority"), "en")
     assert "dated source snapshots" in freshness["answer_en"]

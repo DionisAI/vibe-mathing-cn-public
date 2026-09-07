@@ -2,6 +2,8 @@
 
 ## 2026-09-07 — 公共 README、AI 发现与 GEO 维护面
 
+- 确立 Point–Line–Face–Body（PLFB）为唯一概念元模型根：PWTSJ 归入 F05 过程面，OSPS 归入 F04 结果空间面；公开 Face/Body、跨面绑定和状态非传播边界。
+- 同步 README/GEO/AI citation/Schema.org/codemeta/架构图与公共声明；明确本次仅发布概念标准，不宣称 PLFB registry、Body runtime、OSPS orchestrator、通用 PWTSJ scheduler 或统一 Observation Ledger 已实现。
 - 重构中英文 README 首屏，统一项目实体、公共 URL、当前空 ledger 状态、快速开始和证据边界。
 - 新增 `llms.txt`、AI 引用资产、术语契约、双语回答矩阵和不承诺排名的 GEO 评估协议/机器报告模板。
 - 新增公共声明账本、贡献/安全边界文档以及 README/GEO 事实和链接校验。

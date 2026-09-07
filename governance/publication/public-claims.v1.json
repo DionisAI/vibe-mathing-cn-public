@@ -96,12 +96,21 @@
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo"]
     },
     {
-      "claim_id": "claim:research-lifecycle",
-      "text": "The public architecture distinguishes a five-level execution model, Project -> Workflow -> Task -> Step -> Job, from the mathematical ProblemContract -> Attempt -> Result fact chain; the lifecycle document does not claim a general scheduler is implemented.",
+      "claim_id": "claim:metamodel",
+      "text": "Point-Line-Face-Body is the single conceptual metamodel root; PWTSJ belongs to Face F05 and OSPS belongs to Face F04. This conceptual standard does not claim that the corresponding runtimes are implemented.",
       "scope": "architecture",
       "status": "current",
       "last_verified": "2026-09-07",
-      "evidence_refs": ["GEO.md", "README.md", "README.en.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
+      "evidence_refs": ["GEO.md", "README.md", "README.en.md", "assets/architecture.svg", "governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md", "governance/control-plane/plfb-metamodel.schema.json", "governance/control-plane/plfb-metamodel.v0.1.json", "scripts/validate_plfb_metamodel.py", "scripts/test_validate_plfb_metamodel.py"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo", "metadata"]
+    },
+    {
+      "claim_id": "claim:research-lifecycle",
+      "text": "Inside Face F05, the public architecture uses Project -> Workflow -> Task -> Step -> Job and keeps execution state separate from F04 Outcome Space, F09 Evidence, and F10 Result state; the lifecycle document does not claim a general scheduler is implemented.",
+      "scope": "architecture",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["GEO.md", "README.md", "README.en.md", "governance/standards/POINT-LINE-FACE-BODY-METAMODEL-v0.1.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo"]
     }
   ]
