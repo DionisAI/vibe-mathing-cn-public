@@ -20,6 +20,30 @@
 
 公共仓库地址：<https://github.com/vibemathing/vibe-mathing-cn-public>
 
+### 公开入口索引
+
+| 入口 | 用途 |
+| --- | --- |
+| [问题仓库总览 · GitHub Project #1](https://github.com/users/vibemathing/projects/1) | 浏览公开单问题仓库；Project、字段和卡片是运营索引，不是数学证据 |
+| [公共 ProblemContract 问题库](https://github.com/vibemathing/vibe-mathing-problem-library-public) | 查找公开问题合同、catalog 和仓库 locator |
+| [单问题研究模板仓库](https://github.com/vibemathing/vibe-mathing-problem-public-template) | 查看固定 Web research Harness、候选写入边界与启动文件 |
+| [全部 `vibemathing` 公开仓库](https://github.com/vibemathing?tab=repositories) | 查找具体 `problem-*` 仓库及其他公共工程仓库 |
+| [本仓库的详细公共问题索引](problem-library/VIBEMATHING_PUBLIC_INDEX.md) | 阅读 catalog、模板、查询命令和准入边界 |
+
+### 关键问题仓库
+
+> 以下均为 ProblemContract/候选研究入口。仓库、Issue、PR、CI 或 checkpoint 的存在不表示问题已解决，也不自动产生 Evidence、Result 或 Solution；secp256k1 条目不属于千禧年问题。
+
+| 问题 | 公开单问题仓库 |
+| --- | --- |
+| 黎曼猜想 | [`problem-millennium-riemann-hypothesis`](https://github.com/vibemathing/problem-millennium-riemann-hypothesis) |
+| P 与 NP 问题 | [`problem-millennium-p-vs-np`](https://github.com/vibemathing/problem-millennium-p-vs-np) |
+| Navier–Stokes 方程存在性与光滑性 | [`problem-millennium-navier-stokes`](https://github.com/vibemathing/problem-millennium-navier-stokes) |
+| Yang–Mills 理论存在性与质量间隙 | [`problem-millennium-yang-mills-mass-gap`](https://github.com/vibemathing/problem-millennium-yang-mills-mass-gap) |
+| 霍奇猜想 | [`problem-millennium-hodge-conjecture`](https://github.com/vibemathing/problem-millennium-hodge-conjecture) |
+| Birch–Swinnerton-Dyer 猜想 | [`problem-millennium-birch-swinnerton-dyer`](https://github.com/vibemathing/problem-millennium-birch-swinnerton-dyer) |
+| secp256k1 离散对数经典多项式时间性审计 | [`problem-secp256k1-ecdlog-polytime`](https://github.com/vibemathing/problem-secp256k1-ecdlog-polytime) |
+
 ## 30 秒理解
 
 | 你想知道 | 直接答案 |

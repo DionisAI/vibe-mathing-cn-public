@@ -9,6 +9,16 @@ from pathlib import Path
 from typing import Any
 
 PUBLIC_URL = "https://github.com/vibemathing/vibe-mathing-cn-public"
+PUBLIC_PROJECT_URL = "https://github.com/users/vibemathing/projects/1"
+KEY_PROBLEM_REPOSITORIES = {
+    "vibemathing/problem-millennium-riemann-hypothesis": "open-millennium-problem",
+    "vibemathing/problem-millennium-p-vs-np": "open-millennium-problem",
+    "vibemathing/problem-millennium-navier-stokes": "open-millennium-problem",
+    "vibemathing/problem-millennium-yang-mills-mass-gap": "open-millennium-problem",
+    "vibemathing/problem-millennium-hodge-conjecture": "open-millennium-problem",
+    "vibemathing/problem-millennium-birch-swinnerton-dyer": "open-millennium-problem",
+    "vibemathing/problem-secp256k1-ecdlog-polytime": "independent-key-problem",
+}
 REQUIRED_FILES = (
     "README.md",
     "README.en.md",
@@ -343,6 +353,50 @@ def check_external_problem_index(root: Path) -> None:
         item = by_name.get(full_name)
         if not isinstance(item, dict) or item.get("role") != role or not isinstance(item.get("url"), str):
             raise CheckError(f"vibemathing source registry is missing {full_name}")
+    project_index = registry.get("project_index")
+    if (
+        not isinstance(project_index, dict)
+        or project_index.get("owner") != "vibemathing"
+        or project_index.get("number") != 1
+        or project_index.get("url") != PUBLIC_PROJECT_URL
+        or project_index.get("visibility") != "public"
+    ):
+        raise CheckError("vibemathing Project index identity is invalid")
+    key_repositories = registry.get("key_problem_repositories")
+    if not isinstance(key_repositories, list) or len(key_repositories) != len(KEY_PROBLEM_REPOSITORIES):
+        raise CheckError("vibemathing key problem repository index has the wrong size")
+    key_by_name: dict[str, dict[str, Any]] = {}
+    for item in key_repositories:
+        if not isinstance(item, dict) or not isinstance(item.get("full_name"), str):
+            raise CheckError("vibemathing key problem repository entry is invalid")
+        full_name = item["full_name"]
+        if full_name in key_by_name:
+            raise CheckError(f"duplicate key problem repository: {full_name}")
+        key_by_name[full_name] = item
+    if set(key_by_name) != set(KEY_PROBLEM_REPOSITORIES):
+        raise CheckError("vibemathing key problem repository identities drifted")
+    for full_name, group in KEY_PROBLEM_REPOSITORIES.items():
+        item = key_by_name[full_name]
+        expected_url = f"https://github.com/{full_name}"
+        if item.get("group") != group or item.get("url") != expected_url:
+            raise CheckError(f"vibemathing key problem repository binding is invalid: {full_name}")
+        for relative in ("README.md", "README.en.md", "problem-library/VIBEMATHING_PUBLIC_INDEX.md"):
+            if expected_url not in read_text(root, relative):
+                raise CheckError(f"key problem repository is missing from {relative}: {full_name}")
+    key_policy = registry.get("key_problem_repository_policy")
+    if (
+        not isinstance(key_policy, dict)
+        or key_policy.get("pointer_only") is not True
+        or key_policy.get("auto_import_problem_contracts") is not False
+        or key_policy.get("auto_clone_repositories") is not False
+        or key_policy.get("repository_activity_is_mathematical_evidence") is not False
+        or key_policy.get("repository_presence_is_solved_claim") is not False
+        or key_policy.get("secp256k1_is_millennium_problem") is not False
+    ):
+        raise CheckError("vibemathing key problem repository policy is unsafe")
+    for relative in ("README.md", "README.en.md", "problem-library/VIBEMATHING_PUBLIC_INDEX.md"):
+        if PUBLIC_PROJECT_URL not in read_text(root, relative):
+            raise CheckError(f"public Project index is missing from {relative}")
     snapshot = registry.get("canonical_catalog_snapshot")
     counts = snapshot.get("counts") if isinstance(snapshot, dict) else None
     if (

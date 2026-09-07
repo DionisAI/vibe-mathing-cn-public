@@ -2,6 +2,7 @@
 
 ## 2026-09-07 — 公共 README、AI 发现与 GEO 维护面
 
+- 在 README 首屏和公共问题索引中增加 GitHub Project #1、公共 ProblemContract 问题库、单问题模板、公开仓库列表以及六个未闭合千禧年问题与 secp256k1 关键问题仓库的直达索引；所有链接保持 pointer-only，不把仓库活动解释为数学证据或已解决声明。
 - 确立 Point–Line–Face–Body（PLFB）为唯一概念元模型根：PWTSJ 归入 F05 过程面，OSPS 归入 F04 结果空间面；公开 Face/Body、跨面绑定和状态非传播边界。
 - 同步 README/GEO/AI citation/Schema.org/codemeta/架构图与公共声明；明确本次仅发布概念标准，不宣称 PLFB registry、Body runtime、OSPS orchestrator、通用 PWTSJ scheduler 或统一 Observation Ledger 已实现。
 - 重构中英文 README 首屏，统一项目实体、公共 URL、当前空 ledger 状态、快速开始和证据边界。

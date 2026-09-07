@@ -2,13 +2,28 @@
 
 本页把本仓库与 `https://github.com/vibemathing` 的公开问题生态接起来，但**不复制远端研究仓库**。远端内容、仓库状态和题面可能变化；下列数量与列表是基于公开 `LIBRARY_SNAPSHOT.json` / `catalog/canonical-index.json` 在 **2026-09-07** 的观察，开始研究前必须重新读取远端入口。
 
-## 三类公开入口
+## 公开入口
 
 | 入口 | 作用 | 是否是本仓库的本地真相源 |
 | --- | --- | --- |
+| [问题仓库总览 · GitHub Project #1](https://github.com/users/vibemathing/projects/1) | 跨仓库运营索引，集中导航公开单问题仓库 | 否；Project、字段、view 和卡片不是数学 Evidence 或 Result |
 | [`vibe-mathing-problem-library-public`](https://github.com/vibemathing/vibe-mathing-problem-library-public) | 问题总库：公开的 ProblemContract 发现与准入目录 | 否；它是外部来源，不能自动写入本仓库 canonical ledger |
 | [`vibe-mathing-problem-public-template`](https://github.com/vibemathing/vibe-mathing-problem-public-template) | 单问题网页版研究模板，含固定 Web research Harness | 否；模板和 transport 不能自动产生 Result |
 | [`vibemathing` 公开仓库列表](https://github.com/vibemathing?tab=repositories) | 具体 `problem-*` 研究仓库的导航入口 | 否；仓库名只是 locator，不是数学结论 |
+
+## 关键问题快捷入口
+
+下列链接是公开单问题仓库 locator，不是本仓库 canonical ledger 的副本。六个千禧年条目仍按未闭合开放问题处理；secp256k1 条目是独立的密码学复杂性审计问题，不属于千禧年问题。任何仓库、Issue、PR、CI、checkpoint 或候选文件都不能据此晋升为 Evidence、Result 或 Solution。
+
+| 类别 | 问题 | 公开单问题仓库 |
+| --- | --- | --- |
+| 千禧年问题 | 黎曼猜想 | [`problem-millennium-riemann-hypothesis`](https://github.com/vibemathing/problem-millennium-riemann-hypothesis) |
+| 千禧年问题 | P 与 NP 问题 | [`problem-millennium-p-vs-np`](https://github.com/vibemathing/problem-millennium-p-vs-np) |
+| 千禧年问题 | Navier–Stokes 方程存在性与光滑性 | [`problem-millennium-navier-stokes`](https://github.com/vibemathing/problem-millennium-navier-stokes) |
+| 千禧年问题 | Yang–Mills 理论存在性与质量间隙 | [`problem-millennium-yang-mills-mass-gap`](https://github.com/vibemathing/problem-millennium-yang-mills-mass-gap) |
+| 千禧年问题 | 霍奇猜想 | [`problem-millennium-hodge-conjecture`](https://github.com/vibemathing/problem-millennium-hodge-conjecture) |
+| 千禧年问题 | Birch–Swinnerton-Dyer 猜想 | [`problem-millennium-birch-swinnerton-dyer`](https://github.com/vibemathing/problem-millennium-birch-swinnerton-dyer) |
+| 独立关键问题 | secp256k1 离散对数经典多项式时间性审计 | [`problem-secp256k1-ecdlog-polytime`](https://github.com/vibemathing/problem-secp256k1-ecdlog-polytime) |
 
 公共问题总库的机器入口：
 
