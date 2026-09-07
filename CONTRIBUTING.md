@@ -13,6 +13,17 @@ python3 scripts/validate_public_boundary.py --project-root .
 git diff --check
 ```
 
+## GitHub commit attribution
+
+`gh auth` 的登录身份和 Git commit 元数据是两件事：前者负责 API/推送认证，后者由 `user.name` 与已验证的 `user.email` 决定。若希望贡献归属于 `vibemathing`，使用该账号的已验证 noreply 地址：
+
+```bash
+gh auth switch --hostname github.com --user vibemathing
+gh api user --hostname github.com --jq .login
+git config user.name "vibemathing"
+git config user.email "248374299+vibemathing@users.noreply.github.com"
+```
+
 ## Contribution boundaries
 
 - 先读 [`AGENTS.md`](AGENTS.md) 和相关目录的 `AGENTS.md`。
