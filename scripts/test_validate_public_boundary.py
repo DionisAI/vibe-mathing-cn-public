@@ -14,6 +14,11 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PublicBoundaryTests(unittest.TestCase):
+    def test_exact_public_origin_forms(self) -> None:
+        self.assertIn("https://github.com/vibemathing/vibe-mathing-cn-public", MODULE.PUBLIC_ORIGINS)
+        self.assertIn("https://github.com/vibemathing/vibe-mathing-cn-public.git", MODULE.PUBLIC_ORIGINS)
+        self.assertNotIn("https://github.com/example/vibe-mathing-cn-public", MODULE.PUBLIC_ORIGINS)
+
     def test_forbidden_paths(self) -> None:
         blocked = [
             "governance/tasks/0010-millennium-rh/result.json",
