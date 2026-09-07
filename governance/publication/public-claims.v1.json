@@ -83,7 +83,7 @@
       "scope": "publication",
       "status": "current",
       "last_verified": "2026-09-07",
-      "evidence_refs": ["GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/geo-evaluation-protocol.md"],
+      "evidence_refs": ["GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/geo-evaluation-protocol.md", "scripts/query_ai_citation.py", "scripts/test_query_ai_citation.py"],
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo"]
     },
     {

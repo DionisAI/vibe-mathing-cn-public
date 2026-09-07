@@ -87,7 +87,8 @@
         "GEO.md",
         "assets/ai-citation/retrieval-contract.v1.json",
         "assets/ai-citation/answer-matrix.v1.json",
-        "assets/ai-citation/geo-evaluation-protocol.md"
+        "assets/ai-citation/geo-evaluation-protocol.md",
+        "scripts/query_ai_citation.py"
       ],
       "claim_ids": ["claim:identity", "claim:workflow", "claim:bounded-evidence", "claim:retrieval-contract"]
     },

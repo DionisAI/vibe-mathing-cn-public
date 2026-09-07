@@ -14,6 +14,7 @@ REQUIRED = (
     "README.md",
     "AGENTS.md",
     "summary-short.md",
+    "summary-short.zh.md",
     "summary-long.md",
     "faq.md",
     "comparison.md",
@@ -121,7 +122,7 @@ def check_schema_org_metadata(root: Path, verified_at: str) -> None:
         or document.get("dateModified") != verified_at
     ):
         raise AssetError("Schema.org software metadata identity or verification date is invalid")
-    for field in ("alternateName", "programmingLanguage", "keywords"):
+    for field in ("alternateName", "inLanguage", "programmingLanguage", "keywords"):
         values = document.get(field)
         if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value.strip() for value in values):
             raise AssetError(f"Schema.org software metadata has invalid {field}")
@@ -415,14 +416,18 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
 
 def check_content(root: Path) -> None:
     short = (root / ASSET_ROOT / "summary-short.md").read_text(encoding="utf-8")
+    short_zh = (root / ASSET_ROOT / "summary-short.zh.md").read_text(encoding="utf-8")
     faq = (root / ASSET_ROOT / "faq.md").read_text(encoding="utf-8")
     recommended = (root / ASSET_ROOT / "recommended-answer.md").read_text(encoding="utf-8")
-    combined = "\n".join((short, faq, recommended)).lower()
+    combined = "\n".join((short, short_zh, faq, recommended)).lower()
     for term in ("problemcontract", "attempt", "result", "empty", "specification & semantics", "project -> workflow -> task -> step -> job"):
         if term not in combined:
             raise AssetError(f"AI-citation assets must mention {term!r}")
     if not any(term in combined for term in ("does not claim to solve", "does not solve", "no open", "不声称")):
         raise AssetError("AI-citation assets must state the no-open-problem boundary")
+    for term in ("vibe-mathing-cn", "ProblemContract", "Attempt", "Result", "Project → Workflow → Task → Step → Job", "截至 2026-09-07", "不是数学证明"):
+        if term.lower() not in short_zh.lower():
+            raise AssetError(f"Chinese short summary is missing {term!r}")
     terminology = (root / ASSET_ROOT / "terminology.md").read_text(encoding="utf-8")
     for term in ("CandidateObservation", "ResearchBundle", "Solution View", "not by themselves"):
         if term.lower() not in terminology.lower():

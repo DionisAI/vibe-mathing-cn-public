@@ -10,6 +10,7 @@
 - 新增 `GEO.md` 与 `retrieval-contract.v1.json`，提供意图级答案、最近一手引用目标、别名和不可推断边界；GEO 仍是文档准确性维护，不是数学证据或排名承诺。
 - 将 Project → Workflow → Task → Step → Job 五级生命周期模型与 ProblemContract → Attempt → Result 数学事实链分离，并同步到公开标准、上下文、README 和 GEO Q12。
 - 增加 Schema.org 软件实体元数据、README Mermaid 架构总览、GEO 检索路由表与 freshness/authority 规则，并让校验器检查身份、引用 URL 和非数学证据边界的一致性。
+- 新增只读 `query_ai_citation.py` 与回归测试，可从固定 retrieval contract 渲染双语答案和稳定引用 URL，不接触网络或研究记录。
 - 公共文档仍不声称解决任何开放数学问题；GEO 评估只衡量理解和引用准确性，不是数学证据。
 
 ## 2026-09-01 — 公开候选契约、研究 bundle 与工具边界

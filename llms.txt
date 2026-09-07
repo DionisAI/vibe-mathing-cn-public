@@ -13,7 +13,7 @@ Top-level lifecycle: Project -> Workflow -> Task -> Step -> Job; Job is one boun
 
 One-sentence definition: vibe-mathing-cn separates untrusted candidate generation from trusted verification by organizing mathematical work as ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View.
 
-Current public status:
+Current public status (verified 2026-09-07):
 - The canonical Problem, Attempt, and Result ledgers are empty.
 - The solution index at `result-library/indexes/solutions.json` has no result IDs; no business solution is currently admitted.
 - The repository does not claim to solve the Riemann Hypothesis, P versus NP, or any other open mathematics problem.
@@ -57,6 +57,7 @@ Preferred sources:
 - Formal-methods and Lean map: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/FORMAL-METHODS-MAP.md
 - Research lifecycle model: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md
 - AI retrieval contract: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/retrieval-contract.v1.json
+- Citation renderer: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/scripts/query_ai_citation.py
 - Schema.org software metadata: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/schema-org-software.v1.json
 - GEO guide: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/GEO.md
 - ResearchBundle schema: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/research/schema/research-bundle.schema.json
@@ -67,6 +68,7 @@ Preferred sources:
 - Bilingual answer matrix: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/answer-matrix.v1.json
 - GEO protocol: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/geo-evaluation-protocol.md
 - GEO report template: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/geo-evaluation-report.template.json
+- Chinese short retrieval card: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/summary-short.zh.md
 - Extended AI context: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/llms-full.txt
 - Citation metadata: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/CITATION.cff
 - Contribution guide: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/CONTRIBUTING.md

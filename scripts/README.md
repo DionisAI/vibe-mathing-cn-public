@@ -4,7 +4,8 @@
 
 - `validate_public_boundary.py` / `test_validate_public_boundary.py`：验证公开 origin、禁止路径、符号链接、敏感内容模式和不可发布文件类型；未知输入 fail-closed。
 - `check_public_readme.py`：校验中英文 README、`llms.txt`、公共元数据、声明账本、链接/锚点以及空 canonical ledger 状态。
-- `check_ai_citation_assets.py`：校验 AI 引用资产、双语回答矩阵、实体卡、GEO 评估协议/报告模板、证据引用和反操纵边界。
+- `check_ai_citation_assets.py`：校验 AI 引用资产、双语回答矩阵、实体卡、Schema.org 元数据、GEO 评估协议/报告模板、证据引用和反操纵边界。
+- `query_ai_citation.py` / `test_query_ai_citation.py`：只读渲染固定 retrieval intent 和稳定 GitHub 引用 URL；拒绝路径逃逸，不访问网络或写入研究记录。
 - `sync_supply_chain.py` / `test_sync_supply_chain.py`：按 lockfile 幂等同步固定 Git reference 和审计快照；拒绝移动分支归档、未固定 clone 与 TLS 验证绕过。外部命令有 timeout。
 - `validate_project.py`：校验 active skill 结构、来源映射和禁止依赖。
 - `smoke_math.py`：验证公开 SymPy/mpmath 计算切片。

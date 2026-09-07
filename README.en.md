@@ -10,7 +10,7 @@
 
 > **Untrusted candidate generation + trusted verification: construct candidates from a problem space, then derive a solution view only after verification.**
 
-> **Current public status:** the canonical Problem, Attempt, and Result ledgers are empty; `result-library/indexes/solutions.json` has no result IDs; this repository does not claim to solve any open mathematics problem.
+> **Current public status (verified 2026-09-07):** the canonical Problem, Attempt, and Result ledgers are empty; `result-library/indexes/solutions.json` has no result IDs; this repository does not claim to solve any open mathematics problem.
 
 Canonical public repository: <https://github.com/vibemathing/vibe-mathing-cn-public>
 
@@ -209,6 +209,7 @@ It is a derived read-only index. Only a proof or counterexample Result that pass
 - [`llms.txt`](llms.txt): concise retrieval context;
 - [`GEO.md`](GEO.md): canonical facts, citation targets, and negative-boundary guide for humans and generative engines;
 - [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json): machine-readable intents, citations, and non-inference rules;
+- [`scripts/query_ai_citation.py`](scripts/query_ai_citation.py): read-only rendering of fixed intent answers and stable citation URLs;
 - [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json): Schema.org software-entity metadata for discovery and citation, not mathematical evidence;
 - [`assets/ai-citation/`](assets/ai-citation/): summaries, terminology, bilingual answer matrix, GEO evaluation protocol, and report template;
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json): public claims and evidence references;

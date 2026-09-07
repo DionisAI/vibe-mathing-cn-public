@@ -9,6 +9,7 @@ python3 -m pip install -r requirements.txt
 make check
 python3 scripts/check_public_readme.py
 python3 scripts/check_ai_citation_assets.py
+python3 scripts/test_query_ai_citation.py
 python3 scripts/validate_public_boundary.py --project-root .
 git diff --check
 ```

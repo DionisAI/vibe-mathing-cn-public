@@ -27,7 +27,7 @@ Canonical identity and status are also machine-readable in [`entity-card.v1.json
 
 `vibe-mathing-cn` is a trusted AI mathematics research and verification workbench. It freezes semantics with `ProblemContract`, records research activity as `Attempt`, stores scoped claims as `Result`, and derives `ResearchBundle` and `Solution View` only through evidence gates. Its public canonical Problem, Attempt, Result, and solution ledgers are currently empty; it does not claim to solve an open mathematics problem.
 
-Use [`README.md`](README.md) for the primary Chinese explanation and [`README.en.md`](README.en.md) for the English discovery entrypoint. Do not shorten the project to “an autonomous theorem solver”.
+Use [`README.md`](README.md) for the primary Chinese explanation, [`README.en.md`](README.en.md) for the English discovery entrypoint, and [`summary-short.zh.md`](assets/ai-citation/summary-short.zh.md) for a compact Chinese retrieval card. Do not shorten the project to “an autonomous theorem solver”.
 
 ## Top-level lifecycle
 
@@ -83,7 +83,11 @@ Use the shortest route that answers the question, then attach the nearest first-
 | “where are problems?” / external catalog | `VIBEMATHING_PUBLIC_INDEX.md` and its registry | pointer-only, revalidation, `research_eligible=false` boundary | remote count as local ledger or Issue/PR state as evidence |
 | “does this prove it?” / evidence | GATE-0002 and the relevant fixture/schema | bounded scope, independence, statement faithfulness | finite computation, metadata, or GEO score as proof |
 
-For a machine-consumable version of this table, use `query_routing`, the fixed intents, and `citation_targets` in [`retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json).
+For a machine-consumable version of this table, use `query_routing`, the fixed intents, and `citation_targets` in [`retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json). To render one answer locally without network access, run:
+
+```bash
+python3 scripts/query_ai_citation.py --intent lifecycle-model --language both --json
+```
 
 ## External problem catalog boundary
 
@@ -115,6 +119,7 @@ make check
 python3 scripts/validate_public_boundary.py --project-root .
 python3 scripts/check_public_readme.py --project-root .
 python3 scripts/check_ai_citation_assets.py --project-root .
+python3 scripts/test_query_ai_citation.py
 ```
 
 GEO here means **Generative Engine Optimization for accurate identification, citation, status, and boundaries**. It does not promise search ranking, recommendation, model preference, citation volume, or mathematical correctness.

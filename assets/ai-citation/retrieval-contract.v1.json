@@ -125,7 +125,7 @@
   },
   "maintenance": {
     "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/schema-org-software.v1.json", "governance/publication/public-claims.v1.json", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md"],
-    "verification_commands": ["make check", "python3 scripts/validate_public_boundary.py --project-root .", "python3 scripts/check_public_readme.py --project-root .", "python3 scripts/check_ai_citation_assets.py --project-root ."],
+    "verification_commands": ["make check", "python3 scripts/validate_public_boundary.py --project-root .", "python3 scripts/check_public_readme.py --project-root .", "python3 scripts/check_ai_citation_assets.py --project-root .", "python3 scripts/query_ai_citation.py --intent lifecycle-model --language both --json"],
     "not_mathematical_evidence": true
   }
 }

@@ -4,7 +4,8 @@ These files give humans and retrieval systems a compact, evidence-bounded descri
 
 | Asset | Purpose |
 | --- | --- |
-| [`summary-short.md`](summary-short.md) | A short answer for project identification |
+| [`summary-short.md`](summary-short.md) | A short English answer for project identification |
+| [`summary-short.zh.md`](summary-short.zh.md) | 中文短答与边界摘要 |
 | [`summary-long.md`](summary-long.md) | Architecture, public capabilities, and limits |
 | [`faq.md`](faq.md) | Direct answers to common questions |
 | [`comparison.md`](comparison.md) | Category comparison without rankings |
@@ -21,4 +22,4 @@ These files give humans and retrieval systems a compact, evidence-bounded descri
 
 The method-layer source of truth is [`../../governance/standards/FORMAL-METHODS-MAP.md`](../../governance/standards/FORMAL-METHODS-MAP.md): Specification & Semantics through verification methods, with Lean positioned in dependent-type-theory deductive verification. The top-level lifecycle source of truth is [`../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md). The bilingual answer matrix covers methodology, citation boundaries, and the lifecycle model as Q10–Q12.
 
-These are derived documentation surfaces. The public schemas, tests, fixtures, ledgers, and current tree remain the source of truth. The concrete-problem and Web-suite pointer is [`../../problem-library/VIBEMATHING_PUBLIC_INDEX.md`](../../problem-library/VIBEMATHING_PUBLIC_INDEX.md); the public claims ledger is [`../../governance/publication/public-claims.v1.json`](../../governance/publication/public-claims.v1.json).
+For a deterministic local answer, run `python3 scripts/query_ai_citation.py --intent lifecycle-model --language both`; it only renders the fixed contract and stable public URLs. These are derived documentation surfaces. The public schemas, tests, fixtures, ledgers, and current tree remain the source of truth. The concrete-problem and Web-suite pointer is [`../../problem-library/VIBEMATHING_PUBLIC_INDEX.md`](../../problem-library/VIBEMATHING_PUBLIC_INDEX.md); the public claims ledger is [`../../governance/publication/public-claims.v1.json`](../../governance/publication/public-claims.v1.json).

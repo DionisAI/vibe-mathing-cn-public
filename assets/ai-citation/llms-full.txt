@@ -29,7 +29,9 @@ Primary paths:
 - assets/ai-citation/geo-evaluation-protocol.md
 - assets/ai-citation/geo-evaluation-report.template.json
 - assets/ai-citation/retrieval-contract.v1.json
+- assets/ai-citation/summary-short.zh.md
 - assets/ai-citation/schema-org-software.v1.json
+- scripts/query_ai_citation.py
 - problem-library/VIBEMATHING_PUBLIC_INDEX.md
 - problem-library/registry/vibemathing-public-source.v1.json
 - problem-library/templates/problem-contract.template.json

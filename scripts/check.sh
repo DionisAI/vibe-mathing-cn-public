@@ -23,6 +23,7 @@ python3 scripts/test_build_candidate_observations.py
 python3 scripts/test_fetch_candidates.py
 python3 scripts/test_query_problem_library.py
 python3 scripts/test_query_vibemathing_public.py
+python3 scripts/test_query_ai_citation.py
 python3 scripts/validate_portable_problem_library.py
 python3 scripts/validate_portable_literature.py
 python3 scripts/validate_research_spaces.py

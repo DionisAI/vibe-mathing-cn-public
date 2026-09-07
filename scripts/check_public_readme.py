@@ -23,6 +23,7 @@ REQUIRED_FILES = (
     "assets/ai-citation/README.md",
     "assets/ai-citation/AGENTS.md",
     "assets/ai-citation/summary-short.md",
+    "assets/ai-citation/summary-short.zh.md",
     "assets/ai-citation/summary-long.md",
     "assets/ai-citation/faq.md",
     "assets/ai-citation/comparison.md",
@@ -46,6 +47,8 @@ REQUIRED_FILES = (
     "problem-library/templates/AGENTS.md",
     "problem-library/templates/problem-contract.template.json",
     "scripts/query_vibemathing_public.py",
+    "scripts/query_ai_citation.py",
+    "scripts/test_query_ai_citation.py",
 )
 SURFACE_FILES = (
     "README.md",
@@ -55,6 +58,7 @@ SURFACE_FILES = (
     "assets/README.md",
     "assets/ai-citation/README.md",
     "assets/ai-citation/summary-short.md",
+    "assets/ai-citation/summary-short.zh.md",
     "assets/ai-citation/summary-long.md",
     "assets/ai-citation/faq.md",
     "assets/ai-citation/comparison.md",
@@ -184,7 +188,7 @@ def check_surfaces(root: Path) -> None:
     llms = read_text(root, "llms.txt")
     for term in (
         PUBLIC_URL,
-        "Current public status:",
+        "Current public status (verified 2026-09-07):",
         "Audience:",
         "Canonical vocabulary:",
         "solution index",

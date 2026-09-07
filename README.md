@@ -16,7 +16,7 @@
 
 本仓库自有代码与文档按 [MIT License](LICENSE) 发布；`vendor/` 中的第三方材料以各自许可证和来源锁为准。
 
-> **当前公共状态：** canonical Problem、Attempt、Result 记录和 `result-library/indexes/solutions.json` 当前均为空；本仓库不声称解决 Riemann 假设、P vs NP 或任何其他开放数学问题。公开内容是可移植的 Schema、验证规则、owner skills、合成 Fixture、CLI 和 CI。
+> **当前公共状态（核验于 2026-09-07）：** canonical Problem、Attempt、Result 记录和 `result-library/indexes/solutions.json` 当前均为空；本仓库不声称解决 Riemann 假设、P vs NP 或任何其他开放数学问题。公开内容是可移植的 Schema、验证规则、owner skills、合成 Fixture、CLI 和 CI。
 
 公共仓库地址：<https://github.com/vibemathing/vibe-mathing-cn-public>
 
@@ -582,6 +582,7 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 - [`llms.txt`](llms.txt)：稳定、短版的 AI/检索入口；
 - [`GEO.md`](GEO.md)：面向人和生成式引擎的事实、引用与边界入口；
 - [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json)：意图、引用目标和不可推断边界的机器契约；
+- [`scripts/query_ai_citation.py`](scripts/query_ai_citation.py)：只读渲染固定意图答案与稳定引用 URL；
 - [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json)：Schema.org 软件实体元数据；仅用于公开实体发现与引用，不是数学证据；
 - [`assets/ai-citation/`](assets/ai-citation/)：摘要、FAQ、术语表、双语回答矩阵、GEO 评估协议和机器报告模板；
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；

@@ -16,6 +16,7 @@
   "isAccessibleForFree": true,
   "programmingLanguage": ["Python", "Lean", "Shell", "Markdown", "JSON Schema"],
   "applicationCategory": "Mathematics research software",
+  "inLanguage": ["zh-CN", "en"],
   "keywords": [
     "AI mathematics",
     "trusted verification",
