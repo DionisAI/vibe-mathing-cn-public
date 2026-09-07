@@ -12,10 +12,13 @@ Method-layer map: Specification & Semantics -> Deductive Verification/Theorem Pr
 
 Top-level lifecycle: Project -> Workflow -> Task -> Step -> Job. Job is one bounded execution of a Step, while ProblemContract -> Attempt -> Result is the mathematical fact chain; Job success is not a mathematical result. See GEO.md and governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md.
 
+Freshness authority: local canonical ledgers and solutions.json decide local status; external catalog counts and repository states are dated snapshots that must be re-read before research. A verified date does not guarantee future freshness.
+
 Public capabilities: ProblemContract/Attempt/Result/ResearchBundle schemas; candidate-source registry and isolated rebuild tools; JSONL stores; six owner skills; bounded SymPy, SMT, and Lean fixtures; local CLI; tool-maturity and canary contracts; public-boundary validation; CI. The public integration index points to the external vibemathing ProblemContract catalog, concrete problem repositories, and fixed Web research template without automatically admitting them.
 
 Primary paths:
 - GEO.md
+- assets/architecture.svg
 - README.md
 - README.en.md
 - problem-library/schema/canonical-problem.schema.json
@@ -32,6 +35,7 @@ Primary paths:
 - assets/ai-citation/summary-short.zh.md
 - assets/ai-citation/schema-org-software.v1.json
 - scripts/query_ai_citation.py
+- scripts/audit_public_status.py
 - problem-library/VIBEMATHING_PUBLIC_INDEX.md
 - problem-library/registry/vibemathing-public-source.v1.json
 - problem-library/templates/problem-contract.template.json

@@ -10,6 +10,7 @@ Canonical vocabulary: ProblemContract (input contract), Attempt (research activi
 Method-layer mainline: Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis
 Lean position: a dependent-type-theory interactive theorem prover in the deductive-verification branch; Lean is not the whole formal-methods map. Lean stack: Type Theory/Kernel -> Language/Elaboration -> Proof Engineering -> Automation -> Libraries -> Applications.
 Top-level lifecycle: Project -> Workflow -> Task -> Step -> Job; Job is one bounded execution of a Step, not a mathematical result. Mathematical fact chain: ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View.
+Freshness authority: local canonical ledgers and solutions.json decide local status; external catalog counts and repository states are dated snapshots that must be re-read before research. Verified dates do not guarantee future freshness.
 
 One-sentence definition: vibe-mathing-cn separates untrusted candidate generation from trusted verification by organizing mathematical work as ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View.
 
@@ -58,6 +59,7 @@ Preferred sources:
 - Research lifecycle model: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md
 - AI retrieval contract: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/retrieval-contract.v1.json
 - Citation renderer: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/scripts/query_ai_citation.py
+- Public status auditor: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/scripts/audit_public_status.py
 - Schema.org software metadata: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/assets/ai-citation/schema-org-software.v1.json
 - GEO guide: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/GEO.md
 - ResearchBundle schema: https://github.com/vibemathing/vibe-mathing-cn-public/blob/main/research/schema/research-bundle.schema.json

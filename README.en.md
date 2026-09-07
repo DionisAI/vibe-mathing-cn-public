@@ -161,6 +161,7 @@ Bounded canaries cover positive, negative, error, and timeout behavior. They tes
 
 ```bash
 make check
+python3 scripts/audit_public_status.py --format json --expect-empty
 python3 scripts/validate_math_tool_maturity.py
 python3 scripts/check_math_tools.py --profile portable --strict
 MATH_CANARY_SOURCE_SHA256="$(sha256sum scripts/run_math_tool_canaries.py | awk '{print $1}')" \
@@ -174,6 +175,10 @@ For the complete model and Chinese documentation, see [`README.md`](README.md), 
 The repository publishes reusable schemas, owner skills, governance rules, bounded fixtures, source locks, and validation code. It does not claim a complete solution to any Millennium Prize problem or any other open mathematical problem.
 
 ## FAQ
+
+### How should current status and external catalog information be verified?
+
+Use the three canonical ledgers and `solutions.json` for local status. Treat external counts and repository states as dated snapshots, and re-read the remote contract, index, and digest before research. A verification date does not guarantee future freshness.
 
 ### Does this project solve an open mathematics problem?
 
@@ -201,6 +206,7 @@ It is a derived read-only index. Only a proof or counterexample Result that pass
 - [`GEO.md`](GEO.md): canonical facts, citation targets, and negative-boundary guide for humans and generative engines;
 - [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json): machine-readable intents, citations, and non-inference rules;
 - [`scripts/query_ai_citation.py`](scripts/query_ai_citation.py): read-only rendering of fixed intent answers and stable citation URLs;
+- [`scripts/audit_public_status.py`](scripts/audit_public_status.py): read-only status and SHA-256 snapshot audit for the canonical ledgers and solution index; it creates no Result;
 - [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json): Schema.org software-entity metadata for discovery and citation, not mathematical evidence;
 - [`assets/ai-citation/`](assets/ai-citation/): summaries, terminology, bilingual answer matrix, GEO evaluation protocol, and report template;
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json): public claims and evidence references;
@@ -214,4 +220,4 @@ Here, GEO means Generative Engine Optimization for accurate entity identificatio
 
 ## GEO facts and citation guide
 
-For a compact, citation-ready description, start with [`GEO.md`](GEO.md), then cite the nearest first-party source: `solutions.json` and the three ledgers for current status, the Problem/Attempt/Result schemas for the workflow, [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md) for method positioning, and [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md) for external problem pointers. Preserve the empty-ledger, Lean-position, and pointer-only boundaries.
+For a compact, citation-ready description, start with [`GEO.md`](GEO.md), then cite the nearest first-party source: `solutions.json` and the three ledgers for current status, the Problem/Attempt/Result schemas for the workflow, [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md) for method positioning, and [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md) for external problem pointers. Preserve the empty-ledger, Lean-position, pointer-only, and external-snapshot-revalidation boundaries.

@@ -36,6 +36,10 @@ The map is Specification & Semantics -> Deductive Verification/Theorem Proving -
 
 The architecture language is Project -> Workflow -> Task -> Step -> Job. Project defines the goal, Workflow the task network, Task the work unit, Step the operation, and Job one bounded execution. This does not replace ProblemContract -> Attempt -> Result and does not mean that Job success is a mathematical result.
 
+## How should current status and external catalog information be checked?
+
+Use the three canonical ledgers and `solutions.json` for this repository's status. Treat external catalog counts and repository states as dated snapshots; re-read the remote contract, index, repository identity, lifecycle, and digest before starting research. A verification date does not guarantee that a remote snapshot is still current.
+
 ## Why is `solutions.json` empty?
 
 The index is derived only from qualifying proof or counterexample Results. It is empty because no business Result currently satisfies every admission gate; it is not a manually filled answer table.

@@ -8,6 +8,8 @@ set -euo pipefail
 python3 scripts/test_validate_public_boundary.py
 python3 scripts/validate_public_boundary.py --project-root .
 python3 scripts/check_public_readme.py --project-root .
+python3 scripts/test_audit_public_status.py
+python3 scripts/audit_public_status.py --project-root . --expect-empty
 python3 scripts/check_ai_citation_assets.py --project-root .
 python3 scripts/validate_project.py
 python3 scripts/smoke_math.py

@@ -29,3 +29,5 @@ review_cycle: P90D
 - 增加 Schema.org 实体元数据、GEO 检索路由/新鲜度规则和 README 架构总览；AI-citation 校验器现在同时检查结构化身份、稳定引用 URL 与非数学证据边界。
 - 增加只读 citation renderer 与回归测试，使固定 retrieval intent 可在本地重复渲染，且不产生数学 Result。
 - 增加静态无脚本架构图并加入公共内容校验，避免视觉资产引入外部内容或可执行载荷。
+- 将 freshness/authority 纳入固定 GEO 意图、声明账本和实体卡，要求区分本地状态权威与带日期的外部快照。
+- 增加只读 public status auditor 与回归测试，以文件摘要和空状态门禁支撑可复核的当前状态描述。

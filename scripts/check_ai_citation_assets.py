@@ -221,8 +221,8 @@ def check_answer_matrix(root: Path, claim_ids: set[str], verified_at: str) -> No
     ):
         raise AssetError("answer matrix identity or verification date is invalid")
     cases = matrix.get("cases")
-    if not isinstance(cases, list) or len(cases) < 8:
-        raise AssetError("answer matrix must contain at least eight fixed cases")
+    if not isinstance(cases, list) or len(cases) < 13:
+        raise AssetError("answer matrix must contain at least thirteen fixed cases")
     seen: set[str] = set()
     for case in cases:
         if not isinstance(case, dict):
@@ -247,8 +247,8 @@ def check_answer_matrix(root: Path, claim_ids: set[str], verified_at: str) -> No
                 not isinstance(value, str) or not value.strip() for value in values
             ):
                 raise AssetError(f"answer matrix {case_id} is missing {field}")
-    if not {"Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10", "Q11", "Q12"} <= seen:
-        raise AssetError("answer matrix is missing one of Q01-Q12")
+    if not {"Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10", "Q11", "Q12", "Q13"} <= seen:
+        raise AssetError("answer matrix is missing one of Q01-Q13")
 
 
 def check_geo_report(root: Path, answer_case_ids: set[str]) -> None:
@@ -348,6 +348,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         "implementation_boundary",
         "external_catalog_boundary",
         "evidence_boundary",
+        "freshness_boundary",
     }
     if (
         not isinstance(facts, dict)
@@ -356,7 +357,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
     ):
         raise AssetError("AI retrieval contract canonical facts are incomplete")
     routing = contract.get("query_routing")
-    expected_intents = ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary"]
+    expected_intents = ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary", "freshness-and-authority"]
     if (
         not isinstance(routing, dict)
         or routing.get("intent_priority") != expected_intents
@@ -376,9 +377,10 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         "method-layer-map",
         "external-problem-catalog",
         "evidence-boundary",
+        "freshness-and-authority",
     }
     if not isinstance(intents, list) or {item.get("id") for item in intents if isinstance(item, dict)} != required_intents:
-        raise AssetError("AI retrieval contract must define the seven fixed intents")
+        raise AssetError("AI retrieval contract must define the eight fixed intents")
     for intent in intents:
         if not isinstance(intent, dict):
             raise AssetError("AI retrieval contract intent must be an object")
@@ -398,6 +400,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         or policy.get("public_url_template") != PUBLIC_URL + "/blob/main/{path}"
         or policy.get("local_reference_format") != "repository-relative POSIX path"
         or policy.get("identity_source_priority") != ["GEO.md", "README.md", "README.en.md", "assets/ai-citation/entity-card.v1.json", "assets/ai-citation/schema-org-software.v1.json"]
+        or policy.get("freshness_source_priority") != ["governance/publication/public-claims.v1.json", "GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "problem-library/registry/vibemathing-public-source.v1.json"]
         or not isinstance(policy.get("never_promote_to_result"), list)
         or not policy["never_promote_to_result"]
     ):
@@ -429,11 +432,11 @@ def check_content(root: Path) -> None:
         if term.lower() not in short_zh.lower():
             raise AssetError(f"Chinese short summary is missing {term!r}")
     terminology = (root / ASSET_ROOT / "terminology.md").read_text(encoding="utf-8")
-    for term in ("CandidateObservation", "ResearchBundle", "Solution View", "not by themselves"):
+    for term in ("CandidateObservation", "ResearchBundle", "Solution View", "freshness authority", "not by themselves"):
         if term.lower() not in terminology.lower():
             raise AssetError(f"terminology contract is missing {term!r}")
     protocol = (root / ASSET_ROOT / "geo-evaluation-protocol.md").read_text(encoding="utf-8")
-    for term in ("Q01", "Q12", "Scoring", "not mathematical evidence"):
+    for term in ("Q01", "Q13", "Scoring", "not mathematical evidence"):
         if term.lower() not in protocol.lower():
             raise AssetError(f"GEO evaluation protocol is missing {term!r}")
 

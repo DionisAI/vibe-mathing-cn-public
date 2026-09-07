@@ -33,6 +33,15 @@
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "metadata"]
     },
     {
+      "claim_id": "claim:freshness-authority",
+      "text": "Local public status is determined by the canonical ledgers and solution index; external catalog counts and repository states are dated snapshots that require revalidation before research.",
+      "scope": "freshness-and-authority",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "problem-library/registry/vibemathing-public-source.v1.json", "result-library/indexes/solutions.json", "scripts/audit_public_status.py"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo", "metadata"]
+    },
+    {
       "claim_id": "claim:fixtures",
       "text": "The public repository contains deterministic SymPy and SMT fixtures plus a fixed Lean/Mathlib fixture for bounded engineering checks.",
       "scope": "capability",

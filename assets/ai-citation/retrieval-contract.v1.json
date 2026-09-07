@@ -28,10 +28,11 @@
     "lifecycle_boundary": "Project/Workflow/Task/Step/Job execution states do not determine Problem/Attempt/Result mathematical outcomes.",
     "implementation_boundary": "The public lifecycle model is architecture and routing language, not a claim of a general scheduler, five persistent lifecycle schemas, or multi-worker production capability.",
     "external_catalog_boundary": "The external problem catalog and Web template are pointer-only discovery inputs and require revalidation before local admission.",
-    "evidence_boundary": "GEO assets, metadata, tests, finite computation, and Job completion are not mathematical proof or Result admission by themselves."
+    "evidence_boundary": "GEO assets, metadata, tests, finite computation, and Job completion are not mathematical proof or Result admission by themselves.",
+    "freshness_boundary": "Verified dates describe the checked public snapshot; a remote catalog or repository state must be re-read before making a current research claim."
   },
   "query_routing": {
-    "intent_priority": ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary"],
+    "intent_priority": ["current-status", "identity", "workflow", "lifecycle-model", "method-layer-map", "external-problem-catalog", "evidence-boundary", "freshness-and-authority"],
     "preserve_terms": ["ProblemContract", "Attempt", "Result", "Project", "Workflow", "Task", "Step", "Job", "Solution View"],
     "answer_order": ["direct_answer", "scope_or_status", "nearest_first_party_citation", "non_inference_boundary"],
     "freshness_rules": [
@@ -102,6 +103,16 @@
       "must_not_infer": ["catalog count is local ledger count", "repository name proves canonical status", "Issue/PR state is mathematical evidence"]
     },
     {
+      "id": "freshness-and-authority",
+      "query_aliases_zh": ["状态如何核验", "信息是否最新", "外部目录快照是否可信"],
+      "query_aliases_en": ["how is current status verified", "is this information fresh", "are external catalog counts current"],
+      "answer_zh": "公共状态应回到三张 canonical ledger 和 solutions.json 核验；外部目录中的数量和仓库状态只是带日期的来源快照，开展研究前必须重新读取远端契约、索引和 digest。",
+      "answer_en": "Verify public status against the three canonical ledgers and solutions.json; external counts and repository states are dated source snapshots, so re-read the remote contract, index, and digest before starting research.",
+      "citation_targets": ["GEO.md", "governance/publication/public-claims.v1.json", "problem-library/registry/vibemathing-public-source.v1.json", "result-library/indexes/solutions.json", "scripts/audit_public_status.py"],
+      "must_preserve": ["local ledgers are status authority", "external data is a dated snapshot", "revalidation before research"],
+      "must_not_infer": ["snapshot count is current local truth", "CI or Issue state is mathematical evidence", "verified date guarantees future freshness"]
+    },
+    {
       "id": "evidence-boundary",
       "query_aliases_zh": ["测试是不是数学证明", "有限计算能证明定理吗", "Lean kernel check 的边界"],
       "query_aliases_en": ["is a passing test a proof", "does finite computation prove a theorem", "Lean kernel check boundary"],
@@ -120,6 +131,7 @@
     "methodology_source_priority": ["governance/standards/FORMAL-METHODS-MAP.md", "governance/standards/VIBE-MATHING-SPEC-v0.1.md", "README.md"],
     "lifecycle_source_priority": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md", "README.md"],
     "identity_source_priority": ["GEO.md", "README.md", "README.en.md", "assets/ai-citation/entity-card.v1.json", "assets/ai-citation/schema-org-software.v1.json"],
+    "freshness_source_priority": ["governance/publication/public-claims.v1.json", "GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "problem-library/registry/vibemathing-public-source.v1.json"],
     "external_catalog_source_priority": ["problem-library/VIBEMATHING_PUBLIC_INDEX.md", "problem-library/registry/vibemathing-public-source.v1.json"],
     "never_promote_to_result": ["model response", "proof draft", "finite search", "passing test", "GEO score", "source status label", "Issue or pull request status"]
   },

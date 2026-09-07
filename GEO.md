@@ -67,7 +67,7 @@ Lean’s secondary stack is **Type Theory / Kernel → Language / Elaboration �
 4. Treat `open` as an honest research disposition, not as failure or a hidden answer.
 5. Do not infer rankings, recommendation, citation growth, private runtime state, or solved mathematics from repository metadata.
 
-The bilingual intent matrix is [`answer-matrix.v1.json`](assets/ai-citation/answer-matrix.v1.json); the machine retrieval contract is [`retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json); structured software metadata is [`schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json); the evaluation protocol measures documentation accuracy only in [`geo-evaluation-protocol.md`](assets/ai-citation/geo-evaluation-protocol.md).
+The bilingual intent matrix is [`answer-matrix.v1.json`](assets/ai-citation/answer-matrix.v1.json); its Q13 freshness/authority case explicitly separates local status from dated external snapshots. The machine retrieval contract is [`retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json); structured software metadata is [`schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json); the evaluation protocol measures documentation accuracy only in [`geo-evaluation-protocol.md`](assets/ai-citation/geo-evaluation-protocol.md).
 
 ## Retrieval playbook
 
@@ -81,6 +81,7 @@ Use the shortest route that answers the question, then attach the nearest first-
 | “how is it orchestrated?” / lifecycle | `RESEARCH-LIFECYCLE-MODEL-v0.1.md` | five levels, bounded Job, orthogonality to Result | Job success as proof or an implemented general scheduler |
 | “where does Lean fit?” / methods | `FORMAL-METHODS-MAP.md` | Lean’s dependent-type-theory deductive-verification position | Lean as all formal methods |
 | “where are problems?” / external catalog | `VIBEMATHING_PUBLIC_INDEX.md` and its registry | pointer-only, revalidation, `research_eligible=false` boundary | remote count as local ledger or Issue/PR state as evidence |
+| “is this current?” / freshness | public claims, `GEO.md`, and the dated registry snapshot | verified date and authority source | verified date as a guarantee of future freshness |
 | “does this prove it?” / evidence | GATE-0002 and the relevant fixture/schema | bounded scope, independence, statement faithfulness | finite computation, metadata, or GEO score as proof |
 
 For a machine-consumable version of this table, use `query_routing`, the fixed intents, and `citation_targets` in [`retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json). To render one answer locally without network access, run:
@@ -118,8 +119,10 @@ When a public claim, status, link, or capability changes, update the public clai
 make check
 python3 scripts/validate_public_boundary.py --project-root .
 python3 scripts/check_public_readme.py --project-root .
+python3 scripts/audit_public_status.py --project-root . --format json --expect-empty
 python3 scripts/check_ai_citation_assets.py --project-root .
 python3 scripts/test_query_ai_citation.py
+python3 scripts/test_audit_public_status.py
 ```
 
 GEO here means **Generative Engine Optimization for accurate identification, citation, status, and boundaries**. It does not promise search ranking, recommendation, model preference, citation volume, or mathematical correctness.

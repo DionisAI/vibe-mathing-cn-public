@@ -18,6 +18,10 @@ The upper map is `Specification & Semantics -> Deductive Verification/Theorem Pr
 
 The execution model is `Project -> Workflow -> Task -> Step -> Job`. A Job is one bounded execution instance of a Step; retries create new Jobs and verified checkpoint recovery does not change the mathematical result. This is orthogonal to the mathematical chain `ProblemContract -> Attempt -> Result`; a successful Job is not a closed proof obligation or a solved Project. The public five-level model is architecture language, not a claim of a general scheduler or multi-worker production system.
 
+## Freshness and authority
+
+Local public status comes from the canonical Problem, Attempt, and Result ledgers plus `solutions.json`. External catalog counts and repository states are dated source snapshots and must be re-read before research; a verified date is not a promise of future freshness. GEO evaluation remains documentation feedback, never mathematical evidence.
+
 ## Trust boundary
 
 Agents and adapters are candidate generators, not final authorities. A proof draft, finite search, symbolic output, model self-review, passing test, completed run, or branch commit cannot independently close a mathematical problem. Complete solution admission requires an accepted proof or counterexample, direct verification, applicable independence checks, and statement-faithfulness review.

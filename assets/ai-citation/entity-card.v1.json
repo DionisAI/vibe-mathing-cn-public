@@ -102,6 +102,18 @@
       "claim_ids": ["claim:research-lifecycle"]
     },
     {
+      "name": "Status freshness and source authority",
+      "evidence_refs": [
+        "governance/publication/public-claims.v1.json",
+        "GEO.md",
+        "assets/ai-citation/retrieval-contract.v1.json",
+        "problem-library/registry/vibemathing-public-source.v1.json",
+        "result-library/indexes/solutions.json",
+        "scripts/audit_public_status.py"
+      ],
+      "claim_ids": ["claim:freshness-authority"]
+    },
+    {
       "name": "Schema.org software discovery metadata",
       "evidence_refs": [
         "assets/ai-citation/schema-org-software.v1.json",
@@ -116,7 +128,8 @@
     "Finite computation, a passing test, or a proof draft is not by itself a mathematical proof.",
     "Tool-maturity labels are not installation or verifier-admission claims without matching evidence.",
     "The public repository does not claim a solution to an open mathematics problem.",
-    "The Project → Workflow → Task → Step → Job model is not a claim that a general scheduler or multi-worker production system is implemented."
+    "The Project → Workflow → Task → Step → Job model is not a claim that a general scheduler or multi-worker production system is implemented.",
+    "A verified date describes a checked snapshot and does not guarantee future freshness of a remote catalog or repository."
   ],
   "source_priority": [
     {
@@ -147,6 +160,11 @@
     {
       "topic": "research lifecycle architecture",
       "source": "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md",
+      "priority": 1
+    },
+    {
+      "topic": "freshness and source authority",
+      "source": "governance/publication/public-claims.v1.json",
       "priority": 1
     },
     {

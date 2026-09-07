@@ -188,12 +188,24 @@
       "scores_zh": {"C1": null, "C2": null, "C3": null, "C4": null, "C5": null, "C6": null},
       "scores_en": {"C1": null, "C2": null, "C3": null, "C4": null, "C5": null, "C6": null},
       "notes": null
+    },
+    {
+      "id": "Q13",
+      "question_zh": "项目当前状态和外部目录信息应该如何核验？",
+      "question_en": "How should the project's current status and external catalog information be verified?",
+      "response_zh": null,
+      "response_en": null,
+      "citations_zh": [],
+      "citations_en": [],
+      "scores_zh": {"C1": null, "C2": null, "C3": null, "C4": null, "C5": null, "C6": null},
+      "scores_en": {"C1": null, "C2": null, "C3": null, "C4": null, "C5": null, "C6": null},
+      "notes": null
     }
   ],
   "summary": {
     "status": "not-run-template",
     "total_points": null,
-    "maximum_points": 144,
+    "maximum_points": 156,
     "interpretation": "Documentation evaluation only; not mathematical evidence and never a Problem, Attempt, Result, or evidence receipt."
   }
 }

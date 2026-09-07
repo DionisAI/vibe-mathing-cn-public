@@ -18,6 +18,7 @@ This protocol measures whether public documentation is understood accurately. It
 | Q10 | `我们的方法层主线是什么？Lean 在哪里？` | `What is the project's method-layer mainline, and where does Lean fit?` | six-part formal-methods map; Lean in dependent-type-theory deductive verification |
 | Q11 | `回答这个项目时应该引用什么、避免什么？` | `What should an answer cite, and what should it avoid inferring?` | nearest first-party citation; no GEO/ranking claim is mathematical evidence |
 | Q12 | `项目的顶层全生命周期如何组织？` | `How is the project's top-level research lifecycle organized?` | Project → Workflow → Task → Step → Job; orthogonal to the mathematical fact chain |
+| Q13 | `项目当前状态和外部目录信息应该如何核验？` | `How should the project's current status and external catalog information be verified?` | local ledger authority; dated external snapshot; revalidation before research |
 
 ## Scoring
 

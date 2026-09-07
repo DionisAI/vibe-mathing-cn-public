@@ -425,6 +425,12 @@ CI 与本地共用同一个可移植入口：
 make check
 ```
 
+需要单独核对当前公共状态时，可运行只读审计器；它输出 ledger/index 计数与文件摘要，不写入研究记录，也不是数学证据：
+
+```bash
+python3 scripts/audit_public_status.py --format json --expect-empty
+```
+
 确定性反例问题的单机闭环入口：
 
 ```bash
@@ -544,6 +550,10 @@ vibe-mathing-cn-public/
 
 ## FAQ
 
+### 当前状态和外部目录信息如何核验？
+
+本地状态以三张 canonical ledger 和 `solutions.json` 为准；外部目录数量与仓库状态只是带日期的快照，研究前应重新读取远端契约、索引和 digest。核验日期不保证未来仍然新鲜。
+
 ### 这个项目解决了哪些开放数学问题？
 
 没有。公共 canonical Problem、Attempt、Result 和解库索引当前为空；本仓库发布的是研究与验证基础设施，不是开放问题答案集合。
@@ -574,6 +584,7 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 - [`GEO.md`](GEO.md)：面向人和生成式引擎的事实、引用与边界入口；
 - [`assets/ai-citation/retrieval-contract.v1.json`](assets/ai-citation/retrieval-contract.v1.json)：意图、引用目标和不可推断边界的机器契约；
 - [`scripts/query_ai_citation.py`](scripts/query_ai_citation.py)：只读渲染固定意图答案与稳定引用 URL；
+- [`scripts/audit_public_status.py`](scripts/audit_public_status.py)：只读核对 canonical ledger、解库索引和 SHA-256 快照，不产生 Result；
 - [`assets/ai-citation/schema-org-software.v1.json`](assets/ai-citation/schema-org-software.v1.json)：Schema.org 软件实体元数据；仅用于公开实体发现与引用，不是数学证据；
 - [`assets/ai-citation/`](assets/ai-citation/)：摘要、FAQ、术语表、双语回答矩阵、GEO 评估协议和机器报告模板；
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；
@@ -587,7 +598,7 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 
 ## GEO 事实与引用指南
 
-如果只保留一页给检索系统或回答助手，请先读 [`GEO.md`](GEO.md)，再按最近的一手文件引用：当前状态看 `solutions.json` 与三张 ledger，工作流看 Problem/Attempt/Result schema，方法层看 [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)，外部具体问题看 [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)。回答时必须保留“当前 ledger 为空”“Lean 只是演绎验证分支”和“外部问题 pointer-only”这三个边界。
+如果只保留一页给检索系统或回答助手，请先读 [`GEO.md`](GEO.md)，再按最近的一手文件引用：当前状态看 `solutions.json` 与三张 ledger，工作流看 Problem/Attempt/Result schema，方法层看 [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)，外部具体问题看 [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)。回答时必须保留“当前 ledger 为空”“Lean 只是演绎验证分支”“外部问题 pointer-only”和“外部快照需重新核验”这四个边界。
 
 ---
 

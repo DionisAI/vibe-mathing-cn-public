@@ -135,6 +135,17 @@
       "evidence_refs": ["GEO.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md", "README.md"],
       "must_include": ["Project -> Workflow -> Task -> Step -> Job", "orthogonal fact chain", "Job is bounded"],
       "must_not_claim": ["general scheduler already exists", "Job success is a mathematical result", "Attempt lifecycle is outcome"]
+    },
+    {
+      "id": "Q13",
+      "intent": "freshness-and-authority",
+      "question_zh": "项目当前状态和外部目录信息应该如何核验？",
+      "question_en": "How should the project's current status and external catalog information be verified?",
+      "answer_zh": "当前公共状态回到三张 canonical ledger 和 solutions.json 核验；外部目录数量与仓库状态只是带日期的来源快照，研究前必须重新读取远端契约、索引和 digest。",
+      "answer_en": "Check current public status against the three canonical ledgers and solutions.json; external counts and repository states are dated source snapshots, so re-read the remote contract, index, and digest before research.",
+      "evidence_refs": ["GEO.md", "governance/publication/public-claims.v1.json", "problem-library/registry/vibemathing-public-source.v1.json", "result-library/indexes/solutions.json", "scripts/audit_public_status.py"],
+      "must_include": ["local status authority", "dated external snapshot", "revalidation before research"],
+      "must_not_claim": ["remote count is local truth", "verified date guarantees future freshness", "CI or Issue state is mathematical evidence"]
     }
   ]
 }

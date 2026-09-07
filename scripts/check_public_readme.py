@@ -50,6 +50,8 @@ REQUIRED_FILES = (
     "scripts/query_vibemathing_public.py",
     "scripts/query_ai_citation.py",
     "scripts/test_query_ai_citation.py",
+    "scripts/audit_public_status.py",
+    "scripts/test_audit_public_status.py",
 )
 SURFACE_FILES = (
     "README.md",
@@ -233,6 +235,7 @@ def check_surfaces(root: Path) -> None:
         "AI retrieval contract:",
         "Top-level lifecycle:",
         "Mathematical fact chain:",
+        "Freshness authority:",
     ):
         if term not in llms:
             raise CheckError(f"llms.txt is missing {term!r}")
@@ -420,6 +423,7 @@ def check_claims(root: Path) -> None:
         "claim:identity",
         "claim:workflow",
         "claim:status",
+        "claim:freshness-authority",
         "claim:fixtures",
         "claim:bounded-evidence",
         "claim:tool-maturity",
@@ -434,6 +438,10 @@ def check_claims(root: Path) -> None:
     status_text = str(status_claim.get("text", "")).lower()
     if "empty" not in status_text or "does not claim" not in status_text:
         raise CheckError("claim:status must preserve the empty/no-solution boundary")
+    freshness_claim = next(item for item in claims if item.get("claim_id") == "claim:freshness-authority")
+    freshness_text = str(freshness_claim.get("text", "")).lower()
+    if "dated" not in freshness_text or "revalidation" not in freshness_text:
+        raise CheckError("claim:freshness-authority must preserve the snapshot/revalidation boundary")
 
 
 def main() -> int:

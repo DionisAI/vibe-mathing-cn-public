@@ -23,7 +23,7 @@ def main() -> int:
     contract = module.load_contract()
     assert contract["canonical_name"] == "vibe-mathing-cn"
     assert contract["query_routing"]["answer_order"][0] == "direct_answer"
-    assert len(contract["intents"]) == 7
+    assert len(contract["intents"]) == 8
 
     intent = module.find_intent(contract, "lifecycle-model")
     rendered = module.render_intent(contract, intent, "both")
@@ -31,6 +31,8 @@ def main() -> int:
     assert "Project -> Workflow -> Task -> Step -> Job" in rendered["answer_en"]
     assert rendered["citation_urls"][0].startswith(module.PUBLIC_URL + "/blob/main/")
     assert "general scheduler already exists" in rendered["must_not_infer"]
+    freshness = module.render_intent(contract, module.find_intent(contract, "freshness-and-authority"), "en")
+    assert "dated source snapshots" in freshness["answer_en"]
     assert len(module.render_text([rendered])) < module.MAX_OUTPUT_CHARS
 
     for unsafe in ("../README.md", "/etc/passwd", "..\\README.md"):

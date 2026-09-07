@@ -12,6 +12,8 @@
 - 增加 Schema.org 软件实体元数据、README Mermaid 架构总览、GEO 检索路由表与 freshness/authority 规则，并让校验器检查身份、引用 URL 和非数学证据边界的一致性。
 - 新增只读 `query_ai_citation.py` 与回归测试，可从固定 retrieval contract 渲染双语答案和稳定引用 URL，不接触网络或研究记录。
 - 增加静态、可访问、无外链脚本的双层架构图 `assets/architecture.svg`，并由公共检查器验证其内容边界。
+- 将 freshness/authority 纳入第十三个 GEO 固定意图、双语答案矩阵、声明账本、实体卡与引用渲染器，明确本地状态权威和外部快照重核规则。
+- 新增只读 `audit_public_status.py` 与回归测试，以受限文件读取和 SHA-256 摘要机械核对公开 ledger/index 状态，不产生数学 Result。
 - 公共文档仍不声称解决任何开放数学问题；GEO 评估只衡量理解和引用准确性，不是数学证据。
 
 ## 2026-09-01 — 公开候选契约、研究 bundle 与工具边界

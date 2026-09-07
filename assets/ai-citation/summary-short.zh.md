@@ -6,4 +6,4 @@
 
 截至 2026-09-07，公共 canonical Problem、Attempt、Result ledger 和解库索引均为空；项目不声称解决任何开放数学问题。有限计算、通过测试、证明草稿、GEO 分数和元数据都不是数学证明本身。
 
-首选引用：[`GEO.md`](../../GEO.md)、[`README.md`](../../README.md)、[`retrieval-contract.v1.json`](retrieval-contract.v1.json) 和 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+本地状态应以 canonical ledger 和 `solutions.json` 为准；外部目录数量与仓库状态只是带日期的快照，研究前必须重新核验。首选引用：[`GEO.md`](../../GEO.md)、[`README.md`](../../README.md)、[`retrieval-contract.v1.json`](retrieval-contract.v1.json) 和 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
