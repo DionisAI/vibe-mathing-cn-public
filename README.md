@@ -29,6 +29,7 @@
 | 输出是什么？ | 可追溯的 ResearchBundle，以及由合格 Result 派生的只读 Solution View |
 | 当前有新数学解吗？ | 没有；canonical ledger 和解库索引为空，合成 Fixture 只验证工程链路 |
 | 它明确不是什么？ | 不是保证解决任意开放问题的通用求解器，也不是外部数学认证机构 |
+| 顶层生命周期怎么组织？ | `Project → Workflow → Task → Step → Job`；Job 是 Step 的一次有界执行，不等于问题已解决 |
 | 具体开放问题在哪里？ | 见 [Vibe Mathing 公共问题索引](problem-library/VIBEMATHING_PUBLIC_INDEX.md)；远端 catalog 与单问题仓库不会自动成为本地 Result |
 
 ## 快速导航
@@ -36,6 +37,7 @@
 - [项目定位](#项目定位)
 - [系统输入与输出](#系统输入与输出)
 - [信任边界](#信任边界)
+- [顶层全生命周期：Project-Workflow-Task-Step-Job](#顶层全生命周期project-workflow-task-step-job)
 - [方法层主线：形式化方法地图](#方法层主线形式化方法地图)
 - [状态模型：结果 × 证据](#状态模型结果-证据)
 - [解库准入](#解库准入)
@@ -117,6 +119,20 @@ ResearchBundle {
 | `open` | 尚无完整可信证明或反例；可以包含支持性证据、局部结果、失败路径和下一步建议 |
 
 若同一 Problem、同一语义范围同时出现通过准入的证明和反例，系统必须把它视为契约、形式化或验证链冲突并 fail-closed，不能任选一个答案。`open` 不是失败：它表示系统准确保存了“目前真正知道什么”和“还缺什么”。
+
+## 顶层全生命周期：Project → Workflow → Task → Step → Job
+
+项目的顶层组织是五级结构：`Project` 定完整目标，`Workflow` 定任务网络，`Task` 定输入/输出工作单元，`Step` 定具体方法与操作，`Job` 记录一次有时间、资源和输出上限的执行。一个 Step 可以产生多个 Job 用于参数变体、有限重试或独立验证；恢复同一 Job 必须绑定已验证 checkpoint，重新执行则创建新的 Job。
+
+这套执行结构与数学事实链正交：
+
+```text
+Project → Workflow → Task → Step → Job
+
+ProblemContract → Attempt → candidate/evidence → Result → Solution View
+```
+
+因此 `Job succeeded` 不等于 Step 验收通过，不等于 Task 的证明义务闭合，更不等于 Project 的问题解决。当前公共仓库把五级结构作为顶层生命周期与未来编排的公共语言，尚未宣称提供通用 DAG 调度器、五套持久化 schema 或多 Worker 生产能力。完整边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
 
 ## 方法层主线：形式化方法地图
 
@@ -552,6 +568,7 @@ Lean Fixture 检查固定形式化陈述、证明项及公理/逃逸边界；Sym
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json)：公共声明及其证据引用，不是数学 Result 真相源；
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md)：外部具体问题总库、单问题仓库和网页版研究模板入口；
 - [`governance/standards/FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md)：形式化方法主线、Lean 定位与学习地图；
+- [`governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)：Project → Workflow → Task → Step → Job 顶层生命周期模型；
 - [`CITATION.cff`](CITATION.cff) 与 [`codemeta.json`](codemeta.json)：引用和软件元数据；
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) 与 [`SECURITY.md`](SECURITY.md)：贡献和安全报告边界。
 

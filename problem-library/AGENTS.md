@@ -37,6 +37,7 @@ problem-library/
 - Git 来源必须先进入 `vendor/sources.lock.json` 的固定 reference；禁止抓取器执行未固定的 clone 或 branch archive。
 - 来源记录不能直接作为 canonical Problem。ProblemContract 必须冻结陈述、定义域、量词、定义、假设、允许公理、固定准入策略和有界执行预算。
 - `lifecycle` 只表示 ProblemContract 是否可研究：`draft → active → withdrawn`；不恢复解题 `status` 双真相。
+- 顶层 `Project → Workflow → Task → Step → Job` 是编排层语言；问题库只提供 Project 引用的契约输入，不直接生成 Job、Attempt 或数学 Result。
 
 ## 维护命令
 

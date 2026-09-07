@@ -14,6 +14,7 @@
   },
   "one_sentence": "vibe-mathing-cn separates untrusted candidate generation from trusted verification through ProblemContract, Attempt, Result, evidence capabilities, and a derived Solution View.",
   "conceptual_model": [
+    "Project → Workflow → Task → Step → Job",
     "ProblemContract",
     "Attempt",
     "candidate/evidence",
@@ -89,13 +90,23 @@
         "assets/ai-citation/geo-evaluation-protocol.md"
       ],
       "claim_ids": ["claim:identity", "claim:workflow", "claim:bounded-evidence", "claim:retrieval-contract"]
+    },
+    {
+      "name": "Research lifecycle architecture map",
+      "evidence_refs": [
+        "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md",
+        "governance/context/PROJECT_OPERATING_MODEL.md",
+        "README.md"
+      ],
+      "claim_ids": ["claim:research-lifecycle"]
     }
   ],
   "non_claims": [
     "The project is not a universal open-problem solver.",
     "Finite computation, a passing test, or a proof draft is not by itself a mathematical proof.",
     "Tool-maturity labels are not installation or verifier-admission claims without matching evidence.",
-    "The public repository does not claim a solution to an open mathematics problem."
+    "The public repository does not claim a solution to an open mathematics problem.",
+    "The Project → Workflow → Task → Step → Job model is not a claim that a general scheduler or multi-worker production system is implemented."
   ],
   "source_priority": [
     {
@@ -121,6 +132,11 @@
     {
       "topic": "formal-methods map and Lean position",
       "source": "governance/standards/FORMAL-METHODS-MAP.md",
+      "priority": 1
+    },
+    {
+      "topic": "research lifecycle architecture",
+      "source": "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md",
       "priority": 1
     },
     {

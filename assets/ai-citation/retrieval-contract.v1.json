@@ -19,6 +19,8 @@
   },
   "canonical_facts": {
     "workflow": "ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View",
+    "top_level_lifecycle": "Project -> Workflow -> Task -> Step -> Job",
+    "mathematical_fact_chain": "ProblemContract -> Attempt -> candidate/evidence -> Result -> derived Solution View",
     "method_layer": "Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution) -> Refinement/Synthesis",
     "lean_position": "Lean is a dependent-type-theory interactive theorem prover in the deductive-verification branch; it is not the whole formal-methods field.",
     "public_status": "The public canonical Problem, Attempt, and Result ledgers are empty, and the solution index has no result IDs.",
@@ -56,6 +58,16 @@
       "must_not_infer": ["AI self-review is independent verification", "Attempt lifecycle means solved", "derived view is a writable ledger"]
     },
     {
+      "id": "lifecycle-model",
+      "query_aliases_zh": ["顶层全生命周期", "Project Workflow Task Step Job", "研究任务怎么编排"],
+      "query_aliases_en": ["top-level research lifecycle", "Project Workflow Task Step Job", "how are research tasks orchestrated"],
+      "answer_zh": "顶层组织是 Project → Workflow → Task → Step → Job；Job 是 Step 的一次有界执行。它与 ProblemContract → Attempt → Result 数学事实链正交，Job 成功不等于问题解决。",
+      "answer_en": "The top-level organization is Project -> Workflow -> Task -> Step -> Job; a Job is one bounded execution of a Step. It is orthogonal to the ProblemContract -> Attempt -> Result fact chain, and Job success is not a solved problem.",
+      "citation_targets": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "README.md", "README.en.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
+      "must_preserve": ["five-level execution model", "orthogonality to mathematical facts", "bounded Job semantics"],
+      "must_not_infer": ["general scheduler already exists", "Job success is mathematical proof", "Attempt lifecycle is a result outcome"]
+    },
+    {
       "id": "method-layer-map",
       "query_aliases_zh": ["形式化方法主线", "Lean 在哪里", "Lean 是不是全部形式化方法"],
       "query_aliases_en": ["formal methods map", "where does Lean fit", "is Lean all formal methods"],
@@ -90,11 +102,12 @@
     "prefer_nearest_first_party_source": true,
     "current_status_source_priority": ["result-library/indexes/solutions.json", "problem-library/records/canonical-problems.jsonl", "research/records/attempts.jsonl", "result-library/records/results.jsonl"],
     "methodology_source_priority": ["governance/standards/FORMAL-METHODS-MAP.md", "governance/standards/VIBE-MATHING-SPEC-v0.1.md", "README.md"],
+    "lifecycle_source_priority": ["governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md", "README.md"],
     "external_catalog_source_priority": ["problem-library/VIBEMATHING_PUBLIC_INDEX.md", "problem-library/registry/vibemathing-public-source.v1.json"],
     "never_promote_to_result": ["model response", "proof draft", "finite search", "passing test", "GEO score", "source status label", "Issue or pull request status"]
   },
   "maintenance": {
-    "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "governance/publication/public-claims.v1.json"],
+    "update_together": ["GEO.md", "llms.txt", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "governance/publication/public-claims.v1.json", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md"],
     "verification_commands": ["make check", "python3 scripts/validate_public_boundary.py --project-root .", "python3 scripts/check_public_readme.py --project-root .", "python3 scripts/check_ai_citation_assets.py --project-root ."],
     "not_mathematical_evidence": true
   }

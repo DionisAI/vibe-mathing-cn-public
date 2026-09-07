@@ -6,7 +6,7 @@ authors:
   - name: "TradeCat Labs"
 repository-code: "https://github.com/vibemathing/vibe-mathing-cn-public"
 license: MIT
-abstract: "A Chinese-first, Git-based workbench for AI-assisted mathematics research that separates untrusted candidate generation from trusted verification over ProblemContract, Attempt, Result, evidence ledgers, and derived Solution View."
+abstract: "A Chinese-first, Git-based workbench for AI-assisted mathematics research that separates untrusted candidate generation from trusted verification over ProblemContract, Attempt, Result, evidence ledgers, and derived Solution View, with a Project → Workflow → Task → Step → Job lifecycle architecture model."
 keywords:
   - AI mathematics
   - mathematical research
@@ -25,3 +25,5 @@ keywords:
   - formal methods
   - Generative Engine Optimization
   - AI citation
+  - research lifecycle
+  - workflow orchestration

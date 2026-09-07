@@ -4,6 +4,8 @@
 
 Vibe Mathing 的公开具体问题、问题总库和网页版研究模板见 [`VIBEMATHING_PUBLIC_INDEX.md`](VIBEMATHING_PUBLIC_INDEX.md)。该页只保存外部公开入口和快照说明，不把远端仓库自动导入本地 canonical ledger。
 
+在顶层生命周期中，问题库提供 Project 所引用的 `ProblemContract` 输入；它不直接创建 Workflow、Task、Step、Job、Attempt 或 Result。五级编排与数学事实链的边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+
 ## 来源层级
 
 已准入来源记录由抓取器统一为 `records/problems.jsonl`：

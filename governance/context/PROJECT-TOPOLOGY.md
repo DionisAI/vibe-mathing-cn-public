@@ -20,6 +20,7 @@ review_cycle: P90D
 | `result-library/` | Result 真相源与解库派生视图 | 手写无 Result 支撑的解 | research spaces validation + negative tests |
 | `.codex/skills/` | 项目 active 研究方法 | 直接激活未经审计上游 skill | project validation |
 | `governance/standards/FORMAL-METHODS-MAP.md` | 规格、验证范式与 Lean 的方法层地图 | 将 Lean 等同于全部形式化方法 | governance strict/health + skill boundary checks |
+| `governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md` | Project → Workflow → Task → Step → Job 顶层生命周期语言 | 将 Job 成功等同于数学问题解决 | governance strict/health + public boundary checks |
 | `vendor/` | 上游版本、许可、快照与缓存 | 让 upstream 参与 active discovery | supply-chain validation |
 | `scripts/` | 抓取、查询和验证胶水 | 吞错或伪造成功 | `make check` / `make check-full` |
 | `governance/` | 项目记忆、标准、ADR、Gate 和任务证据 | 替代局部 README/AGENTS | governance strict/health |
@@ -32,6 +33,7 @@ external sources ──> source problem records ──> canonical Problem
 literature catalog ────────────────────────────────┐
 active skills ─────────────────────────────────────┤
 method-layer map ──────────────────────────────────┤
+Project → Workflow → Task → Step → Job ────────────┤
 canonical Problem ──> Attempt ──> candidate Result ──> solutions.json
                                           │
                                    trusted verification gate

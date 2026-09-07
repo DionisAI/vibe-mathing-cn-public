@@ -19,6 +19,7 @@ last_reviewed: 2026-09-07
 
 - [OK] `standards/VIBE-MATHING-SPEC-v0.1.md`
 - [OK] `standards/FORMAL-METHODS-MAP.md`
+- [OK] `standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`
 - [OK] `standards/工程质量标准.md`
 - [OK] `standards/劣质代码定义.md`
 - [OK] `standards/非功能性需求标准.md`

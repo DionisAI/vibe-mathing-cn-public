@@ -85,6 +85,15 @@
       "last_verified": "2026-09-07",
       "evidence_refs": ["GEO.md", "assets/ai-citation/retrieval-contract.v1.json", "assets/ai-citation/answer-matrix.v1.json", "assets/ai-citation/geo-evaluation-protocol.md"],
       "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo"]
+    },
+    {
+      "claim_id": "claim:research-lifecycle",
+      "text": "The public architecture distinguishes a five-level execution model, Project -> Workflow -> Task -> Step -> Job, from the mathematical ProblemContract -> Attempt -> Result fact chain; the lifecycle document does not claim a general scheduler is implemented.",
+      "scope": "architecture",
+      "status": "current",
+      "last_verified": "2026-09-07",
+      "evidence_refs": ["GEO.md", "README.md", "README.en.md", "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md", "governance/context/PROJECT_OPERATING_MODEL.md"],
+      "allowed_surfaces": ["readme", "readme-en", "llms", "ai-citation", "geo"]
     }
   ]
 }

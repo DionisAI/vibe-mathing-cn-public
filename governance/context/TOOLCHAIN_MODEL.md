@@ -14,7 +14,7 @@ review_cycle: P90D
 
 ## 成熟工具优先
 
-方法选型先按 [`FORMAL-METHODS-MAP.md`](../standards/FORMAL-METHODS-MAP.md) 定位，再按工具成熟度 registry 判断是否可运行；教程目录、包名或固定源码不能代替能力证据。
+方法选型先按 [`FORMAL-METHODS-MAP.md`](../standards/FORMAL-METHODS-MAP.md) 定位，再按工具成熟度 registry 判断是否可运行；教程目录、包名或固定源码不能代替能力证据。执行编排按 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md) 区分 Project、Workflow、Task、Step 和 Job。
 
 - Git/GitHub Actions 管版本和持续验证；`vendor/sources.lock.json` 是公开来源固定的唯一清单。
 - JSON Schema 管对象结构，Python 脚本管跨记录不变量、路径安全和原子派生。
@@ -56,7 +56,7 @@ review_cycle: P90D
 
 ## 资源与安全
 
-- 所有计算、solver、CAS、外部命令、HTTP 请求和 canary 子进程都必须有 timeout、资源预算、重试/停止条件、输出或响应上限、终止回执和失败语义。
+- 所有计算、solver、CAS、外部命令、HTTP 请求和 canary 子进程都必须有 timeout、资源预算、重试/停止条件、输出或响应上限、终止回执和失败语义；这些约束同时适用于每个 Job 及其父级累计预算。
 - GPU 或并行粗筛如果被外部项目接入，也只能产生有限候选；精确裁决必须回到已审查的 CPU/形式化路径。
 - 工具成功、版本存在、固定 commit、Lean build、有限枚举和模型自评都不能单独升级 Result。
 - 失败路线只追加到 `research/records/failed-routes.jsonl`；不覆盖历史，也不把失败伪装成 solved/refuted。

@@ -24,4 +24,5 @@ review_cycle: P90D
 - 新增公共发布声明账本与 AI 发现资产的维护边界；它们是文档派生物，不是数学 Result 真相源。
 - 登记 `vibemathing` 公共问题总库、具体问题 locator、网页版研究模板和 pointer-only 集成策略；远端目录不会绕过本地 ProblemContract 准入。
 - 发布形式化方法与 Lean 定位地图，作为 skills、工具目录和 README 的方法层主线；不把教学目录、工具可运行或 Lean kernel check 写成数学 Result 证据。
-- 增加公共 GEO 事实与引用入口、意图级 retrieval contract 和 Q11 引用边界测试；所有 GEO 资产仍保持非数学证据边界。
+- 增加公共 GEO 事实与引用入口、意图级 retrieval contract 和 Q11/Q12 引用与生命周期边界测试；所有 GEO 资产仍保持非数学证据边界。
+- 新增公开全生命周期标准，明确 Project → Workflow → Task → Step → Job 与 ProblemContract → Attempt → Result 的正交关系，以及 Job/Step/Task/Project 不可越权的状态边界。

@@ -193,8 +193,8 @@ def check_answer_matrix(root: Path, claim_ids: set[str], verified_at: str) -> No
                 not isinstance(value, str) or not value.strip() for value in values
             ):
                 raise AssetError(f"answer matrix {case_id} is missing {field}")
-    if not {"Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10", "Q11"} <= seen:
-        raise AssetError("answer matrix is missing one of Q01-Q11")
+    if not {"Q01", "Q02", "Q03", "Q04", "Q05", "Q06", "Q07", "Q08", "Q09", "Q10", "Q11", "Q12"} <= seen:
+        raise AssetError("answer matrix is missing one of Q01-Q12")
 
 
 def check_geo_report(root: Path, answer_case_ids: set[str]) -> None:
@@ -282,7 +282,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
     ):
         raise AssetError("AI retrieval contract identity block is invalid")
     facts = contract.get("canonical_facts")
-    required_facts = {"workflow", "method_layer", "lean_position", "public_status", "open_problem_boundary"}
+    required_facts = {"workflow", "top_level_lifecycle", "mathematical_fact_chain", "method_layer", "lean_position", "public_status", "open_problem_boundary"}
     if (
         not isinstance(facts, dict)
         or not required_facts <= set(facts)
@@ -294,12 +294,13 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         "identity",
         "current-status",
         "workflow",
+        "lifecycle-model",
         "method-layer-map",
         "external-problem-catalog",
         "evidence-boundary",
     }
     if not isinstance(intents, list) or {item.get("id") for item in intents if isinstance(item, dict)} != required_intents:
-        raise AssetError("AI retrieval contract must define the six fixed intents")
+        raise AssetError("AI retrieval contract must define the seven fixed intents")
     for intent in intents:
         if not isinstance(intent, dict):
             raise AssetError("AI retrieval contract intent must be an object")
@@ -325,6 +326,7 @@ def check_retrieval_contract(root: Path, verified_at: str) -> None:
         or not isinstance(maintenance.get("update_together"), list)
         or relative not in maintenance["update_together"]
         or "GEO.md" not in maintenance["update_together"]
+        or "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md" not in maintenance["update_together"]
         or not isinstance(maintenance.get("verification_commands"), list)
     ):
         raise AssetError("AI retrieval contract maintenance block is invalid")
@@ -335,7 +337,7 @@ def check_content(root: Path) -> None:
     faq = (root / ASSET_ROOT / "faq.md").read_text(encoding="utf-8")
     recommended = (root / ASSET_ROOT / "recommended-answer.md").read_text(encoding="utf-8")
     combined = "\n".join((short, faq, recommended)).lower()
-    for term in ("problemcontract", "attempt", "result", "empty", "specification & semantics"):
+    for term in ("problemcontract", "attempt", "result", "empty", "specification & semantics", "project -> workflow -> task -> step -> job"):
         if term not in combined:
             raise AssetError(f"AI-citation assets must mention {term!r}")
     if not any(term in combined for term in ("does not claim to solve", "does not solve", "no open", "不声称")):
@@ -345,7 +347,7 @@ def check_content(root: Path) -> None:
         if term.lower() not in terminology.lower():
             raise AssetError(f"terminology contract is missing {term!r}")
     protocol = (root / ASSET_ROOT / "geo-evaluation-protocol.md").read_text(encoding="utf-8")
-    for term in ("Q01", "Q11", "Scoring", "not mathematical evidence"):
+    for term in ("Q01", "Q12", "Scoring", "not mathematical evidence"):
         if term.lower() not in protocol.lower():
             raise AssetError(f"GEO evaluation protocol is missing {term!r}")
 

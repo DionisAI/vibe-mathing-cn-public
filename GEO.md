@@ -29,6 +29,10 @@ Canonical identity and status are also machine-readable in [`entity-card.v1.json
 
 Use [`README.md`](README.md) for the primary Chinese explanation and [`README.en.md`](README.en.md) for the English discovery entrypoint. Do not shorten the project to “an autonomous theorem solver”.
 
+## Top-level lifecycle
+
+The top-level architecture language is `Project → Workflow → Task → Step → Job`: Project defines the goal, Workflow the task network, Task the work unit, Step the operation, and Job one bounded execution of a Step. This is orthogonal to the mathematical fact chain `ProblemContract → Attempt → Result`; a successful Job does not close a proof obligation or solve the Project. The public repository publishes this as a design and routing model, not as a claim of a general scheduler, five persistent lifecycle schemas, or multi-worker production capability. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md).
+
 ## What the repository actually publishes
 
 | Capability | First-party citation | Accurate interpretation |
@@ -37,6 +41,7 @@ Use [`README.md`](README.md) for the primary Chinese explanation and [`README.en
 | Bounded computation and formalization | [`fixtures/`](fixtures/), [`test_smt_pipeline.py`](scripts/test_smt_pipeline.py), [`test_lean_pipeline.py`](scripts/test_lean_pipeline.py) | Reproducible engineering slices; not general mathematical proof |
 | Admission and evidence boundaries | [`VIBE-MATHING-SPEC-v0.1.md`](governance/standards/VIBE-MATHING-SPEC-v0.1.md), [`GATE-0002`](governance/architecture-gates/rules/GATE-0002-数学成果晋升必须有充分证据和独立验证.md) | Proof/counterexample admission requires scope, independence, and statement-faithfulness |
 | Formal-methods map | [`FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md) | Lean is in dependent-type-theory deductive verification, not all formal methods |
+| Top-level lifecycle model | [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md), [`PROJECT_OPERATING_MODEL.md`](governance/context/PROJECT_OPERATING_MODEL.md) | Five-level execution language; Job completion is not mathematical evidence or a Result |
 | Public problem discovery | [`VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md) | Pointer-only links to an external catalog and Web template; remote entries are not local Results |
 
 ## Method-layer vocabulary
@@ -56,7 +61,7 @@ Lean’s secondary stack is **Type Theory / Kernel → Language / Elaboration �
 
 ## Citation and answer rules
 
-1. Prefer the nearest first-party source: current status from [`solutions.json`](result-library/indexes/solutions.json) and the three ledgers; architecture from the schemas and core specification; external problem pointers from the public index.
+1. Prefer the nearest first-party source: current status from [`solutions.json`](result-library/indexes/solutions.json) and the three ledgers; lifecycle architecture from [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md) and the Project Operating Model; mathematical architecture from the schemas and core specification; external problem pointers from the public index.
 2. Cite the exact path that supports the sentence. A passing test, bounded search, proof draft, model self-review, or tool-maturity label is not by itself a universal mathematical proof.
 3. Preserve the distinction between `CandidateObservation`, canonical `ProblemContract`, `Attempt`, `Result`, evidence, and derived `Solution View`.
 4. Treat `open` as an honest research disposition, not as failure or a hidden answer.

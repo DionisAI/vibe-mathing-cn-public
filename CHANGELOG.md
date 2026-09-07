@@ -8,6 +8,7 @@
 - 接入 `vibemathing` 公共具体问题索引、ProblemContract 总库 locator、网页版研究模板入口、只读 API/catalog 查询器和本地 draft ProblemContract 模板；远端条目不会自动准入。
 - 发布 `FORMAL-METHODS-MAP.md`：以“规格与语义 → 演绎验证 → 模型检查 → 抽象解释 → SAT/SMT/符号推理（含符号执行） → 精化/综合”为方法层主线，并把 Lean 准确放在依赖类型理论型演绎验证分支。
 - 新增 `GEO.md` 与 `retrieval-contract.v1.json`，提供意图级答案、最近一手引用目标、别名和不可推断边界；GEO 仍是文档准确性维护，不是数学证据或排名承诺。
+- 将 Project → Workflow → Task → Step → Job 五级生命周期模型与 ProblemContract → Attempt → Result 数学事实链分离，并同步到公开标准、上下文、README 和 GEO Q12。
 - 公共文档仍不声称解决任何开放数学问题；GEO 评估只衡量理解和引用准确性，不是数学证据。
 
 ## 2026-09-01 — 公开候选契约、研究 bundle 与工具边界

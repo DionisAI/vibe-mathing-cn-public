@@ -28,3 +28,7 @@ Lean 六层栈：类型理论与 Kernel → 语言与 elaboration → Proof Engi
 ```
 
 `ProblemContract` 负责规格与语义边界；`math-proof` 负责证明义务；`math-formalization` 负责 Lean 陈述、proof term、kernel/axiom/escape/faithfulness 分离；`math-computation` 负责有界计算和横向自动化。Lean kernel 检查证明项，但不替代原始命题的 statement-faithfulness 审查。
+
+## 顶层生命周期中的 Skill 位置
+
+项目按 `Project → Workflow → Task → Step → Job` 组织执行；skills 主要为具体 `Step` 提供 owner 操作，`Job` 只记录一次有界执行。Skill 路由不创建通用调度器，也不能用 Job/Workflow 完成状态替代 `ProblemContract → Attempt → Result` 的数学证据链。

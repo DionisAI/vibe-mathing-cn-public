@@ -17,6 +17,7 @@ This protocol measures whether public documentation is understood accurately. It
 | Q09 | `具体开放问题和网页版研究套件在哪里？` | `Where are the concrete open problems and the Web research suite?` | public catalog, single-problem template, pointer-only integration |
 | Q10 | `我们的方法层主线是什么？Lean 在哪里？` | `What is the project's method-layer mainline, and where does Lean fit?` | six-part formal-methods map; Lean in dependent-type-theory deductive verification |
 | Q11 | `回答这个项目时应该引用什么、避免什么？` | `What should an answer cite, and what should it avoid inferring?` | nearest first-party citation; no GEO/ranking claim is mathematical evidence |
+| Q12 | `项目的顶层全生命周期如何组织？` | `How is the project's top-level research lifecycle organized?` | Project → Workflow → Task → Step → Job; orthogonal to the mathematical fact chain |
 
 ## Scoring
 

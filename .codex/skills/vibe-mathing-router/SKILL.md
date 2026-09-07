@@ -9,7 +9,7 @@ description: "数学研究任务路由器。用户提出找问题、查文献、
 
 ## Position in the Method Map
 
-路由器先问“规格和语义是否已经冻结”，再区分演绎证明、模型检查、抽象解释、SAT/SMT/符号推理（含符号执行）或精化/综合的验证范式。Lean 是依赖类型理论型演绎验证的主战场，不是整张形式化方法地图。完整的上位/二级地图见 [`FORMAL-METHODS-MAP.md`](../../../governance/standards/FORMAL-METHODS-MAP.md)。
+路由器先问“规格和语义是否已经冻结”，再区分演绎证明、模型检查、抽象解释、SAT/SMT/符号推理（含符号执行）或精化/综合的验证范式。Lean 是依赖类型理论型演绎验证的主战场，不是整张形式化方法地图。完整的上位/二级地图见 [`FORMAL-METHODS-MAP.md`](../../../governance/standards/FORMAL-METHODS-MAP.md)。顶层编排语言见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../../../governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)：路由器为 Step 选择 owner，不能把一次 Job 成功解释为数学结果。
 
 ## When to Use This Skill
 
@@ -60,5 +60,5 @@ description: "数学研究任务路由器。用户提出找问题、查文献、
 ## Maintenance
 
 - Sources：本项目 owner mapping 与供应链审计结果。
-- Last updated：2026-08-13。
+- Last updated：2026-09-07。
 - Verification：`python3 scripts/validate_project.py`。

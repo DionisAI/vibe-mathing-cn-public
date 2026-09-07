@@ -16,11 +16,24 @@ review_cycle: P90D
 
 `vibe-mathing-cn` 是一个用非可信生成器产生候选，再由受信验证链把满足验收谓词的证明或反例派生到解空间的 AI 数学研究工作台。
 
+## 顶层生命周期模型
+
+项目的顶层组织采用五级结构：
+
+```text
+Project → Workflow → Task → Step → Job
+```
+
+`Project` 定完整目标，`Workflow` 定任务网络，`Task` 定输入/输出工作单元，`Step` 定具体操作，`Job` 是 Step 的一次有界执行实例。Job 不是 Task 的直接运行实例；重试创建新的 Job，恢复同一 Job 必须绑定已验证 checkpoint。
+
+这五级结构描述目标如何组织和执行；`ProblemContract → Attempt → Result` 描述数学事实如何定义和裁决，二者正交。当前公共仓库把该模型作为架构与路由语言，尚未宣称拥有通用五级持久化 schema、DAG 调度器或多 Worker 生产能力。完整口径见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](../standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
+
 ## 业务模型
 
 - 核心用户：使用 AI 做数学探索、计算、证明和形式化验证的研究者与工程师。
-- 核心对象：`Problem`、`Attempt`、`Result`。
-- 关键流程：来源记录 → canonical Problem → Attempt → candidate Result → trusted verification gate → solution view。
+- 顶层组织：`Project`、`Workflow`、`Task`、`Step`、`Job`；分别负责目标、任务网络、工作单元、操作和有界执行。
+- 数学事实对象：`Problem`、`Attempt`、`Result`，不被运行生命周期替代。
+- 关键流程：来源记录 → canonical Problem → Workflow/Task/Step/Job → Attempt → candidate Result → trusted verification gate → solution view。
 - 不属于本项目：保证自动解决开放问题、把有限实验当一般证明、把模型自评当独立验证、镜像未获授权的文献全文。
 
 ## 技术模型
@@ -54,6 +67,7 @@ review_cycle: P90D
 | 研究方法 | `.codex/skills/` | 只保存 active owner skills |
 | Vibe-Mathing 核心规范 | `governance/standards/VIBE-MATHING-SPEC-v0.1.md` | 三条基本法则及操作层要求 |
 | 形式化方法地图 | `governance/standards/FORMAL-METHODS-MAP.md` | 方法层主线、Lean 定位、Lean 六层栈与学习顺序 |
+| 全生命周期模型 | `governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md` | Project → Workflow → Task → Step → Job；数学对象与执行层正交 |
 | 供应链版本 | `vendor/sources.lock.json` | URL、commit、许可和导入映射 |
 | 项目治理 | `governance/` | 标准、ADR、Gate 和任务证据 |
 | CI 入口 | `.github/workflows/ci.yml` | portable 与固定 Lean production-loop 双门 |
@@ -78,6 +92,7 @@ review_cycle: P90D
 - 改晋升规则：同步修改 Result schema、校验器、负例、GATE-0002 和 ADR。
 - 改工具/CI：同步修改 `Makefile`、`scripts/check.sh`、`.github/workflows/ci.yml` 与 `TOOLCHAIN_MODEL.md`。
 - 改方法层地图：同步修改 `FORMAL-METHODS-MAP.md`、相关 skill 的职责边界、工具目录和 README 的定位摘要；不得把教学地图写成运行能力或数学证据。
+- 改生命周期模型：同步修改 `RESEARCH-LIFECYCLE-MODEL-v0.1.md`、Project Operating Model、README、research/result 边界和 GEO 事实资产；不得把设计目标写成已实现调度能力。
 - 新增目录或重划职责：同步根与目标目录 README/AGENTS、PROJECT-TOPOLOGY 和 module context。
 
 ## 验证入口

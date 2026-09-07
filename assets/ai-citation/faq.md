@@ -32,6 +32,10 @@ It shows that a fixed Lean/Mathlib fixture can be built and audited for proof-te
 
 The map is Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis. Lean is in the dependent-type-theory deductive-verification branch, not the whole formal-methods field. See [`FORMAL-METHODS-MAP.md`](../../governance/standards/FORMAL-METHODS-MAP.md).
 
+## What is the top-level research lifecycle?
+
+The architecture language is Project -> Workflow -> Task -> Step -> Job. Project defines the goal, Workflow the task network, Task the work unit, Step the operation, and Job one bounded execution. This does not replace ProblemContract -> Attempt -> Result and does not mean that Job success is a mathematical result.
+
 ## Why is `solutions.json` empty?
 
 The index is derived only from qualifying proof or counterexample Results. It is empty because no business Result currently satisfies every admission gate; it is not a manually filled answer table.

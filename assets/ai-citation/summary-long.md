@@ -14,6 +14,10 @@ A `ProblemContract` fixes the statement, domain, quantifiers, definitions, assum
 
 The upper map is `Specification & Semantics -> Deductive Verification/Theorem Proving -> Model Checking -> Abstract Interpretation -> SAT/SMT/Symbolic Reasoning (including Symbolic Execution)/Decision Procedures -> Refinement/Synthesis`. Lean belongs in dependent-type-theory deductive verification; its secondary stack is Type Theory/Kernel, Language/Elaboration, Proof Engineering, Automation, Library Engineering, and Applications. This map is orientation, not a claim that every problem follows every method.
 
+## Top-level lifecycle
+
+The execution model is `Project -> Workflow -> Task -> Step -> Job`. A Job is one bounded execution instance of a Step; retries create new Jobs and verified checkpoint recovery does not change the mathematical result. This is orthogonal to the mathematical chain `ProblemContract -> Attempt -> Result`; a successful Job is not a closed proof obligation or a solved Project. The public five-level model is architecture language, not a claim of a general scheduler or multi-worker production system.
+
 ## Trust boundary
 
 Agents and adapters are candidate generators, not final authorities. A proof draft, finite search, symbolic output, model self-review, passing test, completed run, or branch commit cannot independently close a mathematical problem. Complete solution admission requires an accepted proof or counterexample, direct verification, applicable independence checks, and statement-faithfulness review.

@@ -15,6 +15,7 @@ Use these terms consistently when describing the public repository.
 | public ProblemContract catalog | External discovery/admission index for concrete problem repositories | this repository's local canonical ledger |
 | Web research template | Fixed single-problem Harness source used by concrete repositories | a mathematical verifier or Result store |
 | method-layer map | Specification & Semantics → Deductive Verification → Model Checking → Abstract Interpretation → SAT/SMT/Symbolic Reasoning (including Symbolic Execution) → Refinement/Synthesis; Lean is in the deductive branch | a Lean tutorial table of contents as the whole field |
+| top-level lifecycle | Project → Workflow → Task → Step → Job; Job is one bounded Step execution and is orthogonal to ProblemContract → Attempt → Result | a successful Job or completed Attempt as a solved mathematical problem |
 | `open` | Honest disposition when no accepted proof or counterexample closes the problem | failure, solved, or refuted |
 
 Always state that finite computation, passing tests, proof drafts, self-review, and source labels are not by themselves mathematical proof or Result admission.

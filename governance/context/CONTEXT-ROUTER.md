@@ -31,3 +31,4 @@ review_cycle: P90D
 | 复盘 | 文档治理规则、门禁与护栏 | postmortems/INDEX.md | 防复发动作 |
 | 文档治理 | PROJECT_OPERATING_MODEL、DOCUMENT_DRIVEN_DEVELOPMENT、TOOLCHAIN_MODEL、CONTEXT-ROUTER | ADR、module context、任务 closeout | 文档同步证据或豁免理由 |
 | 形式化方法/工具选型 | `standards/FORMAL-METHODS-MAP.md`、`context/TOOLCHAIN_MODEL.md`、对应 active skill | math-tool maturity registry、fixtures、来源账本 | 方法定位、能力边界和可复跑验证证据 |
+| 生命周期/编排设计 | `standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`、`context/PROJECT_OPERATING_MODEL.md`、相关 `research/`/`result-library/` README | schemas、runtime、GATE-0002、失败路线 | 五级关系、状态轴、预算/恢复边界和未实现项 |

@@ -37,6 +37,8 @@ REQUIRED_FILES = (
     "governance/publication/README.md",
     "governance/publication/AGENTS.md",
     "governance/publication/public-claims.v1.json",
+    "governance/standards/FORMAL-METHODS-MAP.md",
+    "governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md",
     "problem-library/VIBEMATHING_PUBLIC_INDEX.md",
     "problem-library/registry/vibemathing-public-source.v1.json",
     "problem-library/templates/README.md",
@@ -74,6 +76,8 @@ REQUIRED_README_TERMS = (
     "vibe-mathing-problem-public-template",
     "WEB_BOOTSTRAP",
     "FORMAL-METHODS-MAP.md",
+    "RESEARCH-LIFECYCLE-MODEL-v0.1.md",
+    "Project → Workflow → Task → Step → Job",
     "规格与语义",
     "Lean",
     "GEO.md",
@@ -90,6 +94,8 @@ REQUIRED_EN_TERMS = (
     "vibe-mathing-problem-public-template",
     "WEB_BOOTSTRAP",
     "FORMAL-METHODS-MAP.md",
+    "RESEARCH-LIFECYCLE-MODEL-v0.1.md",
+    "Project → Workflow → Task → Step → Job",
     "Specification & Semantics",
     "Lean",
     "GEO.md",
@@ -190,6 +196,8 @@ def check_surfaces(root: Path) -> None:
         "Lean position:",
         "GEO guide:",
         "AI retrieval contract:",
+        "Top-level lifecycle:",
+        "Mathematical fact chain:",
     ):
         if term not in llms:
             raise CheckError(f"llms.txt is missing {term!r}")
@@ -383,6 +391,7 @@ def check_claims(root: Path) -> None:
         "claim:problem-catalog",
         "claim:method-map",
         "claim:retrieval-contract",
+        "claim:research-lifecycle",
     }
     if not required_claims <= seen:
         raise CheckError("public claims are missing a required claim category")

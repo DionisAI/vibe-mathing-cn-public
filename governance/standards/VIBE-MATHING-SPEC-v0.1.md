@@ -13,7 +13,7 @@ related_gates: [GATE-0002]
 
 # VIBE-MATHING-SPEC v0.1
 
-本规范定义 `vibe-mathing-cn` 的最小可信研究闭环。它是项目级规范，不声称是 ISO、IEEE、AMS 或数学共同体统一标准。
+本规范定义 `vibe-mathing-cn` 的最小可信研究闭环。它是项目级规范，不声称是 ISO、IEEE、AMS 或数学共同体统一标准。顶层任务编排的公共语言是 `Project → Workflow → Task → Step → Job`；其定义、状态轴和当前未实现边界见 [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](RESEARCH-LIFECYCLE-MODEL-v0.1.md)。
 
 ## 目标
 
@@ -27,7 +27,7 @@ related_gates: [GATE-0002]
 
 它是方法地图而不是强制流水线：不同问题可以在不同层闭合或保持 open，但必须说明覆盖范围和证据边界。Lean 位于依赖类型理论型演绎验证/交互式定理证明；Lean 的六层栈是类型理论与 Kernel、语言与 elaboration、Proof Engineering、自动化与决策过程、Library Engineering、应用形式化/验证。完整分类和学习顺序见 [`FORMAL-METHODS-MAP.md`](FORMAL-METHODS-MAP.md)。
 
-这一区分不能被弱化：SMT 或有限计算不是一般性定理证明，模型检查不是 Lean kernel check，工具可运行或自动化成功也不是数学 Result。项目的运行闭环仍然是 `Problem → Attempt → Result → Verification Artifacts`，方法地图与运行闭环是两个正交层次。
+这一区分不能被弱化：SMT 或有限计算不是一般性定理证明，模型检查不是 Lean kernel check，工具可运行或自动化成功也不是数学 Result。项目的运行闭环仍然是 `Problem → Attempt → Result → Verification Artifacts`，方法地图与运行闭环是两个正交层次；五级任务生命周期与数学结果状态也必须保持正交。
 
 ## 规范词
 

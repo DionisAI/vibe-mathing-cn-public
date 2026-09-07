@@ -21,6 +21,7 @@ The repository's original code and documentation are released under the [MIT Lic
 
 - [Quick start](#quick-start)
 - [Core contract](#core-contract)
+- [Top-level lifecycle](#top-level-lifecycle-project-workflow-task-step-job)
 - [Method-layer map](#method-layer-map)
 - [Candidate isolation](#candidate-isolation)
 - [Public problem index](#public-problem-index)
@@ -90,6 +91,20 @@ The result state is two-dimensional:
 - `evidence`: capabilities such as numeric, symbolic, human review, kernel check, counterexample check, axiom/escape audit, and statement faithfulness.
 
 A finite computation, a Lean build, or a model self-review does not by itself establish a mathematical result. A proof and a counterexample that both pass closure for the same problem are a fail-closed conflict, not a choice between answers.
+
+## Top-level lifecycle: Project → Workflow → Task → Step → Job
+
+The top-level organization has five levels: `Project` defines the complete goal, `Workflow` defines the task network, `Task` defines an input/output work unit, `Step` defines an operation and its method, and `Job` records one bounded execution. A Step may create multiple Jobs for parameter variants, bounded retries, or independent verification; recovering one Job requires a verified checkpoint, while rerunning creates a new Job.
+
+This execution structure is orthogonal to the mathematical fact chain:
+
+```text
+Project → Workflow → Task → Step → Job
+
+ProblemContract → Attempt → candidate/evidence → Result → Solution View
+```
+
+`Job succeeded` does not mean that a Step was accepted, a Task's proof obligation was closed, or the Project was solved. The public repository treats this as a top-level architecture and routing language; it does not claim to provide a general DAG scheduler, five persistent lifecycle schemas, or multi-worker production capability. See [`RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md).
 
 ## Method-layer map
 
@@ -181,6 +196,7 @@ It is a derived read-only index. Only a proof or counterexample Result that pass
 - [`governance/publication/public-claims.v1.json`](governance/publication/public-claims.v1.json): public claims and evidence references;
 - [`problem-library/VIBEMATHING_PUBLIC_INDEX.md`](problem-library/VIBEMATHING_PUBLIC_INDEX.md): external concrete-problem catalog, repositories, and Web research template entrypoint;
 - [`governance/standards/FORMAL-METHODS-MAP.md`](governance/standards/FORMAL-METHODS-MAP.md): the formal-methods taxonomy and Lean positioning;
+- [`governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md`](governance/standards/RESEARCH-LIFECYCLE-MODEL-v0.1.md): the Project → Workflow → Task → Step → Job lifecycle model;
 - [`CITATION.cff`](CITATION.cff) and [`codemeta.json`](codemeta.json): citation and software metadata;
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`SECURITY.md`](SECURITY.md): contribution and security boundaries.
 

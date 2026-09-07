@@ -1,6 +1,6 @@
 # 研究空间
 
-`research/` 保存从规范化问题出发的一次次研究尝试。它记录做过什么、使用了什么方法、产生了哪些声明和产物；不负责宣布问题已经解决。
+`research/` 保存从规范化问题出发的一次次研究尝试。它记录做过什么、使用了什么方法、产生了哪些声明和产物；不负责宣布问题已经解决。顶层编排语言是 `Project → Workflow → Task → Step → Job`，其中 `Job` 是 `Step` 的一次有界执行；它与本目录的 `Attempt` 和数学结果状态正交。
 
 ## 目录结构
 
@@ -28,7 +28,7 @@ research/
 
 - 每个 `Attempt` 必须引用 `problem-library/records/canonical-problems.jsonl` 中的一个问题，并记录候选生成者 `generator`。
 - discovery、derivation、computation、proof、formalization 是研究方法，不是完成等级。
-- `lifecycle` 只描述尝试的运行状态，不表达数学结论；失败、阻塞和未闭合证明义务可以保存。
+- `lifecycle` 只描述尝试的运行状态，不表达数学结论；失败、阻塞和未闭合证明义务可以保存。Job 成功、Attempt completed 或 Workflow 完成都不能单独关闭数学问题。
 - 研究产物要进入成果空间，必须另建 `Result` 并通过验证门。
 - Result 的证据项只是一张回执索引；真实性由 `artifacts/` 内回执、底层输出的现场 SHA-256 和 `verifiers.json` 共同派生。每张回执还必须记录正 timeout、memory/threads/output 资源预算、停止条件和 termination 状态；accept 只能来自 completed 且 exit code 为 0 的路径。
 - 运行时采用单机 `flock + WAL + fsync + os.replace` 唯一 writer；中断后重启先完成日志恢复，再接受新写入，跨表断链在锁内拒绝。

@@ -4,9 +4,10 @@
 - [ ] `README.md`, `README.en.md`, `llms.txt`, metadata, and citation assets use the same identity.
 - [ ] The empty canonical ledgers and solution index are checked against the current files.
 - [ ] Every capability claim points to a public schema, fixture, test, or fixed metadata entry.
-- [ ] Bilingual questions have direct answers and evidence references in `answer-matrix.v1.json`, including method-layer/Lean-position and citation-boundary questions.
-- [ ] `retrieval-contract.v1.json` has the same verification date, six fixed intents, nearest-source rules, and non-inference boundaries as the public GEO guide.
+- [ ] Bilingual questions have direct answers and evidence references in `answer-matrix.v1.json`, including method-layer/Lean-position, lifecycle, and citation-boundary questions.
+- [ ] `retrieval-contract.v1.json` has the same verification date, seven fixed intents, nearest-source rules, and non-inference boundaries as the public GEO guide.
 - [ ] The Formal Methods six-part map and Lean's dependent-type-theory position are stated without claiming Lean is the whole field.
+- [ ] The Project → Workflow → Task → Step → Job lifecycle model is stated as architecture language, with Job success kept separate from mathematical evidence and Result admission.
 - [ ] No private paths, credentials, endpoints, session details, unadmitted research claims, hidden text, or fake citations appear.
 - [ ] Category comparisons do not imply rankings or unsupported superiority.
 - [ ] Local links, JSON/CFF metadata, public claims, and `make check` pass.
