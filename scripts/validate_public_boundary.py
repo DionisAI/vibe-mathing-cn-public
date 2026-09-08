@@ -25,6 +25,10 @@ PUBLIC_ORIGINS = {
     "https://github.com/vibemathing/vibe-mathing-cn-public",
     "https://github.com/vibemathing/vibe-mathing-cn-public.git",
     "git@github.com:vibemathing/vibe-mathing-cn-public.git",
+    # This explicitly reviewed public fork; do not accept arbitrary forks.
+    "https://github.com/DionisAI/vibe-mathing-cn-public",
+    "https://github.com/DionisAI/vibe-mathing-cn-public.git",
+    "git@github.com:DionisAI/vibe-mathing-cn-public.git",
 }
 
 FORBIDDEN_PATH_PATTERNS = (
