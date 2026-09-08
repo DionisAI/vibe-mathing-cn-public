@@ -5,6 +5,7 @@
 
 set -euo pipefail
 
+timeout 30s python3 scripts/test_public_origin_policy.py
 python3 scripts/test_validate_public_boundary.py
 python3 scripts/validate_public_boundary.py --project-root .
 python3 scripts/check_public_readme.py --project-root .
