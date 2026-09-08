@@ -13,28 +13,28 @@
 
 对任意实数 a,b,c>0，记 D=b²+c²，并定义
 
-\[
+$$
  G(z)=(1+z/a)(1+2bz/D+z^2/D).
-\]
+$$
 
 它的零点是 -a、-b+ic、-b-ic。定义
 
-\[
+$$
  \Theta(t)=e^{-at}+2e^{-bt}\cos(ct),\qquad t>0,
-\]
+$$
 
-以及在零点附近的解析展开
+以及在原点 z=0 附近（|z|<min(a,sqrt(D))）的解析展开
 
-\[
+$$
  \frac{G'(z)}{G(z)}=\sum_{n\ge0}(-1)^n\mu_n z^n.
-\]
+$$
 
 这里 mu_n 是**对数导数**的系数，不是 G 自身的 Taylor 系数。
 具体地，令 alpha=1/a，beta=1/(b-ic)，则
 
-\[
+$$
  \mu_n=\alpha^{n+1}+\beta^{n+1}+\bar\beta^{n+1}.
-\]
+$$
 
 矩阵下标约定：H_{d,k}=(mu_{k+i+j})_{0<=i,j<d}，
 B_{d,k}=((k+i+j)! mu_{k+i+j})_{0<=i,j<d}。
@@ -44,19 +44,19 @@ B_{d,k}=((k+i+j)! mu_{k+i+j})_{0<=i,j<d}。
 
 令 r=(b-a)/c。存在唯一的 r_*>0，满足
 
-\[
+$$
  \log 2-r_*(\pi-\arctan r_*)-\tfrac12\log(1+r_*^2)=0.
-\]
+$$
 
 则
 
-\[
+$$
  \Theta(t)\ge0\ (\forall t>0)\quad\Longleftrightarrow\quad r\ge r_*,
-\]
+$$
 
-\[
+$$
  \Theta(t)>0\ (\forall t>0)\quad\Longleftrightarrow\quad r>r_*.
-\]
+$$
 
 r_* 约为 0.2289034698；这个小数仅供理解，不是认证区间，证明使用隐式精确定义。
 
@@ -70,15 +70,15 @@ r_* 约为 0.2289034698；这个小数仅供理解，不是认证区间，证明
 当 r>0 时，cos x>=0 的区间无需检查。第一段负余弦区间内，
 f(x)=-e^{-rx}cos x 在端点为零，且
 
-\[
+$$
  f'(x)=e^{-rx}(r\cos x+\sin x).
-\]
+$$
 
 唯一最大点是 x_*=pi-arctan r，最大值是
 
-\[
+$$
  M(r)=\frac{e^{-r(\pi-\arctan r)}}{\sqrt{1+r^2}}.
-\]
+$$
 
 之后第 j 段负余弦区间的最大值为 e^{-2j pi r} M(r)，严格更小。
 因此全域非负的充要条件是 2M(r)<=1；全域严格正的充要条件是 2M(r)<1。
@@ -92,11 +92,11 @@ F'(r)=-(pi-arctan r)<0，F(0)=log 2>0，且 F(r)->-infinity。
 
 对所有 a,b,c>0 和整数 k>=0，
 
-\[
+$$
  \boxed{\det H_{3,k}
  =-\frac{4c^2((a-b)^2+c^2)^2}
  {a^{k+5}(b^2+c^2)^{k+5}}<0.}
-\]
+$$
 
 这条结论不要求热迹非负；它在整个定义域成立。
 
@@ -104,27 +104,27 @@ F'(r)=-(pi-arctan r)<0，F(0)=log 2>0，且 F(r)->-infinity。
 
 令 V 的三列依次为 (1,u,u²)^T，其中 u=alpha,beta,conj(beta)。则
 
-\[
+$$
  H_{3,k}=V\,\operatorname{diag}
  (\alpha^{k+1},\beta^{k+1},\bar\beta^{k+1})\,V^T.
-\]
+$$
 
 注意这里是普通转置 V^T，不是共轭转置；误换为共轭转置会丢掉关键负号。
 
 Vandermonde 行列式公式给出
 
-\[
+$$
  \det H_{3,k}=(\alpha\beta\bar\beta)^{k+1}
  (\beta-\alpha)^2(\bar\beta-\alpha)^2(\bar\beta-\beta)^2.
-\]
+$$
 
 分别计算
 
-\[
+$$
  \alpha\beta\bar\beta=\frac1{aD},\qquad
  |\beta-\alpha|^2=\frac{(a-b)^2+c^2}{a^2D},\qquad
  (\bar\beta-\beta)^2=-\frac{4c^2}{D^2},
-\]
+$$
 
 代入即得结论。因 a,b,c>0，分子中除显式负号外的因子均严格正。证毕。
 
@@ -141,15 +141,15 @@ https://dlmf.nist.gov/1.3.E13 （核对日期：2026-09-08）。
 
 由于 a,b>0，以下积分绝对收敛，逐项积分是有限项运算：
 
-\[
+$$
  n!\mu_n=\int_0^\infty t^n\Theta(t)\,dt.
-\]
+$$
 
 任取非零实向量 v，令 p(t)=sum_{j=0}^{d-1}v_j t^j。则
 
-\[
+$$
  v^TB_{d,k}v=\int_0^\infty t^k p(t)^2\Theta(t)\,dt>0.
-\]
+$$
 
 严格正性来自：p 是非零多项式，零点有限；Theta 连续、非负，并在某个开区间严格正。
 因此即使 r=r_* 存在一个孤立零点，积分仍严格为正。
@@ -168,9 +168,9 @@ https://dlmf.nist.gov/1.3.E13 （核对日期：2026-09-08）。
 
 前五项为 (9/5,31/25,129/125,611/625,3049/3125)，并且
 
-\[
+$$
  \det H_{3,k}=-16/5^{k+5}\quad(\forall k\ge0).
-\]
+$$
 
 取 v=(2/5,-7/5,1)^T，有 v^T H_{3,0} v=-44/3125。
 此外 Theta''''(0)=-13；连续性表明它在足够小的正 t 上也为负，
