@@ -1,0 +1,65 @@
+name: Finite-jet twins exact certificates
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/HHT_FINITE_JET.md'
+      - 'fixtures/lean-proof/HHTFiniteJet.lean'
+      - 'scripts/certify_finite_jet_twins.py'
+      - 'scripts/test_finite_jet_twins.py'
+      - 'scripts/test_finite_jet_sturm.py'
+      - 'scripts/check_hht_finite_jet.py'
+      - 'scripts/check_hht_lean.py'
+      - '.github/workflows/hht-finite-jet.yml'
+  push:
+    branches: ['research/finite-jet-twins']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: finite-jet-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  exact-twins:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Recompute the exact root-disposition and finite-jet certificates
+        run: |
+          ulimit -v 524288
+          ulimit -t 60
+          ulimit -f 256
+          export PYTHONDONTWRITEBYTECODE=1
+          timeout 45s python3 scripts/test_finite_jet_twins.py
+          timeout 30s python3 scripts/test_finite_jet_sturm.py
+          timeout 30s python3 scripts/certify_finite_jet_twins.py
+  finite-jet-kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install the existing fixed Lean toolchain
+        run: |
+          timeout 300s curl --connect-timeout 15 --max-time 240 --proto '=https' --tlsv1.2 -sSf -o /tmp/elan-init.sh https://raw.githubusercontent.com/leanprover/elan/464c9d28395000a2a0128e07081e4956d50eced2/elan-init.sh
+          echo 'a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53  /tmp/elan-init.sh' | sha256sum --check --strict
+          timeout 600s sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          timeout 900s "$HOME/.elan/bin/elan" toolchain install leanprover/lean4:v4.33.0
+      - name: Restore the fixed Mathlib manifest
+        working-directory: fixtures/lean-proof
+        run: timeout 900s lake exe cache get
+      - name: Compile and audit finite-jet lemmas
+        run: timeout 300s python3 scripts/check_hht_finite_jet.py

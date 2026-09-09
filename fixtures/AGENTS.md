@@ -7,6 +7,7 @@
 ```text
 fixtures/
 ├── AGENTS.md
+├── HHT_FINITE_JET.md         # 完全相同的有限矩与不同零点性质：无限谱对照构造
 ├── HHT_LOCALIZATION.md       # 同一无限合成谱的首次失效维数16及全维惯性分类
 ├── hankel_localization.py    # 精确归一化多项式与完整尾界
 ├── HHT005.md                 # 固定 ξ 系数/根覆盖认证与完整无限和判据的验证范围
@@ -26,6 +27,6 @@ fixtures/
 ## 边界
 
 - 上游：官方 Lean、Mathlib 固定版本。
-- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py`、`scripts/test_xi_strip.py`、`scripts/check_hht_lean.py`、`scripts/certify_xi_prefix.py`、`scripts/check_hht_infinite.py`、`scripts/check_hht_localization.py`、`scripts/certify_localization_blindspot.py`、`scripts/certify_hankel_threshold.py` 及对应测试。
+- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py`、`scripts/test_xi_strip.py`、`scripts/check_hht_lean.py`、`scripts/certify_xi_prefix.py`、`scripts/check_hht_infinite.py`、`scripts/check_hht_localization.py`、`scripts/certify_localization_blindspot.py`、`scripts/certify_hankel_threshold.py`、`scripts/certify_finite_jet_twins.py`、`scripts/check_hht_finite_jet.py` 及对应测试。
 - 禁止 `sorry`、`admit`、`unsafe`；变更定理陈述时必须同步陈述忠实性契约和 axiom audit。
 - fixture 不得引用本机绝对路径、凭据、私有材料或网络动态内容；fixture PASS 不得创建 Problem、Attempt、Result 或 Solution。
