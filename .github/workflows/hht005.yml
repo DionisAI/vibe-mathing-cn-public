@@ -29,7 +29,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install pinned ball-arithmetic backend
-        run: timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
+        run: |
+          timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
       - name: Test finite certificate plumbing
         run: timeout 30s python3 scripts/test_xi_certification.py
       - name: Recompute complete roots and direct xi coefficients
