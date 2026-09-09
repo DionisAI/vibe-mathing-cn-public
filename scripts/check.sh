@@ -58,3 +58,8 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 
 # HHT-005: offline logic only; actual ball certificates and Lean have separate jobs.
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_certification.py)
+
+# HHT-006: exact synthetic witnesses/intervals; Lean has a separate fail-closed job.
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hankel_localization.py)
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_localization_intervals.py)
+(ulimit -v 524288; ulimit -t 30; ulimit -f 256; timeout 45s python3 scripts/test_hankel_threshold.py)

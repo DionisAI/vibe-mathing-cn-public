@@ -92,10 +92,7 @@ theorem headPoly_eval_zero {n : ℕ} (u : Fin n → ℝ) (i : Fin n) :
 theorem headPoly_natDegree {n : ℕ} (u : Fin n → ℝ) :
     (headPoly u).natDegree = n := by
   classical
-  simpa [headPoly] using
-    (Polynomial.natDegree_prod_of_monic Finset.univ
-      (fun j : Fin n => Polynomial.X - Polynomial.C (u j))
-      (fun j _ => Polynomial.monic_X_sub_C (u j)))
+  simp [headPoly]
 
 /-- No finite head can be strictly positive on polynomials of all degrees. -/
 theorem finite_head_rank_obstruction {n : ℕ} (u weight : Fin n → ℝ) :
