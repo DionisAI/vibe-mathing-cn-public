@@ -1,0 +1,63 @@
+name: HHT005 roots and infinite series
+
+on:
+  pull_request:
+    paths:
+      - 'fixtures/lean-proof/HHTInfinite.lean'
+      - 'fixtures/HHT005.md'
+      - 'scripts/check_hht_infinite.py'
+      - 'scripts/certify_xi_prefix.py'
+      - 'scripts/test_xi_certification.py'
+      - '.github/workflows/hht005.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hht005-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  root-and-coefficient-certificates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install pinned ball-arithmetic backend
+        run: |
+          timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
+      - name: Test finite certificate plumbing
+        run: timeout 30s python3 scripts/test_xi_certification.py
+      - name: Recompute complete roots and direct xi coefficients
+        run: |
+          ulimit -v 2097152
+          ulimit -t 120
+          ulimit -f 2048
+          timeout 180s python3 scripts/certify_xi_prefix.py
+  infinite-series-kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install locked Lean
+        run: |
+          timeout 300s curl --connect-timeout 15 --max-time 240 --proto '=https' --tlsv1.2 -sSf -o /tmp/elan-init.sh https://raw.githubusercontent.com/leanprover/elan/464c9d28395000a2a0128e07081e4956d50eced2/elan-init.sh
+          echo 'a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53  /tmp/elan-init.sh' | sha256sum --check --strict
+          timeout 600s sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          timeout 900s "$HOME/.elan/bin/elan" toolchain install leanprover/lean4:v4.33.0
+      - name: Restore locked Mathlib cache
+        working-directory: fixtures/lean-proof
+        run: timeout 900s lake exe cache get
+      - name: Compile and audit all infinite-series theorems
+        run: timeout 300s python3 scripts/check_hht_infinite.py

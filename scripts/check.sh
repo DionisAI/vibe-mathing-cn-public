@@ -55,3 +55,6 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 # HHT-004: arithmetic and log-parser tests only; Lean runs in its separate workflow.
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_strip.py)
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hht_lean_runner.py)
+
+# HHT-005: offline logic only; actual ball certificates and Lean have separate jobs.
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_certification.py)

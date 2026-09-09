@@ -16,3 +16,9 @@ lake env lean -j1 AxiomAudit.lean
 `HHTCertificates.lean` 是独立的形式化切片，范围和已核实执行记录见
 [HHT_LEAN.md](HHT_LEAN.md)。从仓库根目录运行 `python3 scripts/check_hht_lean.py`。
 这不改变上述原有 fixture 的可信声明或默认构建目标。
+
+`HHTInfinite.lean` 进一步验证真实无限求和下的二阶正性充分条件，
+8 条定理已通过固定工具链编译与依赖审计。根覆盖及直接系数认证由独立的 FLINT 计算步骤完成，
+不能把特殊函数或全域计数输入也标成 Lean 已验证。
+完整范围与可复算证据见 [HHT005.md](../HHT005.md)。
+从仓库根运行 `python3 scripts/check_hht_infinite.py`；不改旧准入验证器或默认构建目标。

@@ -7,6 +7,7 @@
 ```text
 fixtures/
 ├── AGENTS.md
+├── HHT005.md                 # 固定 ξ 系数/根覆盖认证与完整无限和判据的验证范围
 ├── XI_STRIP.md               # HHT-004：真实零点映射、零移位负尾界与未完成义务
 ├── xi_strip.py               # 精确区间和条件性高度尾界；不认证根表
 ├── HEAT_HANKEL.md             # 合成热迹/Hankel 反例族的证明草稿与边界
@@ -23,6 +24,6 @@ fixtures/
 ## 边界
 
 - 上游：官方 Lean、Mathlib 固定版本。
-- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py`、`scripts/test_xi_strip.py`、`scripts/check_hht_lean.py` 及对应测试。
+- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py`、`scripts/test_xi_strip.py`、`scripts/check_hht_lean.py`、`scripts/certify_xi_prefix.py`、`scripts/check_hht_infinite.py` 及对应测试。
 - 禁止 `sorry`、`admit`、`unsafe`；变更定理陈述时必须同步陈述忠实性契约和 axiom audit。
 - fixture 不得引用本机绝对路径、凭据、私有材料或网络动态内容；fixture PASS 不得创建 Problem、Attempt、Result 或 Solution。
