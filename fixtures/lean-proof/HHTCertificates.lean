@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Ring
 
 /-!
 HHT-004 algebraic certificate slices.
@@ -57,7 +61,7 @@ theorem unshifted_block_lower (x y P Q : ℝ) (hx : 0 < x) :
       ((x ^ 2 + y ^ 2) / x) * Q ^ 2) := by
     rw [hidentity]
     exact sq_nonneg _
-  have hrest := nonneg_of_mul_nonneg_left hnonneg hx
+  have hrest := nonneg_of_mul_nonneg_right hnonneg hx
   linarith
 
 /-- Substitute p(u)=a+b*u; no condition about zeta zeros is smuggled in. -/
