@@ -1,0 +1,28 @@
+name: Xi higher Hankel certificates
+on:
+  pull_request:
+    paths:
+      - 'scripts/certify_xi_higher.py'
+      - 'scripts/certify_xi_prefix.py'
+      - '.github/workflows/xi-higher.yml'
+permissions:
+  contents: read
+jobs:
+  direct-xi-higher:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install fixed ball backend
+        run: timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
+      - name: Recompute actual xi higher Hankel blocks
+        run: |
+          ulimit -v 3145728
+          ulimit -t 480
+          ulimit -f 2048
+          timeout 600s python3 scripts/certify_xi_higher.py

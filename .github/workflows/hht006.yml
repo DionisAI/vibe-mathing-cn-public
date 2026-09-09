@@ -21,7 +21,7 @@ concurrency:
 jobs:
   relative-numerics:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -40,6 +40,12 @@ jobs:
           ulimit -t 180
           ulimit -f 2048
           timeout 240s python3 scripts/certify_xi_relative.py
+      - name: Direct actual-xi higher-dimensional blocks
+        run: |
+          ulimit -v 3145728
+          ulimit -t 480
+          ulimit -f 2048
+          timeout 600s python3 scripts/certify_xi_higher.py
   relative-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 30
