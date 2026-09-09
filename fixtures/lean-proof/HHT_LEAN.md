@@ -1,8 +1,23 @@
 # HHT 的 Lean 验证范围
 
-**当前状态：源码已编写，未编译验证。** 本轮本地 `check_hht_lean.py` 实际返回
-`BLOCKED: lake/Lean is not installed; no kernel verification occurred.`
-不能把 Python 算术或日志解析器测试的通过写成 kernel-checked。
+**已核实状态：12 条子命题在 GitHub Actions 上实际通过 Lean 4.33.0 编译及逐条依赖审计。**
+这只覆盖下表列出的子命题，不覆盖完整解析论证、实际根数据前提或 RH。
+
+- 已检查代码提交：`30bebb87bfbbe82251d8ae7a2845eb3d28bb11e8`。
+- 实际 PR 合并测试提交：`98c2f4862f918bc22d448f22fbdc35518b7c8e42`（临时测试对象，PR 未合并）。
+- Lean 源码 blob：`540f876875398eb15eabeb7caaca7356506ece68`。
+- Lean 实际版本：4.33.0，编译器提交 `d8b18978322de05a8f3dba51ef03cf5461676c17`。
+- Mathlib 固定提交：`db584cd6d46c92f209a44c0f1c829460d327499d`。
+- [成功运行及日志](https://github.com/DionisAI/vibe-mathing-cn-public/actions/runs/34298451517/job/102300049675)。
+- 日志最终输出：`LEAN_SLICES_PASS: 12 theorem audits; not the full analytic theorem or RH.`
+- 全部 12 条依赖报告均仅为 `[propext, Classical.choice, Quot.sound]`。
+- 同一代码提交的 [完整 CI](https://github.com/DionisAI/vibe-mathing-cn-public/actions/runs/34298451545)
+  中 `validate`（含完整 `make check`）和 `production-loop` 均成功。
+
+本次文档更新不改变上述 Lean 源码或验证器。执行历史保留：本地因没有 Lean/lake 而阻断；
+远端首轮在全量 Mathlib 导入时读取失败，随后缩小依赖，并修正辅助引理方向、
+保留字 binder 和严格战术 linter 报错。没有放宽审计规则、关闭警告或削弱数学陈述。
+Python 算术与日志解析器测试不被用来替代这次实际 Lean 运行。
 
 复用此目录原有 Lean 4.33.0 与 lake-manifest.json 固定的 Mathlib。
 没有修改已有 VibeMathingFixture、statement-faithfulness 契约、可信 verifier 或数学晋升策略。
