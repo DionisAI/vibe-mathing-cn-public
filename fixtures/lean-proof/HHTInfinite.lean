@@ -1,4 +1,5 @@
 import Mathlib.Data.Real.Basic
+import Mathlib.Topology.Algebra.Ring.Real
 import Mathlib.Topology.Algebra.InfiniteSum.Order
 import Mathlib.Topology.Algebra.InfiniteSum.Ring
 import Mathlib.Tactic.FieldSimp
@@ -19,7 +20,7 @@ def term (x y a b : ℝ) : ℝ :=
     (x ^ 3 - 3 * x * y ^ 2) * b ^ 2
 
 /-- The possible negative contribution, before multiplying by slope squared. -/
-def loss (x y : ℝ) : ℝ := ((x ^ 2 + y ^ 2) / x) * y ^ 2
+noncomputable def loss (x y : ℝ) : ℝ := ((x ^ 2 + y ^ 2) / x) * y ^ 2
 
 /-- Completing the square gives a one-sided bound uniform in a and b. -/
 theorem term_lower (x y a b : ℝ) (hx : 0 < x) :
@@ -50,8 +51,8 @@ theorem term_hasSum {x y : ℕ → ℝ}
     (h1 : Summable (fun n => x n ^ 2 - y n ^ 2))
     (h2 : Summable (fun n => x n ^ 3 - 3 * x n * y n ^ 2)) (a b : ℝ) :
     HasSum (fun n => term (x n) (y n) a b)
-      ((∑' n, x n) * a ^ 2 + (∑' n, x n ^ 2 - y n ^ 2) * (2 * a * b) +
-        (∑' n, x n ^ 3 - 3 * x n * y n ^ 2) * b ^ 2) := by
+      ((∑' n, x n) * a ^ 2 + (∑' n, (x n ^ 2 - y n ^ 2)) * (2 * a * b) +
+        (∑' n, (x n ^ 3 - 3 * x n * y n ^ 2)) * b ^ 2) := by
   exact ((h0.hasSum.mul_right (a ^ 2)).add (h1.hasSum.mul_right (2 * a * b))).add
     (h2.hasSum.mul_right (b ^ 2))
 
@@ -63,8 +64,8 @@ theorem infinite_tail_lower {x y : ℕ → ℝ}
     (h2 : Summable (fun n => x n ^ 3 - 3 * x n * y n ^ 2))
     (hloss : Summable (fun n => loss (x n) (y n))) (a b : ℝ) :
     -(b ^ 2) * (∑' n, loss (x n) (y n)) ≤
-      (∑' n, x n) * a ^ 2 + (∑' n, x n ^ 2 - y n ^ 2) * (2 * a * b) +
-        (∑' n, x n ^ 3 - 3 * x n * y n ^ 2) * b ^ 2 := by
+      (∑' n, x n) * a ^ 2 + (∑' n, (x n ^ 2 - y n ^ 2)) * (2 * a * b) +
+        (∑' n, (x n ^ 3 - 3 * x n * y n ^ 2)) * b ^ 2 := by
   exact hasSum_le (fun n => term_lower (x n) (y n) a b (hx n))
     (hloss.hasSum.mul_left (-(b ^ 2))) (term_hasSum h0 h1 h2 a b)
 
@@ -85,13 +86,13 @@ theorem damped_two_node_positive (u v L a b : ℝ)
   by_cases hb : b = 0
   · have ha : a ≠ 0 := hab.resolve_right (not_not.mpr hb)
     subst b
-    simpa using mul_pos huv (sq_pos_of_ne_zero ha)
+    simpa [add_mul] using mul_pos huv (sq_pos_of_ne_zero ha)
   · have hp := mul_pos hc (sq_pos_of_ne_zero hb)
     have hright : 0 < ((u + v) * a + (u ^ 2 + v ^ 2) * b) ^ 2 +
         (u * v * (u - v) ^ 2 - (u + v) * L) * b ^ 2 :=
       add_pos_of_nonneg_of_pos (sq_nonneg _) hp
     rw [← hid] at hright
-    exact pos_of_mul_pos_left hright (le_of_lt huv)
+    exact pos_of_mul_pos_right hright (le_of_lt huv)
 
 /-- Interval bounds for the first two ordinates give a certified Schur lower bound. -/
 theorem two_node_interval_schur (u v : ℝ)
@@ -126,8 +127,8 @@ theorem full_hankel_two_positive {m : ℕ} (other : Fin m → ℝ)
     ∀ a b : ℝ, (a ≠ 0 ∨ b ≠ 0) →
       0 < u * (a + b * u) ^ 2 + v * (a + b * v) ^ 2 +
         (∑ i : Fin m, other i * (a + b * other i) ^ 2) +
-        (∑' n, x n) * a ^ 2 + (∑' n, x n ^ 2 - y n ^ 2) * (2 * a * b) +
-        (∑' n, x n ^ 3 - 3 * x n * y n ^ 2) * b ^ 2 := by
+        (∑' n, x n) * a ^ 2 + (∑' n, (x n ^ 2 - y n ^ 2)) * (2 * a * b) +
+        (∑' n, (x n ^ 3 - 3 * x n * y n ^ 2)) * b ^ 2 := by
   intro a b hab
   have htail := infinite_tail_lower hx h0 h1 h2 hloss a b
   have hscaled := mul_le_mul_of_nonneg_left hbudget (sq_nonneg b)
