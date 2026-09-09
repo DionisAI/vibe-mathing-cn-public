@@ -14,7 +14,8 @@ import json
 from pathlib import Path
 import sys
 from certify_xi_prefix import zero_cover, xi_value, BRACKETS, PIN
-from hht_relative_math import ldl_polynomials, imag_divided, decision
+from hht_relative_math import (ldl_polynomials, imag_divided, decision,
+                               cell_may_have_negative_loss)
 
 SCALE=200
 HEIGHT=50
@@ -125,6 +126,7 @@ def run_at_precision(bits: int) -> dict:
         polys=[row[:i+1] for i,row in enumerate(B)]
         cells,queries,total=counted_cells(arb,fmpq)
         finite=[F(0)]*10
+        symmetry_finite=[F(0)]*10
         for a,b,count in cells:
             # Re(SCALE/lambda) is monotone in g^2 and delta^2 on this strip.
             xlo=SCALE*(b*b-F(1,4))/(b*b+F(1,4))**2
@@ -135,23 +137,31 @@ def run_at_precision(bits: int) -> dict:
             multiplier=F(count*SCALE*SCALE)/(a**8*(1-F(1,4)/(a*a)))
             for i in range(1,10):
                 v=magnitude(imag_divided(polys[i],X,Y2))
-                finite[i]+=upper(exact_ball(arb,fmpq,multiplier*v*v)/D[i])
+                row_bound=upper(exact_ball(arb,fmpq,multiplier*v*v)/D[i])
+                finite[i]+=row_bound
+                if cell_may_have_negative_loss(count):
+                    symmetry_finite[i]+=row_bound
         coarse=[coarse_row(p,norm,HEIGHT,arb,fmpq) for p,norm in zip(polys,D)]
         remainder=[coarse_row(p,norm,END,arb,fmpq) for p,norm in zip(polys,D)]
         records=[]
         for d in range(1,11):
             old=sum(coarse[:d],F(0)); part=sum(finite[:d],F(0)); rest=sum(remainder[:d],F(0))
             bound=part+rest
+            sym_bound=sum(symmetry_finite[:d],F(0))+rest
             records.append({'d':d,'coarse_kappa_upper':str(old),
                 'coarse_display':format(float(old),'.10g'),
                 'cell_part_upper':str(part),'infinite_remainder_upper':str(rest),
                 'structured_kappa_upper':str(bound),'structured_display':format(float(bound),'.10g'),
-                'decision':decision(bound)})
+                'decision':decision(bound),
+                'symmetry_kappa_upper':str(sym_bound),
+                'symmetry_display':format(float(sym_bound),'.10g'),
+                'symmetry_decision':decision(sym_bound)})
         return {'precision_bits':bits,'prefix_total':cover['total_count'],
             'refined_height_brackets':[[str(a),str(b)] for a,b in roots],
             'tail_count_at_end':total,'count_queries':queries,
             'counted_cells':[[str(a),str(b),n] for a,b,n in cells],
             'results':records,'off_line_positions_above_50_not_assumed_absent':True,
+            'singleton_cells_proved_on_line_from_count':sum(n==1 for a,b,n in cells),
             'special_functions_lean_certified':False}
 
 
@@ -160,7 +170,8 @@ def run() -> dict:
     if importlib.metadata.version('python-flint')!=PIN: raise RuntimeError('backend version drift')
     reports=[run_at_precision(bits) for bits in (384,512)]
     for a,b in zip(reports[0]['results'],reports[1]['results']):
-        if a['decision']!=b['decision']: raise ArithmeticError('precision decisions differ')
+        if (a['decision'],a['symmetry_decision'])!=(b['decision'],b['symmetry_decision']):
+            raise ArithmeticError('precision decisions differ')
     return {'schema':'hht006-relative-tail-v1','runs':reports,
         'python_flint':PIN,'height_prefix':HEIGHT,'height_remainder':END,
         'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),

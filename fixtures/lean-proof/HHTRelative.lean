@@ -1,5 +1,6 @@
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Topology.Algebra.InfiniteSum.Order
+import Mathlib.Topology.Algebra.InfiniteSum.Ring
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
@@ -133,6 +134,25 @@ theorem fixed_prefix_obstruction {n : ℕ} (nodes weights : Fin n → ℝ) (eps 
   rw [prefix_annihilator_zero]
   exact mul_pos heps (sq_pos_of_ne_zero (annihilator_at_zero_ne nodes hn))
 
+/-- A reflection-closed cell containing only one point must fix that point. -/
+theorem unique_reflection_on_line (P : ℝ → ℝ → Prop) (b g : ℝ)
+    (hb : P b g) (href : ∀ r t, P r t → P (1 - r) t)
+    (hunique : ∀ r t, P r t → r = b ∧ t = g) : b = 1 / 2 := by
+  have h := (hunique (1 - b) g (href b g hb)).1
+  linarith
+
+/-- Unbounded complete-prefix assumptions already contain the global assertion. -/
+theorem cofinal_coverage_iff_global {ι : Type*} (height : ι → ℝ) (Good : ι → Prop)
+    (T : ℕ → ℝ) (hcofinal : ∀ h : ℝ, ∃ n, h ≤ T n) :
+    (∀ n z, height z ≤ T n → Good z) ↔ ∀ z, Good z := by
+  constructor
+  · intro hlocal z
+    obtain ⟨n, hn⟩ := hcofinal (height z)
+    exact hlocal n z hn
+  · intro hglobal _ z _
+    exact hglobal z
+
+end
 end HHT006
 
 #print axioms HHT006.energy_nonneg
@@ -147,3 +167,6 @@ end HHT006
 #print axioms HHT006.annihilator_at_zero_ne
 #print axioms HHT006.prefix_annihilator_zero
 #print axioms HHT006.fixed_prefix_obstruction
+
+#print axioms HHT006.unique_reflection_on_line
+#print axioms HHT006.cofinal_coverage_iff_global

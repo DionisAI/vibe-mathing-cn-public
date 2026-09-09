@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 import unittest
 from hht_relative_math import (ldl_polynomials, imag_divided, annihilator,
-                               evaluate, decision, dimension)
+                               evaluate, decision, dimension, cell_may_have_negative_loss)
 
 
 def cmul(a, b):
@@ -102,6 +102,33 @@ class RelativeTests(unittest.TestCase):
         self.assertEqual(decision(F(999,1000)), 'positive_under_documented_analytic_inputs')
         for bad in (F(-1),True,0.5):
             with self.assertRaises(ValueError): decision(bad)
+
+    def test_singleton_reflection_logic(self):
+        """A complete singleton cell cannot contain a non-fixed reflection pair."""
+        for count,possible in ((0,False),(1,False),(2,True),(3,True)):
+            self.assertEqual(cell_may_have_negative_loss(count),possible)
+        for bad in (-1,True,F(1),1.0,1000001):
+            with self.assertRaises(ValueError): cell_may_have_negative_loss(bad)
+        for b in (F(0),F(1,4),F(1,2),F(3,4),F(1)):
+            self.assertEqual(len({b,1-b})==1,b==F(1,2))
+
+    def test_cell_geometry_majorants(self):
+        """Exact rational samples test strip enclosures and the scaled loss factor."""
+        S=F(200)
+        for lo in (F(50),F(53),F(100),F(255)):
+            hi=lo+F(1,64)
+            Xlo=S*(hi*hi-F(1,4))/(hi*hi+F(1,4))**2
+            Xhi=S/(lo*lo)
+            Y2hi=S*S/lo**6
+            factor=S*S/(lo**8*(1-F(1,4)/(lo*lo)))
+            for g in (lo,(lo+hi)/2,hi):
+                for delta in (F(-1,2),F(-1,4),F(0),F(1,4),F(1,2)):
+                    x=(g*g-delta*delta)/(g*g+delta*delta)**2
+                    y=2*g*delta/(g*g+delta*delta)**2
+                    self.assertLessEqual(Xlo,S*x)
+                    self.assertLessEqual(S*x,Xhi)
+                    self.assertLessEqual((S*y)**2,Y2hi)
+                    self.assertLessEqual((x*x+y*y)/x*(S*y)**2,factor)
 
     def test_source_audits_cover_all_theorems(self):
         """Source bookkeeping only, never a substitute for actual kernel execution."""

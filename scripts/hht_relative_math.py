@@ -104,3 +104,14 @@ def decision(upper: F) -> str:
     if type(upper) not in (int, F) or upper < 0:
         raise ValueError('nonnegative exact upper bound required')
     return 'positive_under_documented_analytic_inputs' if upper < 1 else 'inconclusive'
+
+
+def cell_may_have_negative_loss(count: int) -> bool:
+    """For a reflection-closed height cell, counts zero/one have no off-line pair.
+
+Count >=2 is only a possibility, not a claim that an off-line root exists.
+The caller must obtain a complete count including multiplicities.
+"""
+    if type(count) is not int or not 0 <= count <= 1000000:
+        raise ValueError('bounded exact nonnegative full-cell count required')
+    return count >= 2
