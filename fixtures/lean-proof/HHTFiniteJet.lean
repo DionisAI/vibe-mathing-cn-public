@@ -18,7 +18,7 @@ theorem high_perturbation_coeff (p : Polynomial ℝ) (e : ℝ) (N k : ℕ)
     (hk : k < N) :
     (p + Polynomial.C e * Polynomial.X ^ N).coeff k = p.coeff k := by
   simp [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow,
-    ne_of_lt hk, ne_of_gt hk]
+    ne_of_lt hk]
 
 /-- Moving only the constant term preserves all positive-degree coefficients. -/
 theorem constant_perturbation_coeff (p : Polynomial ℝ) (e : ℝ) (k : ℕ)

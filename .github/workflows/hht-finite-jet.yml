@@ -7,6 +7,7 @@ on:
       - 'fixtures/lean-proof/HHTFiniteJet.lean'
       - 'scripts/certify_finite_jet_twins.py'
       - 'scripts/test_finite_jet_twins.py'
+      - 'scripts/test_finite_jet_sturm.py'
       - 'scripts/check_hht_finite_jet.py'
       - 'scripts/check_hht_lean.py'
       - '.github/workflows/hht-finite-jet.yml'
@@ -38,6 +39,7 @@ jobs:
           ulimit -f 256
           export PYTHONDONTWRITEBYTECODE=1
           timeout 45s python3 scripts/test_finite_jet_twins.py
+          timeout 30s python3 scripts/test_finite_jet_sturm.py
           timeout 30s python3 scripts/certify_finite_jet_twins.py
   finite-jet-kernel:
     runs-on: ubuntu-latest

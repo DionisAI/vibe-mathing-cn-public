@@ -66,3 +66,4 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 
 # Exact finite-jet twins; analytic root-count premises and Lean are separately scoped.
 (ulimit -v 524288; ulimit -t 40; ulimit -f 256; timeout 45s python3 scripts/test_finite_jet_twins.py)
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_finite_jet_sturm.py)
