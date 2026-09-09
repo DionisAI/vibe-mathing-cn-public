@@ -30,7 +30,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install fixed numerical backend
-        run: timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
+        run: |
+          timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
       - name: Exact algebra and rejection regressions
         run: timeout 30s python3 scripts/test_xi_relative.py
       - name: Recompute relative loss budgets
