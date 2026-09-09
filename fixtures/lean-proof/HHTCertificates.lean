@@ -56,7 +56,8 @@ theorem unshifted_block_lower (x y P Q : ℝ) (hx : 0 < x) :
   have hidentity :
       x * (x * (P ^ 2 - Q ^ 2) - 2 * y * P * Q +
           ((x ^ 2 + y ^ 2) / x) * Q ^ 2) = (x * P - y * Q) ^ 2 := by
-    field_simp [ne_of_gt hx] <;> ring
+    field_simp [ne_of_gt hx]
+    ring
   have hnonneg : 0 ≤ x * (x * (P ^ 2 - Q ^ 2) - 2 * y * P * Q +
       ((x ^ 2 + y ^ 2) / x) * Q ^ 2) := by
     rw [hidentity]
@@ -72,9 +73,9 @@ theorem linear_polynomial_block_lower (x y a b : ℝ) (hx : 0 < x) :
   exact unshifted_block_lower x y (a + b * x) (b * y) hx
 
 /-- Finite/total decomposition and both error bounds remain explicit hypotheses. -/
-theorem prefix_tail_negative_transfer (total prefix tail estimate err bound : ℝ)
-    (hdecomp : total = prefix + tail)
-    (hprefix : |prefix - estimate| ≤ err)
+theorem prefix_tail_negative_transfer (total partialValue tail estimate err bound : ℝ)
+    (hdecomp : total = partialValue + tail)
+    (hprefix : |partialValue - estimate| ≤ err)
     (htail : tail ≤ bound)
     (hmargin : estimate + err + bound < 0) : total < 0 := by
   have hupper := (abs_le.mp hprefix).2
