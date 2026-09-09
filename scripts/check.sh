@@ -58,3 +58,6 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 
 # HHT-005: offline logic only; actual ball certificates and Lean have separate jobs.
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_certification.py)
+
+# All-shift arithmetic only; actual xi numerics and Lean remain separate jobs.
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_shifts.py)
