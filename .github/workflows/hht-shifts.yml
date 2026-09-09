@@ -32,7 +32,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install fixed ball arithmetic
-        run: timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
+        run: |
+          timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
       - name: Exact finite tests
         run: timeout 30s python3 scripts/test_xi_shifts.py
       - name: Recompute all finite exceptions and infinite-shift budget
