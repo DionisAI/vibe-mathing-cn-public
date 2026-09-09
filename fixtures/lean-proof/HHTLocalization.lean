@@ -14,6 +14,7 @@ HHT-006 formalization core. The infinite-series comparison takes summability
 and pointwise envelopes as explicit inputs. It does not assert anything
 about zeta zeros or formalize the full spectral construction.
 -/
+set_option autoImplicit false
 namespace HHT006
 
 /-- Real linear coefficients can prescribe an arbitrary value at a nonreal point. -/
@@ -65,7 +66,7 @@ theorem localized_infinite_negative {f : ℕ → ℕ → ℝ} {mass : ℕ → �
   exact ⟨M, by linarith⟩
 
 /-- The polynomial which vanishes on every finite head node. -/
-noncomputable def headPoly {n : ℕ} (u : Fin n → ℝ) : ℝ[X] :=
+noncomputable def headPoly {n : ℕ} (u : Fin n → ℝ) : Polynomial ℝ :=
   ∏ j : Fin n, (Polynomial.X - Polynomial.C (u j))
 
 /-- Repeated nodes do not make the product polynomial identically zero. -/
@@ -74,7 +75,7 @@ theorem headPoly_ne_zero {n : ℕ} (u : Fin n → ℝ) : headPoly u ≠ 0 := by
   unfold headPoly
   apply Finset.prod_ne_zero_iff.mpr
   intro j _ hj
-  have h := congrArg (fun p : ℝ[X] => p.coeff 1) hj
+  have h := congrArg (fun p : Polynomial ℝ => p.coeff 1) hj
   simp at h
 
 /-- Every designated head evaluation is zero, including arbitrary real locations. -/
@@ -98,7 +99,7 @@ theorem headPoly_natDegree {n : ℕ} (u : Fin n → ℝ) :
 
 /-- No finite head can be strictly positive on polynomials of all degrees. -/
 theorem finite_head_rank_obstruction {n : ℕ} (u weight : Fin n → ℝ) :
-    ∃ p : ℝ[X], p ≠ 0 ∧ p.natDegree ≤ n ∧
+    ∃ p : Polynomial ℝ, p ≠ 0 ∧ p.natDegree ≤ n ∧
       (∑ j : Fin n, weight j * (p.eval (u j)) ^ 2) = 0 := by
   refine ⟨headPoly u, headPoly_ne_zero u, ?_, ?_⟩
   · exact (headPoly_natDegree u).le
