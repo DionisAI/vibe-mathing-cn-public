@@ -51,3 +51,7 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 (ulimit -v 524288; ulimit -t 20; ulimit -f 128; timeout 30s python3 scripts/test_heat_hankel.py)
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hankel_inertia.py)
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hankel_tail.py)
+
+# HHT-004: arithmetic and log-parser tests only; Lean runs in its separate workflow.
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_strip.py)
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hht_lean_runner.py)
