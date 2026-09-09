@@ -10,3 +10,9 @@ lake --quiet build
 lake env lean -j1 VibeMathingFixture.lean
 lake env lean -j1 AxiomAudit.lean
 ```
+
+## HHT 研究子命题
+
+`HHTCertificates.lean` 是独立的形式化切片，范围和已核实执行记录见
+[HHT_LEAN.md](HHT_LEAN.md)。从仓库根目录运行 `python3 scripts/check_hht_lean.py`。
+这不改变上述原有 fixture 的可信声明或默认构建目标。
