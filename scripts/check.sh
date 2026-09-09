@@ -50,3 +50,4 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 # Synthetic exact checks; never promote a mathematical Result from fixture PASS.
 (ulimit -v 524288; ulimit -t 20; ulimit -f 128; timeout 30s python3 scripts/test_heat_hankel.py)
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hankel_inertia.py)
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hankel_tail.py)

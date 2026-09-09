@@ -8,6 +8,8 @@
 fixtures/
 ├── AGENTS.md
 ├── HEAT_HANKEL.md             # 合成热迹/Hankel 反例族的证明草稿与边界
+├── HANKEL_TAIL.md             # HHT-003：无限谱计数尾界与完整负证书
+├── hankel_tail.py             # 有理方向/算子尾界与条件性区间判断
 ├── HANKEL_INERTIA.md          # HHT-002：惯性计数与任意移位的低阶盲区
 ├── hankel_inertia.py          # 精确 1x1/2x2 惯性消元及有理充分条件
 ├── heat_hankel.py             # 标准库精确算术，无 canonical ledger 写入
@@ -19,6 +21,6 @@ fixtures/
 ## 边界
 
 - 上游：官方 Lean、Mathlib 固定版本。
-- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py` 及对应测试。
+- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py` 及对应测试。
 - 禁止 `sorry`、`admit`、`unsafe`；变更定理陈述时必须同步陈述忠实性契约和 axiom audit。
 - fixture 不得引用本机绝对路径、凭据、私有材料或网络动态内容；fixture PASS 不得创建 Problem、Attempt、Result 或 Solution。
