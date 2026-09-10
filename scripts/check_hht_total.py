@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compile the locked shift-lifting statements and audit every dependency."""
+"""Compile the locked sparse-order and dimension statements and audit every dependency."""
 from __future__ import annotations
 import os
 from pathlib import Path

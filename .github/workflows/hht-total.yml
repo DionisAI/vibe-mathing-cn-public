@@ -39,8 +39,9 @@ jobs:
           ulimit -v 2097152
           ulimit -t 300
           ulimit -f 8192
-          timeout 240s python3 scripts/certify_xi_shifts.py
-          timeout 300s python3 scripts/certify_xi_sparse.py
+          timeout 240s python3 scripts/certify_xi_shifts.py > /tmp/hht-shift-prerequisite.txt
+          tail -n 1 /tmp/hht-shift-prerequisite.txt
+          timeout 300s python3 scripts/certify_xi_sparse.py --summary
   total-kernel:
     runs-on: ubuntu-latest
     timeout-minutes: 30

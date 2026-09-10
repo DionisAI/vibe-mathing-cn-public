@@ -45,6 +45,12 @@ class TotalTests(unittest.TestCase):
             M.selected(list(range(10)), (0,), (0, 1))
 
     def test_lu_products_agree(self):
+        ps = M.leading_positive_pivots([[2, 1], [1, 3]])
+        self.assertEqual(ps, [F(2), F(5, 2)])
+        self.assertTrue(all(type(x) is F for x in ps))
+        for bad in ([[True]], [[0.5]], [[1+0j]]):
+            with self.assertRaises(ValueError):
+                M.leading_positive_pivots(bad)
         mu = moments()
         for d in range(1, 6):
             a = M.selected(mu, tuple(range(d)), tuple(2*j for j in range(d)))

@@ -8,10 +8,10 @@ in PR #11, commit `0d348524e4ea126e37105a51a7adf2fcd2ea17cc`, and a classical
 strict total-positivity theorem. Neither Fekete's theorem nor its use here is
 claimed as a new general theorem. Source novelty has not been established.
 
-Initial execution status: 20 exact standard-library regressions passed locally.
-Actual sparse FLINT checks and the eleven new Lean statements have not yet been
-observed at the time of this initial commit. The associated PR records actual
-execution outcomes; no source-only check is called kernel verification.
+The associated PR #12 records execution outcomes and immutable code revisions.
+Verification is split between exact arithmetic, strict ball computation and
+kernel-checked statements. Neither finite experiments nor source inspection
+are treated as verification of unbounded mathematical quantifiers.
 
 ## 1. Definitions and hypotheses
 
@@ -159,7 +159,9 @@ $1\cdot4-3^2=-5=(-1)\cdot5$.
 sparse quadratic forms and direct checks of the five-determinant condensation
 identity. An LU certificate of positive leading minors of a nonsymmetric matrix
 is **not** labelled a positive-definite quadratic form. The routine checks that
-index order, shift, matrix sizes and exact rational inputs are valid. Unknown
+index order, shift, matrix sizes and exact rational inputs are valid. Integer
+LU inputs are converted to Fraction before division; approximate or mixed
+arithmetic is rejected, and the numerical path accepts finite FLINT arb only. Unknown
 ball pivots fail closed. Enumeration routines are finite regression oracles,
 not a checker of an infinite total-positivity claim.
 
@@ -207,7 +209,10 @@ Run at the repository root, with pinned python-flint 0.8.0 where required:
 timeout 300s python3 scripts/check_hht_total.py
 ```
 
-The dedicated workflow also recomputes the PR11 all-shift numerical prerequisite.
+The numerical executable defaults to full interval evidence; `--summary`
+prints a compact execution record and the full-report digest. The compact
+record is not a replacement for the interval evidence when independently
+rechecking the numbers. The dedicated workflow also recomputes the PR11 all-shift numerical prerequisite.
 No scheduled agents, paid model calls, new secrets or canonical ledger writes
 are introduced. Existing checks are not weakened. Main and other research
 branches are unchanged.

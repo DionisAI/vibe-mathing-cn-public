@@ -6,6 +6,7 @@ here only cross-check that theorem. They do not prove its infinite quantifiers.
 No zero locations or truncated zero products are used in this calculation.
 """
 from __future__ import annotations
+import argparse
 from fractions import Fraction as F
 import hashlib
 import importlib.metadata
@@ -17,7 +18,7 @@ from hht_total_math import selected, leading_positive_pivots
 
 SUPPORT = (0, 1, 3, 6, 10, 15, 21, 28, 36, 45)
 CASES = ((SUPPORT, SUPPORT, 0), (SUPPORT, SUPPORT, 7),
-         (SUPPORT, tuple(j+1 for j in SUPPORT), 3),
+         (SUPPORT, (0, 2, 4, 7, 11, 16, 22, 29, 37, 46), 3),
          ((0, 5, 20, 40), (0, 5, 20, 40), 11))
 MAX_OUTPUT = 2_000_000
 
@@ -27,6 +28,8 @@ def actual_moments(n: int, bits: int):
     from flint import arb, acb, acb_series, ctx
     if type(n) is not int or not 2 <= n <= 128 or bits not in (2048, 3072):
         raise ValueError('unexpected arithmetic budget')
+    if ctx.prec != bits:
+        raise ValueError('precision label does not match active ball context')
     cap = 2*(n+2)
     oldcap = ctx.cap
     try:
@@ -111,7 +114,28 @@ def run() -> dict:
 
 if __name__ == '__main__':
     try:
-        text = json.dumps(run(), sort_keys=True, indent=2)+'\n'
+        parser = argparse.ArgumentParser(description=__doc__)
+        parser.add_argument('--summary', action='store_true', help='Print compact execution summary; omit for full interval evidence')
+        args = parser.parse_args()
+        report = run()
+        if args.summary:
+            digest = hashlib.sha256(json.dumps(report, sort_keys=True).encode()).hexdigest()
+            report['runs'] = [{
+                'precision_bits': r['precision_bits'], 'moment_count': r['moment_count'],
+                'no_zero_locations_used': r['no_zero_locations_used'],
+                'sparse_examples': [{
+                    'rows': c['rows'], 'columns': c['columns'], 'shift': c['shift'],
+                    'claim': c['claim'], 'certified_positive_pivots': len(c['pivot_enclosures']),
+                    'last_pivot_display': c['pivot_enclosures'][-1]['display']}
+                    for c in r['sparse_examples']],
+                'frontier': [{'shift': f['shift'], 'normalized_defect_display':
+                    f['normalized_logconvexity_defect']['display']}
+                    for f in r['order_10_frontier_finite_checks']],
+                'finite_extra_conclusion': r['finite_extra_conclusion'],
+                'all_order_11_shifts_proved': False, 'all_dimensions_proved': False}
+                for r in report['runs']]
+            report['full_report_sha256'] = digest
+        text = json.dumps(report, sort_keys=True, indent=2)+'\n' 
         if len(text.encode()) > MAX_OUTPUT:
             raise RuntimeError('report exceeds output limit')
         print(text, end='')

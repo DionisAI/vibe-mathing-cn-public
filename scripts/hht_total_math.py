@@ -78,7 +78,18 @@ positive definiteness only when the underlying matrix is real symmetric.
     n = len(matrix)
     if not 1 <= n <= MAX_SIZE or any(len(row) != n for row in matrix):
         raise ValueError('nonempty bounded square matrix required')
-    a = [list(row) for row in matrix]
+    if all(type(x) in (int, F) for row in matrix for x in row):
+        a = [[rational(x) for x in row] for row in matrix]
+    else:
+        try:
+            from flint import arb
+        except ImportError as exc:
+            raise ValueError('only exact rationals or FLINT arb entries accepted') from exc
+        if any(not isinstance(x, arb) for row in matrix for x in row):
+            raise ValueError('mixed or approximate arithmetic is not a certificate')
+        if any(not x.is_finite() for row in matrix for x in row):
+            raise ArithmeticError('non-finite ball input')
+        a = [list(row) for row in matrix]
     pivots = []
     for j in range(n):
         p = a[j][j]
