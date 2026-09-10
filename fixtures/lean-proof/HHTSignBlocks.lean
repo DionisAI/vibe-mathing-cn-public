@@ -21,8 +21,15 @@ theorem det_rows_sum {d : ℕ} (α : Fin d → Type)
     Matrix.det (fun i j => ∑ a : α i, A i a j) =
       ∑ f : ((i : Fin d) → α i), Matrix.det (fun i j => A i (f i) j) := by
   classical
-  simpa only [Matrix.det, Finset.sum_apply] using
+  have h : Matrix.det (fun i => ∑ a : α i, A i a) =
+      ∑ f : ((i : Fin d) → α i), Matrix.det (fun i => A i (f i)) :=
     (Matrix.detRowAlternating (n := Fin d) (R := ℝ)).toMultilinearMap.map_sum A
+  have he : (fun i => ∑ a : α i, A i a) =
+      (fun i j => ∑ a : α i, A i a j) := by
+    funext i j
+    simp only [Finset.sum_apply]
+  rw [he] at h
+  exact h
 
 /-- Column multilinearity is obtained by transposing the row expansion. -/
 theorem det_columns_sum {d : ℕ} (β : Fin d → Type)
@@ -48,7 +55,11 @@ theorem det_weighted {d : ℕ} (A : Matrix (Fin d) (Fin d) ℝ)
   classical
   have h := Matrix.det_mul_column w (fun i j => v j * A i j)
   have hv := Matrix.det_mul_row v A
-  simpa only [Matrix.of_apply, ← mul_assoc, hv] using h
+  change Matrix.det (fun i j => w i * (v j * A i j)) =
+    (∏ i, w i) * Matrix.det (fun i j => v j * A i j) at h
+  change Matrix.det (fun i j => v j * A i j) = (∏ j, v j) * Matrix.det A at hv
+  rw [hv] at h
+  simpa only [mul_assoc] using h
 
 /-- Full double mixing identity; the choices may have different finite types per block. -/
 theorem det_double_mix {d : ℕ} (α β : Fin d → Type)
@@ -75,7 +86,8 @@ theorem double_mix_positive {d : ℕ} (α β : Fin d → Type)
     (w : (i : Fin d) → α i → ℝ) (v : (j : Fin d) → β j → ℝ)
     (A : (i : Fin d) → α i → (j : Fin d) → β j → ℝ)
     (hw : ∀ i a, 0 < w i a) (hv : ∀ j b, 0 < v j b)
-    (hA : ∀ f g, 0 < Matrix.det (fun i j => A i (f i) j (g j))) :
+    (hA : ∀ (f : (i : Fin d) → α i) (g : (j : Fin d) → β j),
+      0 < Matrix.det (fun i j => A i (f i) j (g j))) :
     0 < Matrix.det (fun i j => ∑ a : α i, ∑ b : β j, w i a * v j b * A i a j b) := by
   classical
   rw [det_double_mix α β w v A]
