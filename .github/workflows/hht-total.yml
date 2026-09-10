@@ -1,0 +1,66 @@
+name: Xi sparse-minor and dimension-frontier certificates
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/hht_total_math.py'
+      - 'scripts/test_hht_total.py'
+      - 'scripts/certify_xi_sparse.py'
+      - 'scripts/check_hht_total.py'
+      - 'fixtures/lean-proof/HHTTotal.lean'
+      - 'fixtures/HHT_TOTAL.md'
+      - '.github/workflows/hht-total.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hht-total-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sparse-numerics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install locked ball arithmetic
+        run: |
+          timeout 180s python3 -m pip install --only-binary=:all: 'python-flint==0.8.0'
+      - name: Exact finite regressions
+        run: timeout 30s python3 scripts/test_hht_total.py
+      - name: Recheck all-shift prerequisite and sparse actual-xi examples
+        run: |
+          ulimit -v 2097152
+          ulimit -t 300
+          ulimit -f 8192
+          timeout 240s python3 scripts/certify_xi_shifts.py > /tmp/hht-shift-prerequisite.txt
+          tail -n 1 /tmp/hht-shift-prerequisite.txt
+          timeout 300s python3 scripts/certify_xi_sparse.py --summary
+  total-kernel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install locked Lean
+        run: |
+          timeout 300s curl --connect-timeout 15 --max-time 240 --proto '=https' --tlsv1.2 -sSf -o /tmp/elan-init.sh https://raw.githubusercontent.com/leanprover/elan/464c9d28395000a2a0128e07081e4956d50eced2/elan-init.sh
+          echo 'a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53  /tmp/elan-init.sh' | sha256sum --check --strict
+          timeout 600s sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          timeout 900s "$HOME/.elan/bin/elan" toolchain install leanprover/lean4:v4.33.0
+      - name: Restore fixed Mathlib
+        working-directory: fixtures/lean-proof
+        run: timeout 900s lake exe cache get
+      - name: Compile and audit all-gap and dimension propagation
+        run: timeout 300s python3 scripts/check_hht_total.py

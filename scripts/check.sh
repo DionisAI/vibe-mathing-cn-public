@@ -61,3 +61,6 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 
 # All-shift arithmetic only; actual xi numerics and Lean remain separate jobs.
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_xi_shifts.py)
+
+# Sparse-minor/condensation regressions; not an infinite total-positivity proof.
+(ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hht_total.py)
