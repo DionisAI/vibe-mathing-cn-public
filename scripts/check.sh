@@ -74,3 +74,6 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 # Coefficient balance: exact tests only; actual xi and Lean remain separate.
 (ulimit -v 524288; ulimit -t 30; timeout 40s python3 scripts/test_hht_coefficient_cone.py)
 (ulimit -v 524288; ulimit -t 30; timeout 40s python3 scripts/test_hht_balance.py)
+
+# Deflation: exact algebra and countermodels; kernel execution is separate.
+(ulimit -v 524288; ulimit -t 35; timeout 40s python3 scripts/test_hht_deflation.py)

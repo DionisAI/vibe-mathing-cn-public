@@ -7,6 +7,7 @@
 ```text
 fixtures/
 ├── AGENTS.md
+├── HHT_DEFLATION.md         # Exact nullspace obstruction and full Schur-complement target
 ├── HHT_COEFFICIENT_CONE.md   # Two-sided coefficient bounds, exact rectangle minimization
 ├── HHT_COFINAL.md            # Four fixed witnesses, dimension-cofinal criterion and eventual111 budget
 ├── HHT_SIGN_BLOCKS.md         # Ordered positive compression: unbounded terms, bounded sign changes
@@ -29,6 +30,6 @@ fixtures/
 ## 边界
 
 - 上游：官方 Lean、Mathlib 固定版本。
-- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py`、`scripts/test_xi_strip.py`、`scripts/check_hht_lean.py`、`scripts/certify_xi_prefix.py`、`scripts/check_hht_infinite.py`、`scripts/certify_xi_shifts.py`、`scripts/check_hht_shifts.py`、`scripts/certify_xi_sparse.py`、`scripts/check_hht_total.py`、`scripts/hht_sign_blocks.py`、`scripts/certify_xi_sign_blocks.py`、`scripts/check_hht_sign_blocks.py` 、`scripts/hht_coefficient_cone.py`、`scripts/test_hht_coefficient_cone.py`、`scripts/check_hht_coefficient_cone.py` 、`scripts/test_hht_cofinal.py`、`scripts/certify_xi_cofinal.py`、`scripts/check_hht_cofinal.py`、`scripts/hht_balance.py`、`scripts/test_hht_balance.py`、`scripts/certify_xi_balance.py` 及对应测试。
+- 下游：`scripts/vibe_mathing/lean.py`、`scripts/vibe_mathing/smt.py`、`scripts/test_heat_hankel.py`、`scripts/test_hankel_inertia.py`、`scripts/test_hankel_tail.py`、`scripts/test_xi_strip.py`、`scripts/check_hht_lean.py`、`scripts/certify_xi_prefix.py`、`scripts/check_hht_infinite.py`、`scripts/certify_xi_shifts.py`、`scripts/check_hht_shifts.py`、`scripts/certify_xi_sparse.py`、`scripts/check_hht_total.py`、`scripts/hht_sign_blocks.py`、`scripts/certify_xi_sign_blocks.py`、`scripts/check_hht_sign_blocks.py` 、`scripts/hht_coefficient_cone.py`、`scripts/test_hht_coefficient_cone.py`、`scripts/check_hht_coefficient_cone.py` 、`scripts/test_hht_cofinal.py`、`scripts/certify_xi_cofinal.py`、`scripts/check_hht_cofinal.py`、`scripts/hht_balance.py`、`scripts/test_hht_balance.py`、`scripts/certify_xi_balance.py`、`scripts/hht_deflation.py`、`scripts/test_hht_deflation.py`、`scripts/check_hht_deflation.py` 及对应测试。
 - 禁止 `sorry`、`admit`、`unsafe`；变更定理陈述时必须同步陈述忠实性契约和 axiom audit。
 - fixture 不得引用本机绝对路径、凭据、私有材料或网络动态内容；fixture PASS 不得创建 Problem、Attempt、Result 或 Solution。
