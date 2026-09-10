@@ -70,3 +70,7 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 
 # Cofinal obstruction: exact regression only; numerical/Lean jobs stay separate.
 (ulimit -v 524288; ulimit -t 20; timeout 30s python3 scripts/test_hht_cofinal.py)
+
+# Coefficient balance: exact tests only; actual xi and Lean remain separate.
+(ulimit -v 524288; ulimit -t 30; timeout 40s python3 scripts/test_hht_coefficient_cone.py)
+(ulimit -v 524288; ulimit -t 30; timeout 40s python3 scripts/test_hht_balance.py)
