@@ -30,7 +30,11 @@ theorem lin_mul_lin {n : ℕ} (v w a b : Fin n → ℝ) :
   classical
   calc
     lin v a * lin w b = ∑ i, ∑ j, (a i * v i) * (b j * w j) := by
-      simp only [lin, Finset.sum_mul, Finset.mul_sum]
+      unfold lin
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [Finset.mul_sum]
     _ = ∑ i, ∑ j, a i * b j * (v i * w j) := by
       apply Finset.sum_congr rfl
       intro i _
@@ -127,7 +131,12 @@ theorem scalar_cone_bound (m c B U V A D E : ℝ)
     have hz : 0 ≤ m*(c-B) := mul_nonneg hm.le (sub_nonneg.mpr hB)
     nlinarith
   have h6 : 0 ≤ (m*B-V)*(2*m*c-V-m*B) := mul_nonneg h4 h5
-  apply (mul_le_mul_left hm).mp
+  by_contra h
+  have hbad : c^2*m + A + D + 2*c*U - 2*c*V - 2*E < m*(c-B)^2 :=
+    lt_of_not_ge h
+  have hneg : 0 < m*(m*(c-B)^2 -
+      (c^2*m + A + D + 2*c*U - 2*c*V - 2*E)) :=
+    mul_pos hm (sub_pos.mpr hbad)
   nlinarith [h1, h2, h3, h6]
 
 /-- Arbitrary finite dimension, with all pointwise kernel hypotheses exposed. -/
