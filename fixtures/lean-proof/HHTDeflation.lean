@@ -2,6 +2,7 @@ import HHTCoefficientCone
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.RuleOfSigns
 import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Data.Real.StarOrdered
 import Lean.Elab.Tactic.Omega
 import Mathlib.Tactic.FieldSimp
 
@@ -43,7 +44,11 @@ theorem coefficient_eval_mono {n : ℕ} (e : Fin n → ℕ) (a : Fin n → ℝ)
 /-- The finite coefficient evaluation is evaluation of an actual polynomial. -/
 theorem coefficient_polynomial_eval {n : ℕ} (e : Fin n → ℕ)
     (a : Fin n → ℝ) (x : ℝ) : (cp e a).eval x = ev e a x := by
-  simp [cp, ev]
+  unfold cp ev
+  rw [Polynomial.eval_finsetSum]
+  apply Finset.sum_congr rfl
+  intro i _
+  simp
 
 /-- The rectangular lower certificate cannot exceed a pointwise polynomial square. -/
 theorem rectangle_point_upper (c u v ua ub va vb : ℝ)
@@ -143,14 +148,14 @@ theorem schur_psd_iff {N M : ℕ} (C : Matrix (Fin N) (Fin N) ℝ)
     (hC : C.PosDef) :
     (Matrix.fromBlocks C E E.conjTranspose D).PosSemidef ↔
       (D-E.conjTranspose*C⁻¹*E).PosSemidef := by
-  letI : Invertible C := hC.isUnit.invertible
+  let _ : Invertible C := hC.isUnit.invertible
   exact Matrix.PosDef.fromBlocks₁₁ E D hC
 
 /-- Scalar square completion records the mixed-term penalty explicitly. -/
 theorem schur_scalar_identity (C E D r q : ℝ) (hC : C ≠ 0) :
     C*r^2+2*E*r*q+D*q^2 = C*(r+E/C*q)^2+(D-E^2/C)*q^2 := by
   field_simp [hC]
-  <;> ring
+  ring
 
 #print axioms HHTDeflation.coefficient_eval_nonneg
 #print axioms HHTDeflation.coefficient_eval_mono
