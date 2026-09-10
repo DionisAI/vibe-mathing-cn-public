@@ -1,4 +1,5 @@
-import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Topology.Instances.Real.Lemmas
+import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Topology.Algebra.InfiniteSum.Order
 import Mathlib.Tactic.Linarith
@@ -14,7 +15,6 @@ set_option autoImplicit false
 namespace HHTCofinal
 noncomputable section
 open scoped BigOperators
-open Filter
 
 /-- Multiplication by a unit phase preserves the squared Euclidean norm. -/
 theorem rotation_circle (a b x y : ℝ) (hab : a*a+b*b=1) (hxy : x*x+y*y=1) :
@@ -114,11 +114,23 @@ theorem geometric_after (C a : ℝ) (hC : 0 ≤ C) (ha0 : 0 ≤ a)
 /-- A finite threshold exists for every strict contraction. -/
 theorem geometric_threshold_exists (C a : ℝ) (ha0 : 0 ≤ a) (ha1 : a<1) :
     ∃ K : ℕ, ∀ k ≥ K, C*a^k<1 := by
-  have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one ha0 ha1
-  have hlim : Tendsto (fun k : ℕ => C*a^k) atTop (nhds (0:ℝ)) := by
-    simpa only [mul_zero] using (tendsto_const_nhds.mul hpow :
-      Tendsto (fun k : ℕ => C*a^k) atTop (nhds (C*0)))
-  exact eventually_atTop.1 ((tendsto_order.1 hlim).2 1 (by norm_num))
+  by_cases hC : C ≤ 0
+  · refine ⟨0, ?_⟩
+    intro k _
+    exact lt_of_le_of_lt
+      (mul_nonpos_of_nonpos_of_nonneg hC (pow_nonneg ha0 k)) zero_lt_one
+  have hC0 : 0 ≤ C := le_of_lt (lt_of_not_ge hC)
+  by_cases haz : a=0
+  · refine ⟨1, ?_⟩
+    intro k hk
+    exact geometric_after C a hC0 ha0 ha1.le 1 k hk (by simp [haz])
+  have ha : 0<a := lt_of_le_of_ne ha0 (Ne.symm haz)
+  have hinv : 1 < 1/a := (lt_div_iff₀ ha).2 (by simpa using ha1)
+  obtain ⟨N,hN⟩ := pow_unbounded_of_one_lt C hinv
+  have hpow : 0<a^N := pow_pos ha N
+  have hNdiv : C < 1/a^N := by simpa only [div_pow,one_pow] using hN
+  have hK : C*a^N<1 := (lt_div_iff₀ hpow).1 hNdiv
+  exact ⟨N,fun k hk => geometric_after C a hC0 ha0 ha1.le N k hk hK⟩
 
 #print axioms HHTCofinal.geometric_threshold_exists
 
