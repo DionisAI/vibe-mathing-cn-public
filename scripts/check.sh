@@ -67,3 +67,6 @@ python3 governance/tools/governance_health_report.py --project-root . --strict
 
 # Sign-block arithmetic only; actual xi and Lean run in bounded dedicated jobs.
 (ulimit -v 524288; ulimit -t 20; ulimit -f 256; timeout 30s python3 scripts/test_hht_sign_blocks.py)
+
+# Cofinal obstruction: exact regression only; numerical/Lean jobs stay separate.
+(ulimit -v 524288; ulimit -t 20; timeout 30s python3 scripts/test_hht_cofinal.py)
