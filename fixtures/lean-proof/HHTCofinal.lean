@@ -28,14 +28,20 @@ def phase (a b : ℝ) : ℕ → ℝ × ℝ
   | n+1 => (a*(phase a b n).1-b*(phase a b n).2,
              a*(phase a b n).2+b*(phase a b n).1)
 
+#print axioms HHTCofinal.rotation_circle
+
 /-- All powers have unit phase; no equidistribution or irrational angle is assumed. -/
 theorem phase_circle (a b : ℝ) (hab : a*a+b*b=1) (n : ℕ) :
     (phase a b n).1^2+(phase a b n).2^2=1 := by
   induction n with
   | zero => simp [phase]
   | succ n ih =>
-    simpa only [phase] using rotation_circle a b (phase a b n).1 (phase a b n).2
-      hab (by nlinarith [ih])
+    change (a*(phase a b n).1-b*(phase a b n).2)^2 +
+      (a*(phase a b n).2+b*(phase a b n).1)^2=1
+    exact rotation_circle a b (phase a b n).1 (phase a b n).2
+      hab (by nlinarith only [ih])
+
+#print axioms HHTCofinal.phase_circle
 
 /-- The four real directions cannot all remain nonnegative under error below one. -/
 theorem four_phase_negative (x y E q0 qi qp qm : ℝ)
@@ -46,13 +52,15 @@ theorem four_phase_negative (x y E q0 qi qp qm : ℝ)
   by_contra h
   push_neg at h
   rcases h with ⟨h0n,hin,hpn,hmn⟩
-  have hxlo : 0 ≤ x+1/2 := by linarith
-  have hxhi : 0 ≤ 1/2-x := by linarith
-  have hylo : 0 ≤ y+1/4 := by linarith
-  have hyhi : 0 ≤ 1/4-y := by linarith
+  have hxlo : 0 ≤ x+1/2 := by linarith only [h0, h0n, hE]
+  have hxhi : 0 ≤ 1/2-x := by linarith only [hi, hin, hE]
+  have hylo : 0 ≤ y+1/4 := by linarith only [hm, hmn, hE]
+  have hyhi : 0 ≤ 1/4-y := by linarith only [hp, hpn, hE]
   have hsx := mul_nonneg hxlo hxhi
   have hsy := mul_nonneg hylo hyhi
-  nlinarith
+  nlinarith only [hcircle, hsx, hsy]
+
+#print axioms HHTCofinal.four_phase_negative
 
 /-- A pointwise upper envelope controls the genuine infinite sum. -/
 theorem infinite_upper (tail envelope : ℕ → ℝ)
@@ -60,6 +68,8 @@ theorem infinite_upper (tail envelope : ℕ → ℝ)
     (hp : ∀ n, tail n ≤ envelope n) :
     (∑' n, tail n) ≤ ∑' n, envelope n := by
   exact hasSum_le hp ht.hasSum he.hasSum
+
+#print axioms HHTCofinal.infinite_upper
 
 /-- Full infinite sums in four directions, not finite-prefix sums, detect negativity. -/
 theorem infinite_four_negative (x y E : ℝ) (tail : Fin 4 → ℕ → ℝ)
@@ -76,12 +86,16 @@ theorem infinite_four_negative (x y E : ℝ) (tail : Fin 4 → ℕ → ℝ)
   · linarith [hbound 2]
   · linarith [hbound 3]
 
+#print axioms HHTCofinal.infinite_four_negative
+
 /-- The normalized tail budget decreases with shift. -/
 theorem geometric_step (C a : ℝ) (hC : 0 ≤ C) (ha0 : 0 ≤ a)
     (ha1 : a ≤ 1) (k : ℕ) : C*a^(k+1) ≤ C*a^k := by
   rw [pow_succ]
   exact mul_le_mul_of_nonneg_left
     (mul_le_of_le_one_right (pow_nonneg ha0 k) ha1) hC
+
+#print axioms HHTCofinal.geometric_step
 
 /-- An observed strict threshold controls every later shift. -/
 theorem geometric_after (C a : ℝ) (hC : 0 ≤ C) (ha0 : 0 ≤ a)
@@ -95,6 +109,8 @@ theorem geometric_after (C a : ℝ) (hC : 0 ≤ C) (ha0 : 0 ≤ a)
   rw [Nat.add_sub_of_le hk] at hh
   exact lt_of_le_of_lt hh hK
 
+#print axioms HHTCofinal.geometric_after
+
 /-- A finite threshold exists for every strict contraction. -/
 theorem geometric_threshold_exists (C a : ℝ) (ha0 : 0 ≤ a) (ha1 : a<1) :
     ∃ K : ℕ, ∀ k ≥ K, C*a^k<1 := by
@@ -103,6 +119,8 @@ theorem geometric_threshold_exists (C a : ℝ) (ha0 : 0 ≤ a) (ha1 : a<1) :
     simpa only [mul_zero] using (tendsto_const_nhds.mul hpow :
       Tendsto (fun k : ℕ => C*a^k) atTop (nhds (C*0)))
   exact eventually_atTop.1 ((tendsto_order.1 hlim).2 1 (by norm_num))
+
+#print axioms HHTCofinal.geometric_threshold_exists
 
 /-- Every sufficiently late shift has a negative full direction, among four fixed choices. -/
 theorem eventual_four_negative (C a : ℝ) (ha0 : 0 ≤ a) (ha1 : a<1)
@@ -124,12 +142,16 @@ theorem eventual_four_negative (C a : ℝ) (ha0 : 0 ≤ a) (ha1 : a<1)
 def hankel (mu : ℕ → ℝ) (d k : ℕ) : Matrix (Fin d) (Fin d) ℝ :=
   fun i j => mu (k+i.val+j.val)
 
+#print axioms HHTCofinal.eventual_four_negative
+
 /-- Larger positive semidefinite Hankel blocks restrict to smaller prefix blocks. -/
 theorem hankel_psd_prefix (mu : ℕ → ℝ) (D d k : ℕ)
     (hd : D ≤ d) (hp : (hankel mu d k).PosSemidef) :
     (hankel mu D k).PosSemidef := by
   let e : Fin D → Fin d := fun i => ⟨i.val,lt_of_lt_of_le i.isLt hd⟩
   simpa only [hankel,Matrix.submatrix,e] using hp.submatrix e
+
+#print axioms HHTCofinal.hankel_psd_prefix
 
 /-- A later shift is an actual principal submatrix of a larger earlier-shift block. -/
 theorem hankel_psd_shift (mu : ℕ → ℝ) (d M k : ℕ)
@@ -145,6 +167,8 @@ theorem hankel_psd_shift (mu : ℕ → ℝ) (d M k : ℕ)
   rw [heq] at hh
   exact hh
 
+#print axioms HHTCofinal.hankel_psd_shift
+
 /-- One fixed-size obstruction at all late shifts gives a size obstruction at EVERY shift. -/
 theorem uniform_dimension_obstruction (mu : ℕ → ℝ) (D K : ℕ)
     (hbad : ∀ k ≥ K, ¬ (hankel mu D k).PosSemidef) :
@@ -154,6 +178,8 @@ theorem uniform_dimension_obstruction (mu : ℕ → ℝ) (D K : ℕ)
   have hprefix := hankel_psd_prefix mu (D+(K+1)/2) d k hd hp
   have hshift := hankel_psd_shift mu D ((K+1)/2) k hprefix
   exact hbad (k+2*((K+1)/2)) (by omega) hshift
+
+#print axioms HHTCofinal.uniform_dimension_obstruction
 
 /-- Unbounded positive block sizes suffice; their successful shifts may be arbitrary.
 Spectral interpolation supplies an eventual obstruction if a nonreal node exists. -/
@@ -165,19 +191,7 @@ theorem dimension_cofinal_no_eventual_obstruction (mu : ℕ → ℝ)
   obtain ⟨d,k,hd,hpos⟩ := hcofinal B
   exact hB d hd k hpos
 
+#print axioms HHTCofinal.dimension_cofinal_no_eventual_obstruction
+
 end
 end HHTCofinal
-
-#print axioms HHTCofinal.rotation_circle
-#print axioms HHTCofinal.phase_circle
-#print axioms HHTCofinal.four_phase_negative
-#print axioms HHTCofinal.infinite_upper
-#print axioms HHTCofinal.infinite_four_negative
-#print axioms HHTCofinal.geometric_step
-#print axioms HHTCofinal.geometric_after
-#print axioms HHTCofinal.geometric_threshold_exists
-#print axioms HHTCofinal.eventual_four_negative
-#print axioms HHTCofinal.hankel_psd_prefix
-#print axioms HHTCofinal.hankel_psd_shift
-#print axioms HHTCofinal.uniform_dimension_obstruction
-#print axioms HHTCofinal.dimension_cofinal_no_eventual_obstruction

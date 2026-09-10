@@ -4,6 +4,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import re
+import resource
 import shutil
 import subprocess
 import sys
@@ -39,7 +40,8 @@ def main():
         output.seek(0);raw=output.read(MAX_OUTPUT+1)
     if len(raw)>MAX_OUTPUT:raise ValueError('output budget exceeded')
     text=raw.decode('utf-8');print(text,end='')
-    if result.returncode:raise ValueError('Lean compilation failed')
+    print(f'COMPILER_RECEIPT: exit={result.returncode}; maximum_rss_kib={resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss}',flush=True)
+    if result.returncode:raise ValueError(f'Lean compilation failed with exit {result.returncode}')
     audit_output(text,names)
     print('COFINAL_LEAN_PASS: 13 audited theorems; actual infinite-tail detection and cofinal contradiction; spectral interpolation and xi external.')
     return 0
