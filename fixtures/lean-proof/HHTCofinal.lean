@@ -50,7 +50,7 @@ theorem four_phase_negative (x y E q0 qi qp qm : ℝ)
     (hp : qp ≤ -4*y+E) (hm : qm ≤ 4*y+E) :
     q0<0 ∨ qi<0 ∨ qp<0 ∨ qm<0 := by
   by_contra h
-  push_neg at h
+  push Not at h
   rcases h with ⟨h0n,hin,hpn,hmn⟩
   have hxlo : 0 ≤ x+1/2 := by linarith only [h0, h0n, hE]
   have hxhi : 0 ≤ 1/2-x := by linarith only [hi, hin, hE]
@@ -152,7 +152,7 @@ theorem eventual_four_negative (C a : ℝ) (ha0 : 0 ≤ a) (ha1 : a<1)
     (hc k) (hK k hk) (ht k) (he k) (hp k) (hs k)
 
 def hankel (mu : ℕ → ℝ) (d k : ℕ) : Matrix (Fin d) (Fin d) ℝ :=
-  fun i j => mu (k+i.val+j.val)
+  Matrix.of (fun i j => mu (k+i.val+j.val))
 
 #print axioms HHTCofinal.eventual_four_negative
 
@@ -161,7 +161,13 @@ theorem hankel_psd_prefix (mu : ℕ → ℝ) (D d k : ℕ)
     (hd : D ≤ d) (hp : (hankel mu d k).PosSemidef) :
     (hankel mu D k).PosSemidef := by
   let e : Fin D → Fin d := fun i => ⟨i.val,lt_of_lt_of_le i.isLt hd⟩
-  simpa only [hankel,Matrix.submatrix,e] using hp.submatrix e
+  have hh := hp.submatrix e
+  have heq : (hankel mu d k).submatrix e e = hankel mu D k := by
+    apply Matrix.ext
+    intro i j
+    rfl
+  rw [heq] at hh
+  exact hh
 
 #print axioms HHTCofinal.hankel_psd_prefix
 
@@ -172,8 +178,9 @@ theorem hankel_psd_shift (mu : ℕ → ℝ) (d M k : ℕ)
   let e : Fin d → Fin (d+M) := fun i => ⟨M+i.val,by omega⟩
   have hh := hp.submatrix e
   have heq : (hankel mu (d+M) k).submatrix e e = hankel mu d (k+2*M) := by
-    funext i j
-    dsimp only [hankel,Matrix.submatrix,e]
+    apply Matrix.ext
+    intro i j
+    change mu (k+(M+i.val)+(M+j.val)) = mu (k+2*M+i.val+j.val)
     congr 1
     omega
   rw [heq] at hh
