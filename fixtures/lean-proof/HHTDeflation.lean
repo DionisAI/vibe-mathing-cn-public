@@ -2,7 +2,7 @@ import HHTCoefficientCone
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.RuleOfSigns
 import Mathlib.LinearAlgebra.Matrix.PosDef
-import Mathlib.Tactic.Omega
+import Lean.Elab.Tactic.Omega
 import Mathlib.Tactic.FieldSimp
 
 /-
